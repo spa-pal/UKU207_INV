@@ -23,6 +23,10 @@
 
 #define OID_ENTERPRISE 	OID0(1,3), 6, 1, 4, 1, 130, 131, 31
 
+#define delay_ms(x) {long xx; xx=(unsigned long)x * 12000UL; while(xx)xx--;}
+#define delay_us(x) {long xx; xx=(unsigned long)x * 12UL; while(xx)xx--;}
+
+
 #ifndef UKU_KONTUR
 
 #define OID_DEVICE 		14

@@ -28,6 +28,7 @@
 #include "net_config.h"
 #include "uart0.h"
 #include <rtl.h>
+#include "mcp2515.h"
 
 extern U8 own_hw_adr[];
 extern U8  snmp_Community[];
@@ -786,6 +787,61 @@ if(++cnt_net_drv>max_net_slot)
 if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+15))
 	{
 	//if((!bCAN_OFF)&&(cnt_net_drv!=4))can1_out(cnt_net_drv,cnt_net_drv,GETTM,bps[cnt_net_drv]._flags_tu,*((char*)(&bps[cnt_net_drv]._vol_u)),*((char*)((&bps[cnt_net_drv]._vol_u))+1),*((char*)(&bps[cnt_net_drv]._vol_i)),*((char*)((&bps[cnt_net_drv]._vol_i))+1));
+     
+	//if(cnt_net_drv<=11)
+	     {
+	     if(bps[cnt_net_drv]._cnt<CNT_SRC_MAX)
+   	 		{    
+   	 		bps[cnt_net_drv]._cnt++;
+   	 	/*	if( (bps[cnt_net_drv]._cnt>=CNT_SRC_MAX) && (!net_av) && (!(bps[cnt_net_drv]._av&0x08)) && (cnt_net_drv<NUMIST) ) 
+   	 			{
+   	 			avar_bps_hndl(cnt_net_drv,3,1);
+   	 			}*/
+   	 		}
+		else bps[cnt_net_drv]._cnt=CNT_SRC_MAX;
+						
+		if((bps[cnt_net_drv]._cnt>=3)&&(bps[cnt_net_drv]._cnt_old<3))bps[cnt_net_drv]._cnt_more2++;
+		bps[cnt_net_drv]._cnt_old=bps[cnt_net_drv]._cnt;
+	     }
+	}
+
+
+/*
+
+else if((cnt_net_drv==MINIM_INV_ADRESS+2)&&(NUMINV))
+	{
+    if(!bCAN_OFF) can1_out(cnt_net_drv,cnt_net_drv,0,0,0,0,0,0);
+	}*/
+
+
+}
+
+
+//-----------------------------------------------
+void net_drv_mcp2515(void)
+{ 
+//char temp_;    
+
+
+
+max_net_slot=MINIM_INV_ADRESS+NUMINV+8;
+//if(NUMINV) max_net_slot=MINIM_INV_ADRESS+NUMINV;
+//gran_char(&max_net_slot,0,MAX_NET_ADRESS);
+
+if(++cnt_net_drv>max_net_slot) 
+	{
+	cnt_net_drv=MINIM_INV_ADRESS;
+	//LPC_GPIO2->FIODIR|=(1UL<<7);
+	//LPC_GPIO2->FIOPIN^=(1UL<<7);
+	} 
+
+
+	
+	
+	
+if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+15))
+	{
+	if((!bCAN_OFF)/*&&(cnt_net_drv!=4)*/)mcp2515_transmit(cnt_net_drv,cnt_net_drv,GETTM,bps[cnt_net_drv]._flags_tu,*((char*)(&bps[cnt_net_drv]._vol_u)),*((char*)((&bps[cnt_net_drv]._vol_u))+1),*((char*)(&bps[cnt_net_drv]._vol_i)),*((char*)((&bps[cnt_net_drv]._vol_i))+1));
      
 	//if(cnt_net_drv<=11)
 	     {
@@ -16580,11 +16636,13 @@ LPC_GPIO0->FIOSET|=(1<<11);
 
 lc640_write_int(100,134);
 
+/*
 can1_init(BITRATE62_5K25MHZ); 
 can2_init(BITRATE125K25MHZ);
 FullCAN_SetFilter(1,0x0e9);
 FullCAN_SetFilter(0,0x18e);
 //FullCAN_SetFilter(0,0x09e);
+*/
 
 UARTInit(0, 9600);	/* baud rate setting */
 
@@ -16663,6 +16721,7 @@ if((AUSW_MAIN==2400)||(AUSW_MAIN==4800)||(AUSW_MAIN==6000))
 
 //tree_up(iDeb,2,0,0);
 
+can_mcp2515_init();
 		
 while (1)  
 	{
@@ -16676,7 +16735,12 @@ while (1)
 		bRXIN0=0;
 	
 		uart_in0();
-		} 
+		}
+	if(bMCP2515_IN)
+		{
+		bMCP2515_IN=0;
+		can_in_an1();
+		}		 
 	/*
 	if(bRXIN1) 
 		{
@@ -16705,7 +16769,7 @@ while (1)
 		{
 		b1000Hz=0;
 
-
+	    	can_mcp2515_hndl();
 		}
 	
 	if(b100Hz)
@@ -16715,6 +16779,8 @@ while (1)
 		//LPC_GPIO2->FIODIR|=(1<<7);
 		//LPC_GPIO2->FIOPIN^=(1<<7);		
 
+		
+
 		if(!bRESET)but_drv();
 		but_an();
 		}
@@ -16723,7 +16789,8 @@ while (1)
 		{
 		b50Hz=0;
 
-		net_drv();
+		//net_drv();
+		net_drv_mcp2515();
 		}
 
 	if(b10Hz)

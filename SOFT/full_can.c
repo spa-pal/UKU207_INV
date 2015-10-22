@@ -1290,7 +1290,7 @@ if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 if((RXBUFF[1]==PUTTM1BYPS))
      {
 	//can_debug_plazma[1][2]++;
-     byps._adress=RXBUFF[0]&0x1f;
+     byps._adress=RXBUFF[0]&0x3f;
      
      	
 	byps._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);

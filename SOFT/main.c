@@ -1352,11 +1352,22 @@ if(ind==iMn_INV)
 
 
 	int2lcd(num_of_wrks_inv,'!',0);
-	int2lcd(load_U/10,'[',0);
+
+	if(NUMBYPASS)
+		{
+		int2lcd(byps._Uout/10,'[',0);
+     	int2lcd(byps._Iout,']',1);  
+   		//int2lcd_mmm(byps._T,'[',0); 
+		int2lcd_mmm(byps._Pout,'@',0);
+		}
+	else 
+		{
+		int2lcd(load_U/10,'[',0);
  
   	//int2lcd(load_U,'#',1);
- 	int2lcd(load_I,']',1);
-	int2lcd(load_P,'@',0);
+ 		int2lcd(load_I,']',1);
+		int2lcd(load_P,'@',0);
+		}
  	
 	int2lcd(LPC_RTC->HOUR,'%',0);
 	int2lcd(LPC_RTC->MIN,'^',0);
@@ -1624,8 +1635,8 @@ else if(ind==iByps)
 
 	simax=7;
 
-	ptr[1]=			" Uâûõ =        (Â   ";
-	ptr[2]=			" Iâûõ =        )A   ";
+	ptr[1]=			" Uâûõ =        {Â   ";
+	ptr[2]=			" Iâûõ =        }A   ";
 	ptr[3]=			" Pâûõ =        ]Âò  ";
 	ptr[4]=			" táï  =        [°Ñ  ";
 	ptr[5]=			" Uñåòè =       <Â   ";
@@ -1660,7 +1671,7 @@ else if(ind==iByps)
 		}
 
 
-	bgnd_par(			"       ÁÀÉÏÀÑÑ      ",
+	bgnd_par(			"  ÁÀÉÏÀÑÑ (àäð.= !) ",
 					ptr[index_set],
 					ptr[index_set+1],
 					ptr[index_set+2]);
@@ -1671,14 +1682,14 @@ else if(ind==iByps)
 	if(sub_ind>=simax)	pointer_set(1);
 
 
-	int2lcd(byps._Uout,'(',1);
-     int2lcd(byps._Iout,')',1);  
+	int2lcd(byps._Uout,'{',1);
+     int2lcd(byps._Iout,'}',1);  
    	int2lcd_mmm(byps._T,'[',0); 
 	int2lcd_mmm(byps._Pout,']',0);
 	int2lcd(byps._Unet,'<',1);
 	int2lcd(byps._Uin,'>',1);
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
-	//int2lcdyx(byps._flags,0,6,0);
+	int2lcd(byps._adress-20,'!',0);
     }
 #ifndef _DEBUG_	 	  
 else if(ind==iNet)
@@ -14340,11 +14351,11 @@ else if(ind==iK_byps)
 		}
 	else if (sub_ind == 0)
 		{
-		if(but==butLR) 	can1_out(byps._adress,byps._adress,KLBR,	(0*16)+1,(0*16)+1,0,0,0);
-	    	else if(but==butR) 	can1_out(byps._adress,byps._adress,KLBR,	(0*16)+2,(0*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(0*16)+3,(0*16)+3,0,0,0);
-    		else if(but==butL) 	can1_out(byps._adress,byps._adress,KLBR,	(0*16)+4,(0*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(0*16)+5,(0*16)+5,0,0,0);
+		if(but==butLR) 	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(0*16)+1,(0*16)+1,0,0,0);
+	    	else if(but==butR) 	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(0*16)+3,(0*16)+3,0,0,0);
+    		else if(but==butL) 	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(0*16)+5,(0*16)+5,0,0,0);
 		speed=1;
 		}	
 		
@@ -14352,47 +14363,47 @@ else if(ind==iK_byps)
 		{
 		if(but==butE)
 			{
-			can1_out(byps._adress,byps._adress,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			mcp2515_transmit(byps._adress,byps._adress,KLBR,(2*16)+1,(2*16)+1,0,0,0);
 			phase=1;
 			}
-	    	else if(but==butR) can1_out(byps._adress,byps._adress,KLBR,		(2*16)+2,(2*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(2*16)+3,(2*16)+3,0,0,0);
-    		else if(but==butL) can1_out(byps._adress,byps._adress,KLBR,		(2*16)+4,(2*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(2*16)+5,(2*16)+5,0,0,0);
+	    	else if(but==butR) mcp2515_transmit(byps._adress,byps._adress,KLBR,		(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(2*16)+3,(2*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(byps._adress,byps._adress,KLBR,		(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(2*16)+5,(2*16)+5,0,0,0);
 		speed=1;
 		}		
 		
 	else if (sub_ind == 6)
 		{
-		if(but==butR) can1_out(byps._adress,byps._adress,KLBR,			(3*16)+2,(3*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(3*16)+3,(3*16)+3,0,0,0);
-    	else if(but==butL) can1_out(byps._adress,byps._adress,KLBR,			(3*16)+4,(3*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(3*16)+5,(3*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(3*16)+5,(3*16)+5,0,0,0);
 		speed=1;
 		}								
 			
 	else if (sub_ind == 9)
 		{
-		if(but==butR) can1_out(byps._adress,byps._adress,KLBR,			(4*16)+2,(4*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(4*16)+3,(4*16)+3,0,0,0);
-    		else if(but==butL) can1_out(byps._adress,byps._adress,KLBR,		(4*16)+4,(4*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(4*16)+5,(4*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(4*16)+3,(4*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(byps._adress,byps._adress,KLBR,		(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(4*16)+5,(4*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 12)
 		{
-		if(but==butR) can1_out(byps._adress,byps._adress,KLBR,			(5*16)+2,(5*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(5*16)+3,(5*16)+3,0,0,0);
-    	else if(but==butL) can1_out(byps._adress,byps._adress,KLBR,			(5*16)+4,(5*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(5*16)+5,(5*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(5*16)+5,(5*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 15)
 		{
-		if(but==butR) can1_out(byps._adress,byps._adress,KLBR,			(6*16)+2,(6*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(byps._adress,byps._adress,KLBR,	(6*16)+3,(6*16)+3,0,0,0);
-    		else if(but==butL) can1_out(byps._adress,byps._adress,KLBR,		(6*16)+4,(6*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(byps._adress,byps._adress,KLBR,	(6*16)+5,(6*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(byps._adress,byps._adress,KLBR,			(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(byps._adress,byps._adress,KLBR,	(6*16)+3,(6*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(byps._adress,byps._adress,KLBR,		(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(byps._adress,byps._adress,KLBR,	(6*16)+5,(6*16)+5,0,0,0);
 		speed=1;
 		}							
 							

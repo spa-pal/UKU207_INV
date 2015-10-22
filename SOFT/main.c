@@ -1356,7 +1356,8 @@ if(ind==iMn_INV)
 	if(NUMBYPASS)
 		{
 		int2lcd(byps._Uout/10,'[',0);
-     	int2lcd(byps._Iout,']',1);  
+		if(byps._Iout>999)int2lcd(byps._Iout/10,']',0);
+     	else int2lcd(byps._Iout,']',1);  
    		//int2lcd_mmm(byps._T,'[',0); 
 		int2lcd_mmm(byps._Pout,'@',0);
 		}
@@ -1365,7 +1366,8 @@ if(ind==iMn_INV)
 		int2lcd(load_U/10,'[',0);
  
   	//int2lcd(load_U,'#',1);
- 		int2lcd(load_I,']',1);
+		if(load_I>999)int2lcd(load_I/10,']',0);
+ 		else int2lcd(load_I,']',1);
 		int2lcd(load_P,'@',0);
 		}
  	
@@ -1683,7 +1685,8 @@ else if(ind==iByps)
 
 
 	int2lcd(byps._Uout,'{',1);
-     int2lcd(byps._Iout,'}',1);  
+	if(byps._Iout>999)int2lcd(byps._Iout/10,'}',0);
+     else int2lcd(byps._Iout,'}',1);  
    	int2lcd_mmm(byps._T,'[',0); 
 	int2lcd_mmm(byps._Pout,']',0);
 	int2lcd(byps._Unet,'<',1);

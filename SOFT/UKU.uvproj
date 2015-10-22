@@ -526,11 +526,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1072,11 +1067,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1620,11 +1610,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -2166,11 +2151,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2714,11 +2694,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -3260,11 +3235,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3808,11 +3778,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -4354,11 +4319,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4902,11 +4862,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -5448,11 +5403,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5996,11 +5946,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -6542,11 +6487,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7090,11 +7030,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -7637,11 +7572,6 @@
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
             </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -8183,11 +8113,6 @@
               <FileName>uart0.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart0.c</FilePath>
-            </File>
-            <File>
-              <FileName>mcp2515.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mcp2515.c</FilePath>
             </File>
           </Files>
         </Group>

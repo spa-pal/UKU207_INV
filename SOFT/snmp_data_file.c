@@ -47,11 +47,11 @@ signed short snmp_bps_temperature[8];
 signed short snmp_bps_stat[8];
 
 //Состояние инверторов
-signed short snmp_inv_number[10];
-signed short snmp_inv_voltage[10];
-signed short snmp_inv_current[10];
-signed short snmp_inv_temperature[10];
-signed short snmp_inv_stat[10];
+signed short snmp_inv_number[20];
+signed short snmp_inv_voltage[20];
+signed short snmp_inv_current[20];
+signed short snmp_inv_temperature[20];
+signed short snmp_inv_stat[20];
 
 //Состояние Батарей
 signed short snmp_bat_number[2];
@@ -439,6 +439,67 @@ snmp_inv_voltage[9]=inv[9]._Uio;
 snmp_inv_current[9]=inv[9]._Ii;
 snmp_inv_temperature[9]=inv[9]._Ti;
 snmp_inv_stat[9]=inv[9]._flags_tm;
+
+snmp_inv_number[10]=11;
+snmp_inv_voltage[10]=inv[10]._Uio;
+snmp_inv_current[10]=inv[10]._Ii;
+snmp_inv_temperature[10]=inv[10]._Ti;
+snmp_inv_stat[10]=inv[10]._flags_tm;
+
+snmp_inv_number[11]=12;
+snmp_inv_voltage[11]=inv[11]._Uio;
+snmp_inv_current[11]=inv[11]._Ii;
+snmp_inv_temperature[11]=inv[11]._Ti;
+snmp_inv_stat[11]=inv[11]._flags_tm;
+
+snmp_inv_number[12]=13;
+snmp_inv_voltage[12]=inv[12]._Uio;
+snmp_inv_current[12]=inv[12]._Ii;
+snmp_inv_temperature[12]=inv[12]._Ti;
+snmp_inv_stat[12]=inv[12]._flags_tm;
+
+snmp_inv_number[13]=14;
+snmp_inv_voltage[13]=inv[13]._Uio;
+snmp_inv_current[13]=inv[13]._Ii;
+snmp_inv_temperature[13]=inv[13]._Ti;
+snmp_inv_stat[13]=inv[13]._flags_tm;
+
+snmp_inv_number[14]=15;
+snmp_inv_voltage[14]=inv[14]._Uio;
+snmp_inv_current[14]=inv[14]._Ii;
+snmp_inv_temperature[14]=inv[14]._Ti;
+snmp_inv_stat[14]=inv[14]._flags_tm;
+
+snmp_inv_number[15]=16;
+snmp_inv_voltage[15]=inv[15]._Uio;
+snmp_inv_current[15]=inv[15]._Ii;
+snmp_inv_temperature[15]=inv[15]._Ti;
+snmp_inv_stat[15]=inv[15]._flags_tm;
+
+snmp_inv_number[16]=17;
+snmp_inv_voltage[16]=inv[16]._Uio;
+snmp_inv_current[16]=inv[16]._Ii;
+snmp_inv_temperature[16]=inv[16]._Ti;
+snmp_inv_stat[16]=inv[16]._flags_tm;
+
+snmp_inv_number[17]=18;
+snmp_inv_voltage[17]=inv[17]._Uio;
+snmp_inv_current[17]=inv[17]._Ii;
+snmp_inv_temperature[17]=inv[17]._Ti;
+snmp_inv_stat[17]=inv[17]._flags_tm;
+
+snmp_inv_number[18]=19;
+snmp_inv_voltage[18]=inv[18]._Uio;
+snmp_inv_current[18]=inv[18]._Ii;
+snmp_inv_temperature[18]=inv[18]._Ti;
+snmp_inv_stat[18]=inv[18]._flags_tm;
+
+snmp_inv_number[19]=20;
+snmp_inv_voltage[19]=inv[19]._Uio;
+snmp_inv_current[19]=inv[19]._Ii;
+snmp_inv_temperature[19]=inv[19]._Ti;
+snmp_inv_stat[19]=inv[19]._flags_tm;
+
 
 snmp_sk_number[0]=1;
 memcpy(&snmp_sk_name[0][0],"Shock",10);

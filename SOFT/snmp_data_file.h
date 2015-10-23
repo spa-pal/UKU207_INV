@@ -35,11 +35,11 @@ extern signed short snmp_bps_temperature[8];
 extern signed short snmp_bps_stat[8];
 
 //Состояние инверторов
-extern signed short snmp_inv_number[10];
-extern signed short snmp_inv_voltage[10];
-extern signed short snmp_inv_current[10];
-extern signed short snmp_inv_temperature[10];
-extern signed short snmp_inv_stat[10];
+extern signed short snmp_inv_number[20];
+extern signed short snmp_inv_voltage[20];
+extern signed short snmp_inv_current[20];
+extern signed short snmp_inv_temperature[20];
+extern signed short snmp_inv_stat[20];
 
 //Состояние Батарей
 extern signed short snmp_bat_number[2];

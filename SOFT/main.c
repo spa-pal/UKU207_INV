@@ -1690,7 +1690,9 @@ else if(ind==iByps)
 	if(byps._Iout>999)int2lcd(byps._Iout/10,'}',0);
      else int2lcd(byps._Iout,'}',1);  
    	int2lcd_mmm(byps._T,'[',0); 
-	int2lcd_mmm(byps._Pout,']',0);
+	if(byps._Pout>65000)byps._Pout=0; 
+	long2lcd_mmm((unsigned short)byps._Pout,']',0);
+	//int2lcd_mmm(byps._Pout,']',0);
 	int2lcd(byps._Unet,'<',1);
 	int2lcd(byps._Uin,'>',1);
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
@@ -4761,7 +4763,9 @@ else if(ind==iK_byps)
 	int2lcd(byps._T,'^',0); 
 	int2lcd(byps._Uin,'&',1);
 	int2lcd(byps._Unet,'*',1);
-	int2lcd_mmm(byps._Pout,'(',0); 
+	//int2lcd_mmm(byps._Pout,'(',0); 
+	if(byps._Pout>65000)byps._Pout=0; 
+	long2lcd_mmm((unsigned short)byps._Pout,'(',0);
 
      if((sub_ind==0))
 		{

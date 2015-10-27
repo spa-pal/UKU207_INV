@@ -2188,15 +2188,15 @@ for(i=0;i<NUMINV;i++)
 		num_of_wrks_inv++;
 		temp_SL1+=(signed long)inv[i]._Uio;
 		temp_SS2+=inv[i]._Ii;
-		temp_SS3+=inv[i]._Pio;
+		temp_SL3+=(signed long)inv[i]._Pio;
 		}
 
 	}
 load_U_inv=(signed long)(temp_SL1/num_of_wrks_inv);
 if(temp_SS2<0)temp_SS2=0;
 load_I_inv=temp_SS2;
-if(temp_SS3<0)temp_SS3=0;
-load_P_inv=temp_SS3;
+if(temp_SL3<0)temp_SL3=0;
+load_P_inv=temp_SL3;
 
 }
 

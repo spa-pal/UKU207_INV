@@ -1294,10 +1294,11 @@ if((RXBUFF[1]==PUTTM1BYPS))
      
      	
 	byps._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
-	byps._Pout=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+	byps._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
 	byps._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 	
 	byps._cnt=0;
+	if(byps._Pout<0) byps._Pout=0;
      }
 
 if((RXBUFF[1]==PUTTM2BYPS))

@@ -248,7 +248,7 @@ MAKB_STAT makb[4];
 
 //***********************************************
 //Состояние источников
-BPS_STAT bps[30];
+BPS_STAT bps[40];
 
 //***********************************************
 //Состояние инверторов
@@ -263,10 +263,10 @@ BYPS_STAT byps;
 //Состояние нагрузки
 signed short load_U;
 signed short load_I;
-signed short load_P;
+signed long load_P;
 signed short load_U_inv;
 signed short load_I_inv;
-signed short load_P_inv;
+signed long load_P_inv;
 
 
 //***********************************************
@@ -1359,8 +1359,9 @@ if(ind==iMn_INV)
 		int2lcd(byps._Uout/10,'[',0);
 		if(byps._Iout>999)int2lcd(byps._Iout/10,']',0);
      	else int2lcd(byps._Iout,']',1);  
-   		//int2lcd_mmm(byps._T,'[',0); 
-		int2lcd_mmm(byps._Pout,'@',0);
+   		//int2lcd_mmm(byps._T,'[',0);
+		if(byps._Pout>65000)byps._Pout=0; 
+		long2lcd_mmm((unsigned short)byps._Pout,'@',0);
 		}
 	else 
 		{
@@ -1369,7 +1370,7 @@ if(ind==iMn_INV)
   	//int2lcd(load_U,'#',1);
 		if(load_I>999)int2lcd(load_I/10,']',0);
  		else int2lcd(load_I,']',1);
-		int2lcd(load_P,'@',0);
+		int2lcd((unsigned short)load_P,'@',0);
 		}
  	
 	int2lcd(LPC_RTC->HOUR,'%',0);

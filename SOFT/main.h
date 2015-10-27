@@ -945,7 +945,7 @@ typedef struct
      {
 	signed short 	_Iout;
 	signed short 	_Uout;
-	signed short 	_Pout;
+	signed long 	_Pout;
 	signed short 	_Unet; 	
 	signed short 	_Uin;
 	char			_T;
@@ -1018,7 +1018,7 @@ typedef struct
      char _adr_ee;
 	char _last_avar;
      } BPS_STAT; 
-extern BPS_STAT bps[30];
+extern BPS_STAT bps[40];
 
 //***********************************************
 //Состояние инверторов
@@ -1076,10 +1076,10 @@ extern char first_inv_slot;
 //Состояние нагрузки
 extern signed short load_U;
 extern signed short load_I;
-extern signed short load_P;
+extern signed long load_P;
 extern signed short load_U_inv;
 extern signed short load_I_inv;
-extern signed short load_P_inv;
+extern signed long load_P_inv;
 
 //***********************************************
 //Состояние первичной сети

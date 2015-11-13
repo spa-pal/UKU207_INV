@@ -1696,7 +1696,7 @@ else if(ind==iByps)
 	int2lcd(byps._Unet,'<',1);
 	int2lcd(byps._Uin,'>',1);
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
-	int2lcd(byps._adress-20,'!',0);
+	int2lcd(byps._adress-19,'!',0);
     }
 #ifndef _DEBUG_	 	  
 else if(ind==iNet)

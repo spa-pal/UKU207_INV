@@ -955,7 +955,9 @@ if(load_I<0)load_I=0;
 
 //Мощность в нагрузке
 if(NUMBYPASS==0)load_P=load_P_inv;
-if(load_P<0)load_P=0;
+//load_P=100;
+//if(load_P<0)load_P=0;
+//if(load_P>65000L)load_P=0;
 
 #ifdef UKU_KONTUR
 //Внешний датчик температуры №1(температура внешнего воздуха)
@@ -1399,7 +1401,7 @@ if (NUMINV)
 		if(bps[i+20]._cnt<25)
      		{
      		inv[i]._Ii=bps[i+20]._buff[0]+(bps[i+20]._buff[1]*256);
-     		inv[i]._Pio=bps[i+20]._buff[2]+(bps[i+20]._buff[3]*256);
+     		inv[i]._Pio=((signed short)bps[i+20]._buff[2])+((signed short)(bps[i+20]._buff[3]<<8));
      		inv[i]._Uio=bps[i+20]._buff[4]+(bps[i+20]._buff[5]*256);
      		inv[i]._Ti=(signed)(bps[i+20]._buff[6]);
      		inv[i]._flags_tm=bps[i+20]._buff[7];
@@ -2192,6 +2194,9 @@ for(i=0;i<NUMINV;i++)
 		}
 
 	}
+
+//temp_SL3=-100L;
+
 load_U_inv=(signed long)(temp_SL1/num_of_wrks_inv);
 if(temp_SS2<0)temp_SS2=0;
 load_I_inv=temp_SS2;

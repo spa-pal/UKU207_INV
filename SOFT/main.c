@@ -1370,7 +1370,8 @@ if(ind==iMn_INV)
   	//int2lcd(load_U,'#',1);
 		if(load_I>999)int2lcd(load_I/10,']',0);
  		else int2lcd(load_I,']',1);
-		int2lcd((unsigned short)load_P,'@',0);
+
+		long2lcd_mmm/*int2lcd*/(/*(unsigned short)*/load_P,'@',0);
 		}
  	
 	int2lcd(LPC_RTC->HOUR,'%',0);
@@ -6900,13 +6901,13 @@ else if(ind==iDeb)
      else if(but==butE)
          	{
           //a=b[--ptr_ind];
-          can1_out(1,2,3,4,5,6,7,8);
+          mcp2515_transmit(1,2,3,4,5,6,7,8);
           }   
           
      else if(but==butE_)
          	{
           //a=b[--ptr_ind];
-          can1_out_adr(TXBUFF,3);
+          //mcp2515_transmit_adr(TXBUFF,3);
           }                      				
 	}
 
@@ -7145,7 +7146,7 @@ else if(ind==iBps)
 		
 	else if((but==butE)&&(sub_ind==4))
 		{
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		}
 				
 	else if(((but==butE)&&(sub_ind==5))||(but))
@@ -7206,7 +7207,7 @@ else if(ind==iInv)
 		
 	else if((but==butE)&&(sub_ind==4))
 		{
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		}
 				
 	else if(((but==butE)&&(sub_ind==5))||(but))
@@ -7236,7 +7237,7 @@ else if(ind==iInv_v2)
 		
 /*	else if((but==butE)&&(sub_ind==4))
 		{
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		}
 		*/		
 	else if(((but==butE)&&(sub_ind==simax))||(but==butL))
@@ -7297,7 +7298,7 @@ else if(ind==iByps)
 		
 /*	else if((but==butE)&&(sub_ind==4))
 		{
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		}
 		*/		
 	else if(((but==butE)&&(sub_ind==simax))||(but==butL))
@@ -13740,14 +13741,14 @@ else if(ind==iK_bps_sel)
 		sub_ind++;
 		gran_char(&sub_ind,0,NUMIST);
 		phase=0;
-		can1_out(sub_ind,sub_ind,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind,sub_ind,CMND,ALRM_RES,0,0,0,0);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
 		gran_char(&sub_ind,0,NUMIST);
 		phase=0;
-		can1_out(sub_ind,sub_ind,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind,sub_ind,CMND,ALRM_RES,0,0,0,0);
 		}
 	else if(but==butD_)
 		{
@@ -13757,7 +13758,7 @@ else if(ind==iK_bps_sel)
 		{
 		tree_up(iK_bps,0,0,sub_ind);	
 		
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		//mess_send(MESS_SRC_CONTROL,0xFFFF,0,10);
      	//mess_send(MESS_BAT_CONTROL,0xFFFF&(~(1<<sub_ind1)),1<<(sub_ind1),10);
 
@@ -13804,21 +13805,21 @@ else if(ind==iK_bps)
 		}
 	else if (sub_ind == 0)
 		{
-		if(but==butLR) can1_out(sub_ind1,sub_ind1,KLBR,(0*16)+1,(0*16)+1,0,0,0);
-	     else if(but==butR) can1_out(sub_ind1,sub_ind1,KLBR,(0*16)+2,(0*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1,sub_ind1,KLBR,(0*16)+3,(0*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1,sub_ind1,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1,sub_ind1,KLBR,(0*16)+5,(0*16)+5,0,0,0);
+		if(but==butLR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(0*16)+1,(0*16)+1,0,0,0);
+	     else if(but==butR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(0*16)+3,(0*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(0*16)+5,(0*16)+5,0,0,0);
 		speed=1;
 		}	
 		
 	else if (sub_ind == 3)
 		{
-		if(but==butLR) can1_out(sub_ind1,sub_ind1,KLBR,(1*16)+1,(1*16)+1,0,0,0);
-	     else if(but==butR) can1_out(sub_ind1,sub_ind1,KLBR,(1*16)+2,(1*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1,sub_ind1,KLBR,(1*16)+3,(1*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1,sub_ind1,KLBR,(1*16)+4,(1*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1,sub_ind1,KLBR,(1*16)+5,(1*16)+5,0,0,0);
+		if(but==butLR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(1*16)+1,(1*16)+1,0,0,0);
+	     else if(but==butR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(1*16)+2,(1*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(1*16)+3,(1*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(1*16)+4,(1*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(1*16)+5,(1*16)+5,0,0,0);
 		speed=1;
 		}		
 		
@@ -13829,7 +13830,7 @@ else if(ind==iK_bps)
 		else if(but==butR_)temp_SS+=2;
 		else if(but==butL)temp_SS--;
 		else if(but==butL_)temp_SS-=2;
-		else if(but==butE_)can1_out(sub_ind1,sub_ind1,CMND,0xee,0xee,0,0,0);   
+		else if(but==butE_)mcp2515_transmit(sub_ind1,sub_ind1,CMND,0xee,0xee,0,0,0);   
 		
 		#ifdef UKU206_220				
 		gran(&temp_SS,2000,3000);
@@ -13859,22 +13860,22 @@ else if(ind==iK_bps)
 		{
 		if(but==butE)
 			{
-			can1_out(sub_ind1,sub_ind1,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(2*16)+1,(2*16)+1,0,0,0);
 			phase=1;
 			}
-	     else if(but==butR) can1_out(sub_ind1,sub_ind1,KLBR,(2*16)+2,(2*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1,sub_ind1,KLBR,(2*16)+3,(2*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1,sub_ind1,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1,sub_ind1,KLBR,(2*16)+5,(2*16)+5,0,0,0);
+	     else if(but==butR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(2*16)+3,(2*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(2*16)+5,(2*16)+5,0,0,0);
 		speed=1;
 		}		
 		
 	else if (sub_ind == 12)
 		{
-		if(but==butR) can1_out(sub_ind1,sub_ind1,KLBR,(3*16)+2,(3*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1,sub_ind1,KLBR,(3*16)+3,(3*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1,sub_ind1,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1,sub_ind1,KLBR,(3*16)+5,(3*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(3*16)+3,(3*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1,sub_ind1,KLBR,(3*16)+5,(3*16)+5,0,0,0);
 		speed=1;
 		}								
 			
@@ -14002,14 +14003,14 @@ else if(ind==iK_inv_sel)
 		sub_ind++;
 		gran_char(&sub_ind,0,NUMINV);
 		phase=0;
-		can1_out((sub_ind+first_inv_slot),(sub_ind+first_inv_slot),CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit((sub_ind+first_inv_slot),(sub_ind+first_inv_slot),CMND,ALRM_RES,0,0,0,0);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
 		gran_char(&sub_ind,0,NUMINV);
 		phase=0;
-		can1_out((sub_ind+first_inv_slot),(sub_ind+first_inv_slot),CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit((sub_ind+first_inv_slot),(sub_ind+first_inv_slot),CMND,ALRM_RES,0,0,0,0);
 		}
 	else if(but==butD_)
 		{
@@ -14019,7 +14020,7 @@ else if(ind==iK_inv_sel)
 		{
 		tree_up(iK_inv,0,0,sub_ind);	
 		
-		can1_out(4,4,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(4,4,CMND,ALRM_RES,0,0,0,0);
 		//mess_send(MESS_SRC_CONTROL,0xFFFF,0,10);
      	//mess_send(MESS_BAT_CONTROL,0xFFFF&(~(1<<sub_ind1)),1<<(sub_ind1),10);
 
@@ -14098,11 +14099,11 @@ else if(ind==iK_makb)
 		}
 	else if ((sub_ind >= 0) && (sub_ind <= 9))
 		{
-		if(but==butLR) can1_out(sub_ind1,sub_ind1,KLBR_MAKB,		(sub_ind*16)+1,(sub_ind*16)+1,0,0,0);
-	     else if(but==butR) can1_out(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+2,(sub_ind*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+3,(sub_ind*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+4,(sub_ind*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+5,(sub_ind*16)+5,0,0,0);
+		if(but==butLR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR_MAKB,		(sub_ind*16)+1,(sub_ind*16)+1,0,0,0);
+	     else if(but==butR) mcp2515_transmit(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+2,(sub_ind*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+3,(sub_ind*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+4,(sub_ind*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1,sub_ind1,KLBR_MAKB,	(sub_ind*16)+5,(sub_ind*16)+5,0,0,0);
 		speed=1;
 		}	
 		
@@ -14151,11 +14152,11 @@ else if(ind==iK_inv)
 		}
 	else if (sub_ind == 0)
 		{
-		if(but==butLR) 	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+1,(0*16)+1,0,0,0);
-	    	else if(but==butR) 	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+2,(0*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+3,(0*16)+3,0,0,0);
-    		else if(but==butL) 	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+5,(0*16)+5,0,0,0);
+		if(but==butLR) 	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+1,(0*16)+1,0,0,0);
+	    	else if(but==butR) 	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+3,(0*16)+3,0,0,0);
+    		else if(but==butL) 	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(0*16)+5,(0*16)+5,0,0,0);
 		speed=1;
 		}	
 		
@@ -14163,47 +14164,47 @@ else if(ind==iK_inv)
 		{
 		if(but==butE)
 			{
-			can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+1,(2*16)+1,0,0,0);
 			phase=1;
 			}
-	    	else if(but==butR) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+2,(2*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+3,(2*16)+3,0,0,0);
-    		else if(but==butL) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+5,(2*16)+5,0,0,0);
+	    	else if(but==butR) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+3,(2*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(2*16)+5,(2*16)+5,0,0,0);
 		speed=1;
 		}		
 		
 	else if (sub_ind == 6)
 		{
-		if(but==butR) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+2,(3*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+3,(3*16)+3,0,0,0);
-    	else if(but==butL) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+5,(3*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(3*16)+5,(3*16)+5,0,0,0);
 		speed=1;
 		}								
 			
 	else if (sub_ind == 9)
 		{
-		if(but==butR) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+2,(4*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+3,(4*16)+3,0,0,0);
-    	else if(but==butL) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+4,(4*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+5,(4*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+3,(4*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(4*16)+5,(4*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 12)
 		{
-		if(but==butR) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+2,(5*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+3,(5*16)+3,0,0,0);
-    	else if(but==butL) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+4,(5*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+5,(5*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(5*16)+5,(5*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 15)
 		{
-		if(but==butR) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+2,(6*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+3,(6*16)+3,0,0,0);
-    	else if(but==butL) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+4,(6*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+5,(6*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+3,(6*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(sub_ind1+first_inv_slot,sub_ind1+first_inv_slot,KLBR,(6*16)+5,(6*16)+5,0,0,0);
 		speed=1;
 		}							
 							
@@ -14257,11 +14258,11 @@ else if(ind==iK_inv)
 		}
 	else if (sub_ind == 0)
 		{
-		if(but==butLR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+1,(0*16)+1,0,0,0);
-	    else if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+2,(0*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+3,(0*16)+3,0,0,0);
-    	else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+5,(0*16)+5,0,0,0);
+		if(but==butLR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+1,(0*16)+1,0,0,0);
+	    else if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+3,(0*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(0*16)+5,(0*16)+5,0,0,0);
 		speed=1;
 		}	
 		
@@ -14269,47 +14270,47 @@ else if(ind==iK_inv)
 		{
 		if(but==butE)
 			{
-			can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+1,(2*16)+1,0,0,0);
 			phase=1;
 			}
-	    	else if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+2,(2*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+3,(2*16)+3,0,0,0);
-    		else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+5,(2*16)+5,0,0,0);
+	    	else if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+3,(2*16)+3,0,0,0);
+    		else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(2*16)+5,(2*16)+5,0,0,0);
 		speed=1;
 		}		
 		
 	else if (sub_ind == 6)
 		{
-		if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+2,(3*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+3,(3*16)+3,0,0,0);
-    	else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+5,(3*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(3*16)+5,(3*16)+5,0,0,0);
 		speed=1;
 		}								
 			
 	else if (sub_ind == 9)
 		{
-		if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+2,(4*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+3,(4*16)+3,0,0,0);
-    	else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+4,(4*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+5,(4*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+3,(4*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(4*16)+5,(4*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 12)
 		{
-		if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+2,(5*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+3,(5*16)+3,0,0,0);
-    	else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+4,(5*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+5,(5*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(5*16)+5,(5*16)+5,0,0,0);
 		speed=1;
 		}
 	else if (sub_ind == 15)
 		{
-		if(but==butR) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+2,(6*16)+2,0,0,0);
-		else if(but==butR_)	can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+3,(6*16)+3,0,0,0);
-    	else if(but==butL) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+4,(6*16)+4,0,0,0); 
-		else if(but==butL_) can1_out(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+5,(6*16)+5,0,0,0);
+		if(but==butR) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+3,(6*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(GLADKOV_ADR,GLADKOV_ADR,KLBR,(6*16)+5,(6*16)+5,0,0,0);
 		speed=1;
 		}							
 							
@@ -15325,7 +15326,7 @@ else if(ind==iTst_RSTKM)
 	else if((sub_ind>=16)&&(sub_ind<(16+NUMIST))&&(NUMIST)&&((but==butE)))	
 		{
 		tree_up(iTst_bps,0,0,sub_ind-16);
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		tst_state[5]=tst1;
 		tst_state[6]=tstOFF;
 		}											
@@ -15568,7 +15569,7 @@ else if(ind==iTst_3U)
 	else if((sub_ind>=12)&&(sub_ind<(12+NUMIST))&&(NUMIST)&&((but==butE)))	
 		{
 		tree_up(iTst_bps,0,0,sub_ind-13);
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		tst_state[5]=tst1;
 		tst_state[6]=tstOFF;
 		}											
@@ -15798,7 +15799,7 @@ else if(ind==iTst_6U)
 	else if((sub_ind>=13)&&(sub_ind<(13+NUMIST))&&(NUMIST)&&((but==butE)))	
 		{
 		tree_up(iTst_bps,0,0,sub_ind-13);
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		tst_state[5]=tst1;
 		tst_state[6]=tstOFF;
 		}											
@@ -15998,7 +15999,7 @@ else if((ind==iTst_220)||(ind==iTst_220_380))
 	else if((sub_ind>=11)&&(sub_ind<(11+NUMIST))&&(NUMIST)&&((but==butE)))	
 		{
 		tree_up(iTst_bps,0,0,sub_ind-11);
-		can1_out(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		tst_state[5]=tst1;
 		tst_state[6]=tstOFF;
 		}											
@@ -16888,7 +16889,7 @@ while (1)
 			{
 			watchdog_reset();
 			}
-		//can1_out_adr((char*)&net_U,21);
+		//mcp2515_transmit_adr((char*)&net_U,21);
 
 		samokalibr_hndl();
 		//num_necc_hndl();

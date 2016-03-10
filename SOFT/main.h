@@ -1045,7 +1045,7 @@ typedef struct
      signed _Ti; 
 	 signed _Uil;
 	 signed _Uin;
-	 signed _Pio;
+	signed short _Pio;
      char _flags_tu;
      //char _flags_tu_old;
      //char _is_ready;

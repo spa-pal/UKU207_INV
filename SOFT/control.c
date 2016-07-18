@@ -1423,6 +1423,16 @@ if (NUMINV)
      	}
    	}
 
+if((NUMBYPASS&&(byps._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+	{
+	byps._Iout=0;
+	byps._Pout=0;
+	byps._Uout=0;
+	byps._T=0;
+	byps._flags=0;
+	byps._Unet=0;
+	byps._Uin=0;
+	}
 
 #ifdef GLADKOV
 inv[0]._Ii=bps[4]._buff[0]+(bps[4]._buff[1]*256);

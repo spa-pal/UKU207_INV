@@ -1,0 +1,888 @@
+#include "stdint.h"
+#include "modbus.h"
+//#include "LPC17xx.H"
+#include "main.h"
+#include "stdio.h"
+#include "eeprom_map.h"
+#include "25lc640.h"
+#include "gran.h"
+#include "uart0.h"
+#include "sc16is7xx.h"
+#include "control.h"
+	
+#include <string.h>
+
+unsigned char modbus_buf[20];
+short modbus_crc16;
+char modbus_timeout_cnt;
+char bMODBUS_TIMEOUT;
+unsigned char modbus_rx_buffer[30];	//Буфер, куда складывает принимаемые даннные обработчик прерывания по приему УАРТа 
+unsigned char modbus_an_buffer[30];    	//Буфер, куда они потом копируются для анализа
+unsigned char modbus_rx_buffer_ptr;	//Указатель на текущую позицию принимающего буфера
+unsigned char modbus_rx_counter;		//Количество принятых байт, используется при анализе целостности посылки и при расшифровке
+signed short modbusTimeoutInMills;
+short modbus_plazma;				//Отладка
+short modbus_plazma1;				//Отладка
+short modbus_plazma2;				//Отладка
+short modbus_plazma3;				//Отладка
+char modbus_cmnd_cnt,modbus_cmnd,modbus_self_cmnd_cnt=33;
+
+//-----------------------------------------------
+unsigned short CRC16_2(char* buf, short len)
+{
+unsigned short crc = 0xFFFF;
+short pos;
+short i;
+
+for (pos = 0; pos < len; pos++)
+  	{
+    	crc ^= (unsigned short)buf[pos];          // XOR byte into least sig. byte of crc
+
+    	for ( i = 8; i != 0; i--) 
+		{    // Loop over each bit
+      	if ((crc & 0x0001) != 0) 
+			{      // If the LSB is set
+        		crc >>= 1;                    // Shift right and XOR 0xA001
+        		crc ^= 0xA001;
+      		}
+      	else  crc >>= 1;                    // Just shift right
+    		}
+  	}
+  // Note, this number has low and high bytes swapped, so use it accordingly (or swap bytes)
+return crc;
+}
+
+//-----------------------------------------------
+void modbus_in(void)
+{
+short crc16_calculated;		//вычисляемая из принятых данных CRC
+short crc16_incapsulated;	//встроеннная в посылку CRC
+unsigned short modbus_rx_arg0;		//встроенный в посылку первый аргумент
+unsigned short modbus_rx_arg1;		//встроенный в посылку второй аргумент
+//unsigned short modbus_rx_arg2;		//встроенный в посылку третий аргумент
+//unsigned short modbus_rx_arg3;		//встроенный в посылку четвертый аргумент
+unsigned char modbus_func;			//встроенный в посылку код функции
+
+//modbus_plazma++;
+
+memcpy(modbus_an_buffer,modbus_rx_buffer,modbus_rx_buffer_ptr);
+modbus_rx_counter=modbus_rx_buffer_ptr;
+modbus_rx_buffer_ptr=0;
+bMODBUS_TIMEOUT=0;
+
+	
+crc16_calculated  = CRC16_2((char*)modbus_an_buffer, modbus_rx_counter-2);
+crc16_incapsulated = *((short*)&modbus_an_buffer[modbus_rx_counter-2]);
+
+//modbus_plazma=modbus_rx_counter;
+//modbus_plazma2=crc16_calculated;
+//modbus_plazma3=crc16_incapsulated;
+
+
+
+
+modbus_func=modbus_an_buffer[1];
+modbus_rx_arg0=(((unsigned short)modbus_an_buffer[2])*((unsigned short)256))+((unsigned short)modbus_an_buffer[3]);
+modbus_rx_arg1=(((unsigned short)modbus_an_buffer[4])*((unsigned short)256))+((unsigned short)modbus_an_buffer[5]);
+//modbus_rx_arg2=(((unsigned short)modbus_an_buffer[6])*((unsigned short)256))+((unsigned short)modbus_an_buffer[7]);
+//modbus_rx_arg3=(((unsigned short)modbus_an_buffer[8])*((unsigned short)256))+((unsigned short)modbus_an_buffer[9]);
+modbus_cmnd=(modbus_rx_arg1>>8)&0x7f;
+modbus_cmnd_cnt=(modbus_rx_arg1)&0x0f;
+
+modbus_plazma3=modbus_cmnd;
+modbus_plazma2=modbus_cmnd_cnt;
+modbus_plazma1=modbus_self_cmnd_cnt;
+
+if(crc16_calculated==crc16_incapsulated)
+	{
+	if(modbus_self_cmnd_cnt==33)modbus_self_cmnd_cnt=modbus_cmnd_cnt;
+	modbus_plazma=modbus_an_buffer[0];
+
+	if(modbus_an_buffer[0]==MODBUS_ADRESS)
+		{
+		if(modbus_func==3)		//чтение произвольного кол-ва регистров
+			{
+			/*if((modbus_rx_arg0>=50)&&(modbus_rx_arg0<80))*/ modbus_hold_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1);
+			}
+		else if(modbus_func==4)		//чтение произвольного кол-ва регистров	входов
+			{
+			modbus_input_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1);
+			}
+
+		else if(modbus_func==6) 	//запись регистра
+			{
+			if(modbus_rx_arg0==50)		
+				{
+				//I_ug=modbus_rx_arg1;
+				//lc640_write_int(EE_I_UG,I_ug);
+				}
+			if(modbus_rx_arg0==51)		//напряжение стабилизации для режима стабилизации напряжения
+				{
+				//U_up=modbus_rx_arg1;
+				//lc640_write_int(EE_U_UP,U_up);
+				}
+			if(modbus_rx_arg0==52)		//максимапльное напряжение для режима стабилизации тока
+				{
+				//U_maxg=modbus_rx_arg1;
+				//lc640_write_int(EE_U_MAX_G,U_maxg);
+				}
+			if(modbus_rx_arg0==53)		//максимальный ток для режима стабилизации напряжения
+				{
+				//I_maxp=modbus_rx_arg1;
+				///lc640_write_int(EE_I_MAX_P,I_maxp);
+				}								
+			if(modbus_rx_arg0==54)		//Установка времени для ист.тока.секунды
+				{
+				
+				}
+			if(modbus_rx_arg0==55)		//Установка времени для ист.тока.минуты
+				{
+				
+				}
+			if(modbus_rx_arg0==56)		//Установка времени для ист.тока.часы
+				{
+				
+				}
+			if(modbus_rx_arg0==57)		//Установка времени для ист.напр.секунды
+				{
+				
+				}
+
+			if(modbus_rx_arg0==58)		//Установка времени для ист.напр.минуты
+				{
+				
+				}
+
+			if(modbus_rx_arg0==59)		//Установка времени для ист.напр.часы
+				{
+				
+				}
+
+			if(modbus_rx_arg0==60)		//вкл/выкл источника напр.
+				{
+				
+				}
+
+
+			modbus_hold_register_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0);
+
+
+			//modbus_hold_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,2);
+
+
+			}
+		} 
+	//;
+	}
+// modbus_plazma++;
+
+}
+
+//-----------------------------------------------
+void modbus_input_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity)
+{
+char modbus_registers[350];
+char modbus_tx_buff[120];
+unsigned short crc_temp;
+char i;
+
+
+
+if(NUMBYPASS)
+	{
+	modbus_registers[0]=(char)(byps._Iout/256);			//Рег1
+	modbus_registers[1]=(char)(byps._Iout%256);
+	modbus_registers[2]=(char)(byps._Uout/256);			//Рег2
+	modbus_registers[3]=(char)(byps._Uout%256);
+	modbus_registers[4]=(char)(byps._Pout/256);			//Рег3
+	modbus_registers[5]=(char)(byps._Pout%256);
+	modbus_registers[6]=(char)(byps._T/256);			//Рег4
+	modbus_registers[7]=(char)(byps._T%256);
+	}
+else 
+	{
+	modbus_registers[0]=(char)(load_I/256);				//Рег1
+	modbus_registers[1]=(char)(load_I%256);
+	modbus_registers[2]=(char)(load_U/256);				//Рег2
+	modbus_registers[3]=(char)(load_U%256);
+	modbus_registers[4]=(char)(load_P/256);				//Рег3
+	modbus_registers[5]=(char)(load_P%256);
+	modbus_registers[6]=0;							//Рег4
+	modbus_registers[7]=0;
+	}
+
+modbus_registers[8]=0;								//Рег5
+modbus_registers[9]=0;
+
+	
+modbus_registers[10]=(char)(NUMBYPASS/256);				//Рег6
+modbus_registers[11]=(char)(NUMBYPASS%256);
+modbus_registers[12]=(char)(NUMINV/256);				//Рег7
+modbus_registers[13]=(char)(NUMINV%256);
+modbus_registers[14]=(char)(num_of_wrks_inv/256);			//Рег8
+modbus_registers[15]=(char)(num_of_wrks_inv%256);
+
+modbus_registers[6]=0;								//Рег9
+modbus_registers[7]=0;
+modbus_registers[6]=0;								//Рег10
+modbus_registers[7]=0;
+
+
+//Инвертор №1
+modbus_registers[20]=(char)(inv[0]._Uio/256);			//Рег11
+modbus_registers[21]=(char)(inv[0]._Uio%256);
+modbus_registers[22]=(char)(inv[0]._Ii/256);			 	//Рег12
+modbus_registers[23]=(char)(inv[0]._Ii%256);
+modbus_registers[24]=(char)(inv[0]._Ti/256);				//Рег13
+modbus_registers[25]=(char)(inv[0]._Ti%256);
+modbus_registers[26]=(char)(inv[0]._Pio/256);			//Рег14
+modbus_registers[27]=(char)(inv[0]._Pio%256);
+modbus_registers[28]=(char)(inv[0]._Uin/256);			//Рег15
+modbus_registers[29]=(char)(inv[0]._Uin%256);
+modbus_registers[30]=(char)(inv[0]._Uil/256);			//Рег16
+modbus_registers[31]=(char)(inv[0]._Uil%256);
+i=inv[0]._flags_tm;
+if(inv[0]._cnt>10)i|=0x80;
+modbus_registers[32]=0;								//Рег17
+modbus_registers[33]=i;
+modbus_registers[34]=0;								//Рег18
+modbus_registers[35]=0;
+modbus_registers[36]=0;								//Рег19
+modbus_registers[37]=0;
+modbus_registers[38]=0;								//Рег20
+modbus_registers[39]=0;
+
+//Инвертор №2
+modbus_registers[40]=(char)(inv[1]._Uio/256);			//Рег21
+modbus_registers[41]=(char)(inv[1]._Uio%256);
+modbus_registers[42]=(char)(inv[1]._Ii/256);			 	//Рег22
+modbus_registers[43]=(char)(inv[1]._Ii%256);
+modbus_registers[44]=(char)(inv[1]._Ti/256);				//Рег23
+modbus_registers[45]=(char)(inv[1]._Ti%256);
+modbus_registers[46]=(char)(inv[1]._Pio/256);			//Рег24
+modbus_registers[47]=(char)(inv[1]._Pio%256);
+modbus_registers[48]=(char)(inv[1]._Uin/256);			//Рег25
+modbus_registers[49]=(char)(inv[1]._Uin%256);
+modbus_registers[50]=(char)(inv[1]._Uil/256);			//Рег26
+modbus_registers[51]=(char)(inv[1]._Uil%256);
+i=inv[1]._flags_tm;
+if(inv[1]._cnt>10)i|=0x80;
+modbus_registers[52]=0;								//Рег27
+modbus_registers[53]=i;
+modbus_registers[54]=0;								//Рег28
+modbus_registers[55]=0;
+modbus_registers[56]=0;								//Рег29
+modbus_registers[57]=0;
+modbus_registers[58]=0;								//Рег30
+modbus_registers[59]=0;
+
+//Инвертор №3
+modbus_registers[60]=(char)(inv[2]._Uio/256);			//Рег31
+modbus_registers[61]=(char)(inv[2]._Uio%256);
+modbus_registers[62]=(char)(inv[2]._Ii/256);			 	//Рег32
+modbus_registers[63]=(char)(inv[2]._Ii%256);
+modbus_registers[64]=(char)(inv[2]._Ti/256);				//Рег33
+modbus_registers[65]=(char)(inv[2]._Ti%256);
+modbus_registers[66]=(char)(inv[2]._Pio/256);			//Рег34
+modbus_registers[67]=(char)(inv[2]._Pio%256);
+modbus_registers[68]=(char)(inv[2]._Uin/256);			//Рег35
+modbus_registers[69]=(char)(inv[2]._Uin%256);
+modbus_registers[70]=(char)(inv[2]._Uil/256);			//Рег36
+modbus_registers[71]=(char)(inv[2]._Uil%256);
+i=inv[2]._flags_tm;
+if(inv[2]._cnt>10)i|=0x80;
+modbus_registers[72]=0;								//Рег37
+modbus_registers[73]=i;
+modbus_registers[74]=0;								//Рег38
+modbus_registers[75]=0;
+modbus_registers[76]=0;								//Рег39
+modbus_registers[77]=0;
+modbus_registers[78]=0;								//Рег40
+modbus_registers[79]=0;
+
+//Инвертор №4
+modbus_registers[80]=(char)(inv[3]._Uio/256);			//Рег41
+modbus_registers[81]=(char)(inv[3]._Uio%256);
+modbus_registers[82]=(char)(inv[3]._Ii/256);			 	//Рег42
+modbus_registers[83]=(char)(inv[3]._Ii%256);
+modbus_registers[84]=(char)(inv[3]._Ti/256);				//Рег43
+modbus_registers[85]=(char)(inv[3]._Ti%256);
+modbus_registers[86]=(char)(inv[3]._Pio/256);			//Рег44
+modbus_registers[87]=(char)(inv[3]._Pio%256);
+modbus_registers[88]=(char)(inv[3]._Uin/256);			//Рег45
+modbus_registers[89]=(char)(inv[3]._Uin%256);
+modbus_registers[90]=(char)(inv[3]._Uil/256);			//Рег46
+modbus_registers[91]=(char)(inv[3]._Uil%256);
+i=inv[3]._flags_tm;
+if(inv[3]._cnt>10)i|=0x80;
+modbus_registers[92]=0;								//Рег47
+modbus_registers[93]=i;
+modbus_registers[94]=0;								//Рег48
+modbus_registers[95]=0;
+modbus_registers[96]=0;								//Рег49
+modbus_registers[97]=0;
+modbus_registers[98]=0;								//Рег50
+modbus_registers[99]=0;
+
+//Инвертор №5
+modbus_registers[100]=(char)(inv[4]._Uio/256);			//Рег51
+modbus_registers[101]=(char)(inv[4]._Uio%256);
+modbus_registers[102]=(char)(inv[4]._Ii/256);			//Рег52
+modbus_registers[103]=(char)(inv[4]._Ii%256);
+modbus_registers[104]=(char)(inv[4]._Ti/256);			//Рег53
+modbus_registers[105]=(char)(inv[4]._Ti%256);
+modbus_registers[106]=(char)(inv[4]._Pio/256);			//Рег54
+modbus_registers[107]=(char)(inv[4]._Pio%256);
+modbus_registers[108]=(char)(inv[4]._Uin/256);			//Рег55
+modbus_registers[109]=(char)(inv[4]._Uin%256);
+modbus_registers[110]=(char)(inv[4]._Uil/256);			//Рег56
+modbus_registers[111]=(char)(inv[4]._Uil%256);
+i=inv[4]._flags_tm;
+if(inv[4]._cnt>10)i|=0x80;
+modbus_registers[112]=0;								//Рег57
+modbus_registers[113]=i;
+modbus_registers[114]=0;								//Рег58
+modbus_registers[115]=0;
+modbus_registers[116]=0;								//Рег59
+modbus_registers[117]=0;
+modbus_registers[118]=0;								//Рег60
+modbus_registers[119]=0;
+
+//Инвертор №6
+modbus_registers[120]=(char)(inv[5]._Uio/256);			//Рег61
+modbus_registers[121]=(char)(inv[5]._Uio%256);
+modbus_registers[122]=(char)(inv[5]._Ii/256);			//Рег62
+modbus_registers[123]=(char)(inv[5]._Ii%256);
+modbus_registers[124]=(char)(inv[5]._Ti/256);			//Рег63
+modbus_registers[125]=(char)(inv[5]._Ti%256);
+modbus_registers[126]=(char)(inv[5]._Pio/256);			//Рег64
+modbus_registers[127]=(char)(inv[5]._Pio%256);
+modbus_registers[128]=(char)(inv[5]._Uin/256);			//Рег65
+modbus_registers[129]=(char)(inv[5]._Uin%256);
+modbus_registers[130]=(char)(inv[5]._Uil/256);			//Рег66
+modbus_registers[131]=(char)(inv[5]._Uil%256);
+i=inv[5]._flags_tm;
+if(inv[5]._cnt>10)i|=0x80;
+modbus_registers[132]=0;								//Рег67
+modbus_registers[133]=i;
+modbus_registers[134]=0;								//Рег68
+modbus_registers[135]=0;
+modbus_registers[136]=0;								//Рег69
+modbus_registers[137]=0;
+modbus_registers[138]=0;								//Рег70
+modbus_registers[139]=0;
+
+//Инвертор №7
+modbus_registers[140]=(char)(inv[6]._Uio/256);			//Рег71
+modbus_registers[141]=(char)(inv[6]._Uio%256);
+modbus_registers[142]=(char)(inv[6]._Ii/256);			//Рег72
+modbus_registers[143]=(char)(inv[6]._Ii%256);
+modbus_registers[144]=(char)(inv[6]._Ti/256);			//Рег73
+modbus_registers[145]=(char)(inv[6]._Ti%256);
+modbus_registers[146]=(char)(inv[6]._Pio/256);			//Рег74
+modbus_registers[147]=(char)(inv[6]._Pio%256);
+modbus_registers[148]=(char)(inv[6]._Uin/256);			//Рег75
+modbus_registers[149]=(char)(inv[6]._Uin%256);
+modbus_registers[150]=(char)(inv[6]._Uil/256);			//Рег76
+modbus_registers[151]=(char)(inv[6]._Uil%256);
+i=inv[6]._flags_tm;
+if(inv[6]._cnt>10)i|=0x80;
+modbus_registers[152]=0;								//Рег77
+modbus_registers[153]=i;
+modbus_registers[154]=0;								//Рег78
+modbus_registers[155]=0;
+modbus_registers[156]=0;								//Рег79
+modbus_registers[157]=0;
+modbus_registers[118]=0;								//Рег80
+modbus_registers[159]=0;
+
+//Инвертор №8
+modbus_registers[160]=(char)(inv[7]._Uio/256);			//Рег81
+modbus_registers[161]=(char)(inv[7]._Uio%256);
+modbus_registers[162]=(char)(inv[7]._Ii/256);			//Рег82
+modbus_registers[163]=(char)(inv[7]._Ii%256);
+modbus_registers[164]=(char)(inv[7]._Ti/256);			//Рег83
+modbus_registers[165]=(char)(inv[7]._Ti%256);
+modbus_registers[166]=(char)(inv[7]._Pio/256);			//Рег84
+modbus_registers[167]=(char)(inv[7]._Pio%256);
+modbus_registers[168]=(char)(inv[7]._Uin/256);			//Рег85
+modbus_registers[169]=(char)(inv[7]._Uin%256);
+modbus_registers[170]=(char)(inv[7]._Uil/256);			//Рег86
+modbus_registers[171]=(char)(inv[7]._Uil%256);
+i=inv[7]._flags_tm;
+if(inv[7]._cnt>10)i|=0x80;
+modbus_registers[172]=0;								//Рег87
+modbus_registers[173]=i;
+modbus_registers[174]=0;								//Рег88
+modbus_registers[175]=0;
+modbus_registers[176]=0;								//Рег89
+modbus_registers[177]=0;
+modbus_registers[178]=0;								//Рег90
+modbus_registers[179]=0;
+
+//Инвертор №9
+modbus_registers[180]=(char)(inv[8]._Uio/256);			//Рег91
+modbus_registers[181]=(char)(inv[8]._Uio%256);
+modbus_registers[182]=(char)(inv[8]._Ii/256);			//Рег92
+modbus_registers[183]=(char)(inv[8]._Ii%256);
+modbus_registers[184]=(char)(inv[8]._Ti/256);			//Рег93
+modbus_registers[185]=(char)(inv[8]._Ti%256);
+modbus_registers[186]=(char)(inv[8]._Pio/256);			//Рег94
+modbus_registers[187]=(char)(inv[8]._Pio%256);
+modbus_registers[188]=(char)(inv[8]._Uin/256);			//Рег95
+modbus_registers[189]=(char)(inv[8]._Uin%256);
+modbus_registers[190]=(char)(inv[8]._Uil/256);			//Рег96
+modbus_registers[191]=(char)(inv[8]._Uil%256);
+i=inv[8]._flags_tm;
+if(inv[8]._cnt>10)i|=0x80;
+modbus_registers[192]=0;								//Рег97
+modbus_registers[193]=i;
+modbus_registers[194]=0;								//Рег98
+modbus_registers[195]=0;
+modbus_registers[196]=0;								//Рег99
+modbus_registers[197]=0;
+modbus_registers[198]=0;								//Рег100
+modbus_registers[199]=0;
+
+//Инвертор №10
+modbus_registers[200]=(char)(inv[9]._Uio/256);			//Рег101
+modbus_registers[201]=(char)(inv[9]._Uio%256);
+modbus_registers[202]=(char)(inv[9]._Ii/256);			//Рег102
+modbus_registers[203]=(char)(inv[9]._Ii%256);
+modbus_registers[204]=(char)(inv[9]._Ti/256);			//Рег103
+modbus_registers[205]=(char)(inv[9]._Ti%256);
+modbus_registers[206]=(char)(inv[9]._Pio/256);			//Рег104
+modbus_registers[207]=(char)(inv[9]._Pio%256);
+modbus_registers[208]=(char)(inv[9]._Uin/256);			//Рег105
+modbus_registers[209]=(char)(inv[9]._Uin%256);
+modbus_registers[210]=(char)(inv[9]._Uil/256);			//Рег106
+modbus_registers[211]=(char)(inv[9]._Uil%256);
+i=inv[9]._flags_tm;
+if(inv[9]._cnt>10)i|=0x80;
+modbus_registers[212]=0;								//Рег107
+modbus_registers[213]=i;
+modbus_registers[214]=0;								//Рег108
+modbus_registers[215]=0;
+modbus_registers[216]=0;								//Рег109
+modbus_registers[217]=0;
+modbus_registers[218]=0;								//Рег110
+modbus_registers[219]=0;
+
+//Инвертор №11
+modbus_registers[220]=(char)(inv[10]._Uio/256);			//Рег111
+modbus_registers[221]=(char)(inv[10]._Uio%256);
+modbus_registers[222]=(char)(inv[10]._Ii/256);			//Рег112
+modbus_registers[223]=(char)(inv[10]._Ii%256);
+modbus_registers[224]=(char)(inv[10]._Ti/256);			//Рег113
+modbus_registers[225]=(char)(inv[10]._Ti%256);
+modbus_registers[226]=(char)(inv[10]._Pio/256);			//Рег114
+modbus_registers[227]=(char)(inv[10]._Pio%256);
+modbus_registers[228]=(char)(inv[10]._Uin/256);			//Рег115
+modbus_registers[229]=(char)(inv[10]._Uin%256);
+modbus_registers[230]=(char)(inv[10]._Uil/256);			//Рег116
+modbus_registers[231]=(char)(inv[10]._Uil%256);
+i=inv[10]._flags_tm;
+if(inv[10]._cnt>10)i|=0x80;
+modbus_registers[232]=0;								//Рег117
+modbus_registers[233]=i;
+modbus_registers[234]=0;								//Рег118
+modbus_registers[235]=0;
+modbus_registers[236]=0;								//Рег119
+modbus_registers[237]=0;
+modbus_registers[238]=0;								//Рег120
+modbus_registers[239]=0;
+
+//Инвертор №12
+modbus_registers[240]=(char)(inv[11]._Uio/256);			//Рег121
+modbus_registers[241]=(char)(inv[11]._Uio%256);
+modbus_registers[242]=(char)(inv[11]._Ii/256);			//Рег122
+modbus_registers[243]=(char)(inv[11]._Ii%256);
+modbus_registers[244]=(char)(inv[11]._Ti/256);			//Рег123
+modbus_registers[245]=(char)(inv[11]._Ti%256);
+modbus_registers[246]=(char)(inv[11]._Pio/256);			//Рег124
+modbus_registers[247]=(char)(inv[11]._Pio%256);
+modbus_registers[248]=(char)(inv[11]._Uin/256);			//Рег125
+modbus_registers[249]=(char)(inv[11]._Uin%256);
+modbus_registers[250]=(char)(inv[11]._Uil/256);			//Рег126
+modbus_registers[251]=(char)(inv[11]._Uil%256);
+i=inv[11]._flags_tm;
+if(inv[11]._cnt>10)i|=0x80;
+modbus_registers[252]=0;								//Рег127
+modbus_registers[253]=i;
+modbus_registers[254]=0;								//Рег128
+modbus_registers[255]=0;
+modbus_registers[256]=0;								//Рег129
+modbus_registers[257]=0;
+modbus_registers[258]=0;								//Рег130
+modbus_registers[259]=0;
+
+//Инвертор №13
+modbus_registers[260]=(char)(inv[12]._Uio/256);			//Рег131
+modbus_registers[261]=(char)(inv[12]._Uio%256);
+modbus_registers[262]=(char)(inv[12]._Ii/256);			//Рег132
+modbus_registers[263]=(char)(inv[12]._Ii%256);
+modbus_registers[264]=(char)(inv[12]._Ti/256);			//Рег133
+modbus_registers[265]=(char)(inv[12]._Ti%256);
+modbus_registers[266]=(char)(inv[12]._Pio/256);			//Рег134
+modbus_registers[267]=(char)(inv[12]._Pio%256);
+modbus_registers[268]=(char)(inv[12]._Uin/256);			//Рег135
+modbus_registers[269]=(char)(inv[12]._Uin%256);
+modbus_registers[270]=(char)(inv[12]._Uil/256);			//Рег136
+modbus_registers[271]=(char)(inv[12]._Uil%256);
+i=inv[12]._flags_tm;
+if(inv[12]._cnt>10)i|=0x80;
+modbus_registers[272]=0;								//Рег137
+modbus_registers[273]=i;
+modbus_registers[274]=0;								//Рег138
+modbus_registers[275]=0;
+modbus_registers[276]=0;								//Рег139
+modbus_registers[277]=0;
+modbus_registers[278]=0;								//Рег140
+modbus_registers[279]=0;
+
+//Инвертор №14
+modbus_registers[280]=(char)(inv[13]._Uio/256);			//Рег141
+modbus_registers[281]=(char)(inv[13]._Uio%256);
+modbus_registers[282]=(char)(inv[13]._Ii/256);			//Рег142
+modbus_registers[283]=(char)(inv[13]._Ii%256);
+modbus_registers[284]=(char)(inv[13]._Ti/256);			//Рег143
+modbus_registers[285]=(char)(inv[13]._Ti%256);
+modbus_registers[286]=(char)(inv[13]._Pio/256);			//Рег144
+modbus_registers[287]=(char)(inv[13]._Pio%256);
+modbus_registers[288]=(char)(inv[13]._Uin/256);			//Рег145
+modbus_registers[289]=(char)(inv[13]._Uin%256);
+modbus_registers[290]=(char)(inv[13]._Uil/256);			//Рег146
+modbus_registers[291]=(char)(inv[13]._Uil%256);
+i=inv[13]._flags_tm;
+if(inv[13]._cnt>10)i|=0x80;
+modbus_registers[292]=0;								//Рег147
+modbus_registers[293]=i;
+modbus_registers[294]=0;								//Рег148
+modbus_registers[295]=0;
+modbus_registers[296]=0;								//Рег149
+modbus_registers[297]=0;
+modbus_registers[298]=0;								//Рег150
+modbus_registers[299]=0;
+
+//Инвертор №15
+modbus_registers[300]=(char)(inv[14]._Uio/256);			//Рег151
+modbus_registers[301]=(char)(inv[14]._Uio%256);
+modbus_registers[302]=(char)(inv[14]._Ii/256);			//Рег152
+modbus_registers[303]=(char)(inv[14]._Ii%256);
+modbus_registers[304]=(char)(inv[14]._Ti/256);			//Рег153
+modbus_registers[305]=(char)(inv[14]._Ti%256);
+modbus_registers[306]=(char)(inv[14]._Pio/256);			//Рег154
+modbus_registers[307]=(char)(inv[14]._Pio%256);
+modbus_registers[308]=(char)(inv[14]._Uin/256);			//Рег155
+modbus_registers[309]=(char)(inv[14]._Uin%256);
+modbus_registers[310]=(char)(inv[14]._Uil/256);			//Рег156
+modbus_registers[311]=(char)(inv[14]._Uil%256);
+i=inv[14]._flags_tm;
+if(inv[14]._cnt>10)i|=0x80;
+modbus_registers[312]=0;								//Рег157
+modbus_registers[313]=i;
+modbus_registers[314]=0;								//Рег158
+modbus_registers[315]=0;
+modbus_registers[316]=0;								//Рег159
+modbus_registers[317]=0;
+modbus_registers[318]=0;								//Рег160
+modbus_registers[319]=0;
+
+modbus_tx_buff[0]=adr;
+modbus_tx_buff[1]=func;
+modbus_tx_buff[2]=(char)(reg_quantity*2);
+
+memcpy((char*)&modbus_tx_buff[3],(char*)&modbus_registers[(reg_adr-1)*2],reg_quantity*2);
+
+crc_temp=CRC16_2(modbus_tx_buff,(reg_quantity*2)+3);
+
+modbus_tx_buff[3+(reg_quantity*2)]=crc_temp%256;
+modbus_tx_buff[4+(reg_quantity*2)]=crc_temp/256;
+
+for (i=0;i<(5+(reg_quantity*2));i++)
+	{
+	putchar0(modbus_tx_buff[i]);
+	}
+for (i=0;i<(5+(reg_quantity*2));i++)
+	{
+	putchar_sc16is700(modbus_tx_buff[i]);
+	}
+}
+
+
+
+
+//-----------------------------------------------
+void modbus_register_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr)
+{
+char modbus_registers[120];
+char modbus_tx_buff[100];
+unsigned short crc_temp;
+char i;
+
+modbus_registers[0]=(char)(load_U/256);					//Рег1
+modbus_registers[1]=(char)(load_U%256);
+modbus_registers[2]=(char)(load_I/256);					//Рег2
+modbus_registers[3]=(char)(load_I%256);
+/*modbus_registers[4]=(char)((time_proc%60)/256);			//Рег3
+modbus_registers[5]=(char)((time_proc%60)%256);
+modbus_registers[6]=(char)((time_proc/60)/256);			//Рег4
+modbus_registers[7]=(char)((time_proc/60)%256);
+modbus_registers[8]=(char)((time_proc/3600)/256);			//Рег5
+modbus_registers[9]=(char)((time_proc/3600)%256);		 	
+modbus_registers[10]=(char)((time_proc_remain%60)/256);	//Рег6
+modbus_registers[11]=(char)((time_proc_remain%60)%256);
+modbus_registers[12]=(char)((time_proc_remain/60)/256);	//Рег7
+modbus_registers[13]=(char)((time_proc_remain/60)%256);
+modbus_registers[14]=(char)((time_proc_remain/3600)/256);	//Рег8
+modbus_registers[15]=(char)((time_proc_remain/3600)%256);
+modbus_registers[16]=(char)(I_ug/256);					//Рег9
+modbus_registers[17]=(char)(I_ug%256);
+modbus_registers[18]=(char)(U_up/256);					//Рег10
+modbus_registers[19]=(char)(U_up%256);
+modbus_registers[20]=(char)(U_maxg/256);				//Рег11
+modbus_registers[21]=(char)(U_maxg%256);
+modbus_registers[22]=(char)(I_maxp/256);				//Рег12
+modbus_registers[23]=(char)(I_maxp%256);
+modbus_registers[24]=(char)((T_PROC_GS%60)/256);			//Рег13
+modbus_registers[25]=(char)((T_PROC_GS%60)%256);
+modbus_registers[26]=(char)((T_PROC_GS/60)/256);			//Рег14
+modbus_registers[27]=(char)((T_PROC_GS/60)%256);
+modbus_registers[28]=(char)((T_PROC_GS/3600)/256);		//Рег15
+modbus_registers[29]=(char)((T_PROC_GS/3600)%256);
+modbus_registers[30]=(char)((T_PROC_PS%60)/256);			//Рег16
+modbus_registers[31]=(char)((T_PROC_PS%60)%256);
+modbus_registers[32]=(char)((T_PROC_PS/60)/256);			//Рег17
+modbus_registers[33]=(char)((T_PROC_PS/60)%256);
+modbus_registers[34]=(char)((T_PROC_PS/3600)/256);		//Рег18
+modbus_registers[35]=(char)((T_PROC_PS/3600)%256);
+modbus_registers[36]=0;								//Рег19
+modbus_registers[37]=0;
+if(work_stat==wsPS)modbus_registers[37]=1;
+modbus_registers[38]=0;								//Рег20
+modbus_registers[39]=0;
+if(work_stat==wsGS)modbus_registers[39]=1;
+modbus_registers[40]=0;								//Рег21
+modbus_registers[41]=0;
+if(REV_STAT==rsREW)modbus_registers[41]=1;
+modbus_registers[42]=0;								//Рег22
+modbus_registers[43]=0;
+if(AVT_REV_IS_ON)modbus_registers[42]=1;
+
+modbus_tx_buff[0]=adr;
+modbus_tx_buff[1]=func;
+modbus_tx_buff[2]=(char)(reg_adr/256);
+modbus_tx_buff[3]=(char)(reg_adr%256);
+//modbus_tx_buff[4]=(char)(reg_quantity/256);
+//modbus_tx_buff[5]=(char)(reg_quantity%256);
+/*
+modbus_registers[0]=0x10;
+modbus_registers[1]=0x11;
+modbus_registers[2]=0x12;
+modbus_registers[3]=0x13;
+modbus_registers[4]=0x14;
+modbus_registers[5]=0x15;
+*/
+
+memcpy((char*)&modbus_tx_buff[4],(char*)&modbus_registers[(reg_adr-1)*2],2);
+
+crc_temp=CRC16_2(modbus_tx_buff,6);
+
+modbus_tx_buff[6]=crc_temp%256;
+modbus_tx_buff[7]=crc_temp/256;
+
+for (i=0;i<8;i++)
+	{
+	putchar0(modbus_tx_buff[i]);
+	}
+for (i=0;i<8;i++)
+	{
+	putchar_sc16is700(modbus_tx_buff[i]);
+	}
+}
+
+
+//-----------------------------------------------
+void modbus_hold_register_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr)
+{
+char modbus_registers[120];
+char modbus_tx_buff[100];
+unsigned short crc_temp;
+char i;
+
+/*modbus_registers[0]=(char)(I_ug/256);					//Рег50
+modbus_registers[1]=(char)(I_ug%256);
+modbus_registers[2]=(char)(U_up/256);					//Рег51
+modbus_registers[3]=(char)(U_up%256);
+modbus_registers[4]=(char)(U_maxg/256);					//Рег52
+modbus_registers[5]=(char)(U_maxg%256);
+modbus_registers[6]=(char)(I_maxp/256);					//Рег53
+modbus_registers[7]=(char)(I_maxp%256);
+modbus_registers[8]=(char)((T_PROC_GS%60)/256);			//Рег54
+modbus_registers[9]=(char)((T_PROC_GS%60)%256);
+modbus_registers[10]=(char)(((T_PROC_GS/60)%60)/256);		//Рег55
+modbus_registers[11]=(char)(((T_PROC_GS/60)%60)%256);
+modbus_registers[12]=(char)((T_PROC_GS/3600)/256);		//Рег56
+modbus_registers[13]=(char)((T_PROC_GS/3600)%256);
+modbus_registers[14]=(char)((T_PROC_PS%60)/256);			//Рег57
+modbus_registers[15]=(char)((T_PROC_PS%60)%256);
+modbus_registers[16]=(char)(((T_PROC_PS/60)%60)/256);		//Рег58
+modbus_registers[17]=(char)(((T_PROC_PS/60)%60)%256);
+modbus_registers[18]=(char)((T_PROC_PS/3600)/256);		//Рег59
+modbus_registers[19]=(char)((T_PROC_PS/3600)%256);
+modbus_registers[20]=0;								//Рег60
+modbus_registers[21]=0;
+if(work_stat==wsPS)modbus_registers[21]=1;
+modbus_registers[22]=0;								//Рег61
+modbus_registers[23]=0;
+if(work_stat==wsGS)modbus_registers[23]=1;
+modbus_registers[24]=0;								//Рег62
+modbus_registers[25]=0;
+if(REV_STAT==rsREW)modbus_registers[25]=1;
+modbus_registers[26]=0;								//Рег63
+modbus_registers[27]=0;
+if(AVT_REV_IS_ON)modbus_registers[27]=1;
+modbus_registers[28]=(char)((AVT_REV_TIME_FF)/256);		//Рег64
+modbus_registers[29]=(char)((AVT_REV_TIME_FF)%256);
+modbus_registers[30]=(char)((AVT_REV_TIME_REW)/256);		//Рег65
+modbus_registers[31]=(char)((AVT_REV_TIME_REW)%256);
+modbus_registers[32]=(char)((AVT_REV_TIME_PAUSE)/256);		//Рег66
+modbus_registers[33]=(char)((AVT_REV_TIME_PAUSE)%256);
+modbus_registers[34]=(char)((AVT_REV_I_NOM_FF)/256);		//Рег67
+modbus_registers[35]=(char)((AVT_REV_I_NOM_FF)%256);
+modbus_registers[36]=(char)((AVT_REV_I_NOM_REW)/256);		//Рег68
+modbus_registers[37]=(char)((AVT_REV_I_NOM_REW)%256);
+modbus_registers[38]=(char)((AVT_REV_U_NOM_FF)/256);		//Рег69
+modbus_registers[39]=(char)((AVT_REV_U_NOM_FF)%256);
+modbus_registers[40]=(char)((AVT_REV_U_NOM_REW)/256);		//Рег70
+modbus_registers[41]=(char)((AVT_REV_U_NOM_REW)%256);
+modbus_registers[42]=(char)((CAP_ZAR_TIME)/256);			//Рег71
+modbus_registers[43]=(char)((CAP_ZAR_TIME)%256);
+modbus_registers[44]=(char)((CAP_PAUSE1_TIME)/256);		//Рег72
+modbus_registers[45]=(char)((CAP_PAUSE1_TIME)%256);
+modbus_registers[46]=(char)((CAP_RAZR_TIME)/256);			//Рег73
+modbus_registers[47]=(char)((CAP_RAZR_TIME)%256);
+modbus_registers[48]=(char)((CAP_PAUSE2_TIME)/256);		//Рег74
+modbus_registers[49]=(char)((CAP_PAUSE2_TIME)%256);
+modbus_registers[50]=(char)((CAP_MAX_VOLT)/256);			//Рег75
+modbus_registers[51]=(char)((CAP_MAX_VOLT)%256);
+modbus_registers[52]=(char)((CAP_WRK_CURR)/256);			//Рег76
+modbus_registers[53]=(char)((CAP_WRK_CURR)%256);	*/
+
+modbus_tx_buff[0]=adr;
+modbus_tx_buff[1]=func;
+modbus_tx_buff[2]=(char)(reg_adr/256);
+modbus_tx_buff[3]=(char)(reg_adr%256);
+//modbus_tx_buff[4]=(char)(reg_quantity/256);
+//modbus_tx_buff[5]=(char)(reg_quantity%256);
+
+
+memcpy((char*)&modbus_tx_buff[4],(char*)&modbus_registers[(reg_adr-1)*2],2);
+
+crc_temp=CRC16_2(modbus_tx_buff,6);
+
+modbus_tx_buff[6]=crc_temp%256;
+modbus_tx_buff[7]=crc_temp/256;
+
+for (i=0;i<8;i++)
+	{
+	putchar0(modbus_tx_buff[i]);
+	}
+for (i=0;i<8;i++)
+	{
+	putchar_sc16is700(modbus_tx_buff[i]);
+	}
+}	
+
+
+//-----------------------------------------------
+void modbus_hold_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity)
+{
+char modbus_registers[110];
+char modbus_tx_buff[120];
+unsigned short crc_temp;
+char i;
+
+/*
+modbus_registers[0]=(char)(I_ug/256);					//Рег50
+modbus_registers[1]=(char)(I_ug%256);
+modbus_registers[2]=(char)(U_up/256);					//Рег51
+modbus_registers[3]=(char)(U_up%256);
+modbus_registers[4]=(char)(U_maxg/256);					//Рег52
+modbus_registers[5]=(char)(U_maxg%256);
+modbus_registers[6]=(char)(I_maxp/256);					//Рег53
+modbus_registers[7]=(char)(I_maxp%256);
+modbus_registers[8]=(char)((T_PROC_GS%60)/256);			//Рег54
+modbus_registers[9]=(char)((T_PROC_GS%60)%256);
+modbus_registers[10]=(char)(((T_PROC_GS/60)%60)/256);		//Рег55
+modbus_registers[11]=(char)(((T_PROC_GS/60)%60)%256);
+modbus_registers[12]=(char)((T_PROC_GS/3600)/256);		//Рег56
+modbus_registers[13]=(char)((T_PROC_GS/3600)%256);
+modbus_registers[14]=(char)((T_PROC_PS%60)/256);			//Рег57
+modbus_registers[15]=(char)((T_PROC_PS%60)%256);
+modbus_registers[16]=(char)(((T_PROC_PS/60)%60)/256);		//Рег58
+modbus_registers[17]=(char)(((T_PROC_PS/60)%60)%256);
+modbus_registers[18]=(char)((T_PROC_PS/3600)/256);		//Рег59
+modbus_registers[19]=(char)((T_PROC_PS/3600)%256);
+modbus_registers[20]=0;								//Рег60
+modbus_registers[21]=0;
+if(work_stat==wsPS)modbus_registers[21]=1;
+modbus_registers[22]=0;								//Рег61
+modbus_registers[23]=0;
+if(work_stat==wsGS)modbus_registers[23]=1;
+modbus_registers[24]=0;								//Рег62
+modbus_registers[25]=0;
+if(REV_STAT==rsREW)modbus_registers[25]=1;
+modbus_registers[26]=0;								//Рег63
+modbus_registers[27]=0;
+if(AVT_REV_IS_ON)modbus_registers[27]=1;
+modbus_registers[28]=(char)((AVT_REV_TIME_FF)/256);		//Рег64
+modbus_registers[29]=(char)((AVT_REV_TIME_FF)%256);
+modbus_registers[30]=(char)((AVT_REV_TIME_REW)/256);		//Рег65
+modbus_registers[31]=(char)((AVT_REV_TIME_REW)%256);
+modbus_registers[32]=(char)((AVT_REV_TIME_PAUSE)/256);		//Рег66
+modbus_registers[33]=(char)((AVT_REV_TIME_PAUSE)%256);
+modbus_registers[34]=(char)((AVT_REV_I_NOM_FF)/256);		//Рег67
+modbus_registers[35]=(char)((AVT_REV_I_NOM_FF)%256);
+modbus_registers[36]=(char)((AVT_REV_I_NOM_REW)/256);		//Рег68
+modbus_registers[37]=(char)((AVT_REV_I_NOM_REW)%256);
+modbus_registers[38]=(char)((AVT_REV_U_NOM_FF)/256);		//Рег69
+modbus_registers[39]=(char)((AVT_REV_U_NOM_FF)%256);
+modbus_registers[40]=(char)((AVT_REV_U_NOM_REW)/256);		//Рег70
+modbus_registers[41]=(char)((AVT_REV_U_NOM_REW)%256);
+modbus_registers[42]=(char)((CAP_ZAR_TIME)/256);			//Рег71
+modbus_registers[43]=(char)((CAP_ZAR_TIME)%256);
+modbus_registers[44]=(char)((CAP_PAUSE1_TIME)/256);		//Рег72
+modbus_registers[45]=(char)((CAP_PAUSE1_TIME)%256);
+modbus_registers[46]=(char)((CAP_RAZR_TIME)/256);			//Рег73
+modbus_registers[47]=(char)((CAP_RAZR_TIME)%256);
+modbus_registers[48]=(char)((CAP_PAUSE2_TIME)/256);		//Рег74
+modbus_registers[49]=(char)((CAP_PAUSE2_TIME)%256);
+modbus_registers[50]=(char)((CAP_MAX_VOLT)/256);			//Рег75
+modbus_registers[51]=(char)((CAP_MAX_VOLT)%256);
+modbus_registers[52]=(char)((CAP_WRK_CURR)/256);			//Рег76
+modbus_registers[53]=(char)((CAP_WRK_CURR)%256);	   */
+
+
+modbus_tx_buff[0]=adr;
+modbus_tx_buff[1]=func;
+modbus_tx_buff[2]=(char)(reg_quantity*2);
+
+memcpy((char*)&modbus_tx_buff[3],(char*)&modbus_registers[(reg_adr-50)*2],reg_quantity*2);
+						   
+crc_temp=CRC16_2(modbus_tx_buff,(reg_quantity*2)+3);
+
+modbus_tx_buff[3+(reg_quantity*2)]=crc_temp%256;
+modbus_tx_buff[4+(reg_quantity*2)]=crc_temp/256;
+
+for (i=0;i<(5+(reg_quantity*2));i++)
+	{
+	putchar0(modbus_tx_buff[i]);
+	}
+for (i=0;i<(5+(reg_quantity*2));i++)
+	{
+	putchar_sc16is700(modbus_tx_buff[i]);
+	}
+}
+
+

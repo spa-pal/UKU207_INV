@@ -902,6 +902,8 @@ extern signed short ETH_GW_3;
 extern signed short ETH_GW_4;
 
 extern signed short RELE_VENT_LOGIC;
+extern signed short MODBUS_ADRESS;
+extern signed short MODBUS_BAUDRATE;
 
 //***********************************************
 //Состояние батарей
@@ -1215,6 +1217,7 @@ extern char ips_bat_av_stat;
 
 extern char rel_warm_plazma;
 extern char can_byps_plazma0,can_byps_plazma1;
+extern char plazma_rx;
 
 
 #ifndef FALSE

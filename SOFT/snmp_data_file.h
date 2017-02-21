@@ -40,6 +40,18 @@ extern signed short snmp_inv_voltage[20];
 extern signed short snmp_inv_current[20];
 extern signed short snmp_inv_temperature[20];
 extern signed short snmp_inv_stat[20];
+extern signed short snmp_inv_u_prim[20];
+extern signed short snmp_inv_u_in[20];
+extern signed short snmp_inv_p_out[20];
+
+//Состояние байпаса
+extern signed short snmpBypassULoad;
+extern signed short snmpBypassILoad;
+extern signed short snmpBypassPLoad;
+extern signed short snmpBypassTemper;
+extern signed short snmpBypassUPrim;
+extern signed short snmpBypassUBus;
+extern signed short snmpBypassFlags;
 
 //Состояние Батарей
 extern signed short snmp_bat_number[2];
@@ -51,30 +63,6 @@ extern signed short snmp_bat_capacity[2];
 extern signed short snmp_bat_charge[2];
 extern signed short snmp_bat_status[2];
 
-//Мониторы состояния Батарей
-extern signed short snmp_makb_number[4];
-extern signed short snmp_makb_connect_status[4];
-extern signed short snmp_makb_voltage0[4];
-extern signed short snmp_makb_voltage1[4];
-extern signed short snmp_makb_voltage2[4];
-extern signed short snmp_makb_voltage3[4];
-extern signed short snmp_makb_voltage4[4];
-extern signed short snmp_makb_temper0[4];
-extern signed short snmp_makb_temper1[4];
-extern signed short snmp_makb_temper2[4];
-extern signed short snmp_makb_temper3[4];
-extern signed short snmp_makb_temper4[4];
-extern signed short snmp_makb_temper0_stat[4];
-extern signed short snmp_makb_temper1_stat[4];
-extern signed short snmp_makb_temper2_stat[4];
-extern signed short snmp_makb_temper3_stat[4];
-extern signed short snmp_makb_temper4_stat[4];
-extern signed short snmp_bat_voltage[2];
-extern signed short snmp_bat_current[2];
-extern signed short snmp_bat_temperature[2];
-extern signed short snmp_bat_capacity[2];
-extern signed short snmp_bat_charge[2];
-extern signed short snmp_bat_status[2]; 
 
 //Спецфункции
 //Спецфункции

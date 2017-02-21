@@ -52,6 +52,18 @@ signed short snmp_inv_voltage[20];
 signed short snmp_inv_current[20];
 signed short snmp_inv_temperature[20];
 signed short snmp_inv_stat[20];
+signed short snmp_inv_u_prim[20];
+signed short snmp_inv_u_in[20];
+signed short snmp_inv_p_out[20];
+
+//Состояние байпаса
+signed short snmpBypassULoad;
+signed short snmpBypassILoad;
+signed short snmpBypassPLoad;
+signed short snmpBypassTemper;
+signed short snmpBypassUPrim;
+signed short snmpBypassUBus;
+signed short snmpBypassFlags;
 
 //Состояние Батарей
 signed short snmp_bat_number[2];
@@ -62,31 +74,6 @@ signed short snmp_bat_capacity[2];
 signed short snmp_bat_charge[2];
 signed short snmp_bat_status[2]; 
 
-//Мониторы состояния Батарей
-signed short snmp_makb_number[4];
-signed short snmp_makb_connect_status[4];
-signed short snmp_makb_voltage0[4];
-signed short snmp_makb_voltage1[4];
-signed short snmp_makb_voltage2[4];
-signed short snmp_makb_voltage3[4];
-signed short snmp_makb_voltage4[4];
-signed short snmp_makb_temper0[4];
-signed short snmp_makb_temper1[4];
-signed short snmp_makb_temper2[4];
-signed short snmp_makb_temper3[4];
-signed short snmp_makb_temper4[4];
-signed short snmp_makb_temper0_stat[4];
-signed short snmp_makb_temper1_stat[4];
-signed short snmp_makb_temper2_stat[4];
-signed short snmp_makb_temper3_stat[4];
-signed short snmp_makb_temper4_stat[4];
-signed short snmp_bat_voltage[2];
-signed short snmp_bat_part_voltage[2];
-signed short snmp_bat_current[2];
-signed short snmp_bat_temperature[2];
-signed short snmp_bat_capacity[2];
-signed short snmp_bat_charge[2];
-signed short snmp_bat_status[2]; 
 
 //Спецфункции
 signed short snmp_spc_stat;
@@ -288,7 +275,6 @@ snmp_energy_current_energy=power_current;
 
 snmp_bat_number[0]=1;
 snmp_bat_voltage[0]=bat[0]._Ub;
-snmp_bat_part_voltage[0]=bat[0]._Ubm;
 snmp_bat_current[0]=bat[0]._Ib;
 
 #ifdef UKU_220_IPS_TERMOKOMPENSAT
@@ -307,7 +293,6 @@ snmp_bat_status[0]=bat[0]._av;
 
 snmp_bat_number[1]=2;
 snmp_bat_voltage[1]=bat[1]._Ub;
-snmp_bat_part_voltage[1]=bat[1]._Ubm;
 snmp_bat_current[1]=bat[1]._Ib;
 snmp_bat_temperature[1]=bat[1]._Tb;
 if(BAT_C_REAL[1]==0x5555)snmp_bat_capacity[1]=BAT_C_NOM[1];
@@ -379,12 +364,26 @@ snmp_bps_temperature[7]=bps[7]._Ti;
 snmp_bps_stat[7]=bps[7]._av;
 
 
-
+for(i = 0; i<20 ; i++)
+	{
+	snmp_inv_number[i]=i+1;
+	snmp_inv_voltage[i]=inv[i]._Uio;
+	snmp_inv_current[i]=inv[i]._Ii;
+	snmp_inv_temperature[i]=inv[i]._Ti;
+	snmp_inv_stat[i]=inv[i]._flags_tm;
+	snmp_inv_u_prim[i]=inv[i]._Uin;
+	snmp_inv_u_in[i]=inv[i]._Uil;
+	snmp_inv_p_out[i]=inv[i]._Pio;
+	}
+/*
 snmp_inv_number[0]=1;
 snmp_inv_voltage[0]=inv[0]._Uio;
 snmp_inv_current[0]=inv[0]._Ii;
 snmp_inv_temperature[0]=inv[0]._Ti;
 snmp_inv_stat[0]=inv[0]._flags_tm;
+snmp_inv_u_prim[0]=inv[0]._Uin;
+snmp_inv_u_in[0]=inv[0]._Uil;
+snmp_inv_p_out[0]=inv[0]._Pio;
 
 snmp_inv_number[1]=2;
 snmp_inv_voltage[1]=inv[1]._Uio;
@@ -499,6 +498,15 @@ snmp_inv_voltage[19]=inv[19]._Uio;
 snmp_inv_current[19]=inv[19]._Ii;
 snmp_inv_temperature[19]=inv[19]._Ti;
 snmp_inv_stat[19]=inv[19]._flags_tm;
+*/
+
+snmpBypassULoad = byps._Uout;
+snmpBypassILoad = byps._Iout;
+snmpBypassPLoad = byps._Pout;
+snmpBypassTemper = byps._T;
+snmpBypassUPrim = byps._Unet;
+snmpBypassUBus = byps._Uin;
+snmpBypassFlags = byps._flags;
 
 
 snmp_sk_number[0]=1;
@@ -539,77 +547,7 @@ if(sk_av_stat[3]==sasON)	snmp_sk_alarm[3]=1;
 else                     snmp_sk_alarm[3]=0;
 
 
-if(makb[0]._cnt>8) snmp_makb_connect_status[0]=1;
-else if(makb[0]._cnt<2) snmp_makb_connect_status[0]=0;
-if(makb[1]._cnt>8) snmp_makb_connect_status[1]=1;
-else if(makb[1]._cnt<2) snmp_makb_connect_status[1]=0;
-if(makb[2]._cnt>8) snmp_makb_connect_status[2]=1;
-else if(makb[2]._cnt<2) snmp_makb_connect_status[2]=0;
-if(makb[3]._cnt>8) snmp_makb_connect_status[3]=1;
-else if(makb[3]._cnt<2) snmp_makb_connect_status[3]=0;
 
-snmp_makb_voltage0[0]=makb[0]._Ub[0];
-snmp_makb_voltage1[0]=makb[0]._Ub[1];
-snmp_makb_voltage2[0]=makb[0]._Ub[2];
-snmp_makb_voltage3[0]=makb[0]._Ub[3];
-snmp_makb_voltage4[0]=makb[0]._Ub[4];
-snmp_makb_voltage0[1]=makb[1]._Ub[0];
-snmp_makb_voltage1[1]=makb[1]._Ub[1];
-snmp_makb_voltage2[1]=makb[1]._Ub[2];
-snmp_makb_voltage3[1]=makb[1]._Ub[3];
-snmp_makb_voltage4[1]=makb[1]._Ub[4];
-snmp_makb_voltage0[2]=makb[2]._Ub[0];
-snmp_makb_voltage1[2]=makb[2]._Ub[1];
-snmp_makb_voltage2[2]=makb[2]._Ub[2];
-snmp_makb_voltage3[2]=makb[2]._Ub[3];
-snmp_makb_voltage4[2]=makb[2]._Ub[4];
-snmp_makb_voltage0[3]=makb[3]._Ub[0];
-snmp_makb_voltage1[3]=makb[3]._Ub[1];
-snmp_makb_voltage2[3]=makb[3]._Ub[2];
-snmp_makb_voltage3[3]=makb[3]._Ub[3];
-snmp_makb_voltage4[3]=makb[3]._Ub[4];
-
-snmp_makb_temper0[0]=makb[0]._T[0];
-snmp_makb_temper1[0]=makb[0]._T[1];
-snmp_makb_temper2[0]=makb[0]._T[2];
-snmp_makb_temper3[0]=makb[0]._T[3];
-snmp_makb_temper4[0]=makb[0]._T[4];
-snmp_makb_temper0[1]=makb[1]._T[0];
-snmp_makb_temper1[1]=makb[1]._T[1];
-snmp_makb_temper2[1]=makb[1]._T[2];
-snmp_makb_temper3[1]=makb[1]._T[3];
-snmp_makb_temper4[1]=makb[1]._T[4];
-snmp_makb_temper0[2]=makb[2]._T[0];
-snmp_makb_temper1[2]=makb[2]._T[1];
-snmp_makb_temper2[2]=makb[2]._T[2];
-snmp_makb_temper3[2]=makb[2]._T[3];
-snmp_makb_temper4[2]=makb[2]._T[4];
-snmp_makb_temper0[3]=makb[3]._T[0];
-snmp_makb_temper1[3]=makb[3]._T[1];
-snmp_makb_temper2[3]=makb[3]._T[2];
-snmp_makb_temper3[3]=makb[3]._T[3];
-snmp_makb_temper4[3]=makb[3]._T[4];
-
-snmp_makb_temper0_stat[0]=makb[0]._T_nd[0];
-snmp_makb_temper1_stat[0]=makb[0]._T_nd[1];
-snmp_makb_temper2_stat[0]=makb[0]._T_nd[2];
-snmp_makb_temper3_stat[0]=makb[0]._T_nd[3];
-snmp_makb_temper4_stat[0]=makb[0]._T_nd[4];
-snmp_makb_temper0_stat[1]=makb[1]._T_nd[0];
-snmp_makb_temper1_stat[1]=makb[1]._T_nd[1];
-snmp_makb_temper2_stat[1]=makb[1]._T_nd[2];
-snmp_makb_temper3_stat[1]=makb[1]._T_nd[3];
-snmp_makb_temper4_stat[1]=makb[1]._T_nd[4];
-snmp_makb_temper0_stat[2]=makb[2]._T_nd[0];
-snmp_makb_temper1_stat[2]=makb[2]._T_nd[1];
-snmp_makb_temper2_stat[2]=makb[2]._T_nd[2];
-snmp_makb_temper3_stat[2]=makb[2]._T_nd[3];
-snmp_makb_temper4_stat[2]=makb[2]._T_nd[4];
-snmp_makb_temper0_stat[3]=makb[3]._T_nd[0];
-snmp_makb_temper1_stat[3]=makb[3]._T_nd[1];
-snmp_makb_temper2_stat[3]=makb[3]._T_nd[2];
-snmp_makb_temper3_stat[3]=makb[3]._T_nd[3];
-snmp_makb_temper4_stat[3]=makb[3]._T_nd[4];
 
 
 snmp_klimat_box_temper=t_box;

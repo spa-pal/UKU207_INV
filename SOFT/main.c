@@ -6017,6 +6017,7 @@ int2lcdyx(retcntsec,0,7,0);	*/
 #define butLR_   103
 #define butED_  122
 #define butDR_  107
+#define butUR   237
 
 #define BUT_ON 4
 #define BUT_ONL 20 
@@ -6154,7 +6155,10 @@ else if(but==butED_)
 	else bCAN_OFF=0;
 	speed=0;
 	}
-
+/*else if(but==butUR)
+	{
+	tree_up(iK,0,0,0);
+	}*/
 else if(ind==iDeb)
 	{
 	if(but==butR)

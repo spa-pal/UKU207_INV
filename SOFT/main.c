@@ -123,6 +123,11 @@ signed short TBOXVENTOFF;
 signed short TBOXWARMON; 
 signed short TBOXWARMOFF;
 
+signed short U_OUT_SET;
+signed short U_NET_MAX;
+signed short U_NET_MIN;
+signed short U_BAT_MAX;
+signed short U_BAT_MIN;
 
 signed short NUMBAT;
 signed short NUMIST;
@@ -834,11 +839,10 @@ max_net_slot=MINIM_INV_ADRESS+NUMINV+8;
 //if(NUMINV) max_net_slot=MINIM_INV_ADRESS+NUMINV;
 //gran_char(&max_net_slot,0,MAX_NET_ADRESS);
 
-if(++cnt_net_drv>max_net_slot) 
+if(++cnt_net_drv>50) 
 	{
-	cnt_net_drv=MINIM_INV_ADRESS;
-	//LPC_GPIO2->FIODIR|=(1UL<<7);
-	//LPC_GPIO2->FIOPIN^=(1UL<<7);
+	cnt_net_drv=0;
+	mcp2515_transmit(0xff,0xff,0x27,U_OUT_SET,U_NET_MAX,U_NET_MIN,U_BAT_MAX,U_BAT_MIN);
 	} 
 
 
@@ -882,6 +886,8 @@ else if((cnt_net_drv==MINIM_INV_ADRESS+2)&&(NUMINV))
 	{
     if(!bCAN_OFF) can1_out(cnt_net_drv,cnt_net_drv,0,0,0,0,0,0);
 	}*/
+
+
 
 
 }
@@ -2735,18 +2741,28 @@ else if(ind==iPrl_bat_in_out)
 
 else if(ind==iSet_INV)
 	{
-     ptrs[0]=		" Время и дата       ";
-     ptrs[1]=		" Структура          ";
+	ptrs[0]=		" Время и дата       ";
+    ptrs[1]=		" Структура          ";
 	ptrs[2]=		" Зв.сигн.   (       ";
 	ptrs[3]=		" Отключение сигнала ";
 	ptrs[4]=		"  аварии    )       ";
-	ptrs[5]=		" Ethernet           ";
-	ptrs[6]=		" MODBUS ADRESS     <";
-	ptrs[7]=		" MODBUS BAUDRATE    ";
-	ptrs[8]=		"                  >0";
-     ptrs[9]=		" Выход              ";
-     ptrs[10]=		" Калибровки         "; 
-     ptrs[11]=		"                    ";        
+	ptrs[5]=		" Выходное напряжение";
+	ptrs[6]=		" инвертора       !В ";
+	ptrs[7]=		" Напряжение сети    ";
+	ptrs[8]=		" максимальное    [В ";
+	ptrs[9]=		" Напряжение сети    ";
+	ptrs[10]=		" миниимальное    ]В ";
+	ptrs[11]=		" Напряжение батареи ";
+	ptrs[12]=		" максимальное    {В ";
+	ptrs[13]=		" Напряжение батареи ";
+	ptrs[14]=		" миниимальное    }В ";
+	ptrs[15]=		" Ethernet           ";
+	ptrs[16]=		" MODBUS ADRESS     <";
+	ptrs[17]=		" MODBUS BAUDRATE    ";
+	ptrs[18]=		"                  >0";
+    ptrs[19]=		" Выход              ";
+    ptrs[20]=		" Калибровки         "; 
+    ptrs[21]=		"                    ";        
 	
 	if((sub_ind-index_set)>2)index_set=sub_ind-2;
 	else if(sub_ind<index_set)index_set=sub_ind;
@@ -2763,7 +2779,15 @@ else if(ind==iSet_INV)
 	else sub_bgnd("ручн.",')',0);
 	int2lcd(MODBUS_ADRESS,'<',0);
 	int2lcd(MODBUS_BAUDRATE,'>',0);
+	int2lcd(U_OUT_SET,'!',0);
+	int2lcd(U_NET_MAX,'[',0);
+	int2lcd(U_NET_MIN,']',0);
+	int2lcd(U_BAT_MAX,'{',0);
+	int2lcd(U_BAT_MIN,'}',0);
 	
+	int2lcdyx(sub_ind,0,1,0);	
+	int2lcdyx(index_set,0,3,0);
+		
 	}
 
 
@@ -7524,29 +7548,84 @@ else if(ind==iSet_INV)
 		if(sub_ind==4)
 			{
 			sub_ind=5;
-			index_set=3;
+			index_set=4;
 			}
-          if(sub_ind==7)
-               {
-               index_set=6;
-               }
-          if(sub_ind==8)
-               {
-               sub_ind=9;
-               }
-		gran_char(&sub_ind,0,10);
-		}
-	else if(but==butU)
-		{
-		sub_ind--;
-		if(sub_ind==4)sub_ind=4;
-		if(sub_ind==8)
+		if(sub_ind==6)
 			{
 			sub_ind=7;
 			index_set=6;
 			}
-
-		gran_char(&sub_ind,0,10);
+		if(sub_ind==8)
+			{
+			sub_ind=9;
+			index_set=8;
+			}
+		if(sub_ind==10)
+			{
+			sub_ind=11;
+			index_set=10;
+			}
+		if(sub_ind==12)
+			{
+			sub_ind=13;
+			index_set=12;
+			}
+		if(sub_ind==14)
+			{
+			sub_ind=15;
+			//index_set=13;
+			}
+        if(sub_ind==17)
+            {
+            index_set=16;
+            } 
+        if(sub_ind==18)
+            {
+            sub_ind=19;
+		 //index_set=18;
+            }
+		gran_char(&sub_ind,0,20);
+		}
+	else if(but==butU)
+		{
+		sub_ind--;
+		if(sub_ind==4)sub_ind=3;
+		if(sub_ind==8)
+			{
+			sub_ind=7;
+			//index_set=6;
+			}
+		if(sub_ind==6)
+			{
+			sub_ind=5;
+			//index_set=4;
+			}			
+		if(sub_ind==8)
+			{
+			sub_ind=7;
+			//index_set=8;
+			}
+		if(sub_ind==10)
+			{
+			sub_ind=9;
+			//index_set=10;
+			}
+		if(sub_ind==12)
+			{
+			sub_ind=11;
+			//index_set=12;
+			}
+		if(sub_ind==14)
+			{
+			sub_ind=13;
+			//index_set=14;
+			}
+		if(sub_ind==18)
+			{
+			sub_ind=17;
+			//index_set=16;
+			}
+		gran_char(&sub_ind,0,20);
 		}
 	else if(but==butD_)
 		{
@@ -7601,7 +7680,102 @@ else if(ind==iSet_INV)
 	     speed=1;
 	     }	
 
-   else if(sub_ind==5)
+     else if(sub_ind==5)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	U_OUT_SET++;
+	     	gran(&U_OUT_SET,1,250);
+	     	lc640_write_int(EE_U_OUT_SET,U_OUT_SET);
+			speed=1;
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	U_OUT_SET--;
+	     	gran(&U_OUT_SET,1,250);
+	     	lc640_write_int(EE_U_OUT_SET,U_OUT_SET);
+			speed=1;
+	     	}
+          }
+
+     else if(sub_ind==7)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	U_NET_MAX++;
+	     	gran(&U_NET_MAX,1,250);
+	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
+			speed=1;
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	U_NET_MAX--;
+	     	gran(&U_NET_MAX,1,250);
+	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
+			speed=1;
+	     	}
+          }
+
+     else if(sub_ind==9)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	U_NET_MIN++;
+	     	gran(&U_NET_MIN,1,250);
+	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
+			speed=1;
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	U_NET_MIN--;
+	     	gran(&U_NET_MIN,1,250);
+	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
+			speed=1;
+	     	}
+          }
+
+     else if(sub_ind==11)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	U_BAT_MAX++;
+	     	gran(&U_BAT_MAX,1,250);
+	     	lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
+			speed=1;
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	U_BAT_MAX--;
+	     	gran(&U_BAT_MAX,1,250);
+	     	lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
+			speed=1;
+	     	}
+          }
+
+     else if(sub_ind==13)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	U_BAT_MIN++;
+	     	gran(&U_BAT_MIN,1,250);
+	     	lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
+			speed=1;
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	U_BAT_MIN--;
+	     	gran(&U_BAT_MIN,1,250);
+	     	lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
+			speed=1;
+	     	}
+          }
+
+	 else if(sub_ind==15)
 		{
 		if(but==butE)
 		     {
@@ -7611,7 +7785,7 @@ else if(ind==iSet_INV)
 		}
 
 
-     else if(sub_ind==6)
+     else if(sub_ind==16)
 	     {
 	     if((but==butR)||(but==butR_))
 	     	{
@@ -7629,7 +7803,8 @@ else if(ind==iSet_INV)
 			speed=1;
 	     	}
           }
-     else if(sub_ind==7)
+
+     else if(sub_ind==17)
 	     {
 	     if((but==butR)||(but==butR_))
 	     	{
@@ -7669,7 +7844,7 @@ else if(ind==iSet_INV)
           }
                   		
  
-     else if(sub_ind==9)
+     else if(sub_ind==19)
 		{
 		if(but==butE)
 		     {
@@ -7678,7 +7853,7 @@ else if(ind==iSet_INV)
 		     }
 		}
 				
-	else if(sub_ind==10)
+	else if(sub_ind==20)
 		{
 		if(but==butE)
 		     {		
@@ -7880,14 +8055,14 @@ else if(ind==iStr_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	NUMINV++;
-	     	gran(&NUMINV,0,20);
+	     	gran(&NUMINV,0,32);
 	     	lc640_write_int(EE_NUMINV,NUMINV);
 	     	}
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	NUMINV--;
-	     	gran(&NUMINV,0,20);
+	     	gran(&NUMINV,0,32);
 	     	lc640_write_int(EE_NUMINV,NUMINV);
 	     	}
           }

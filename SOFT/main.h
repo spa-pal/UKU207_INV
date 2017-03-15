@@ -657,6 +657,11 @@ extern signed short TBOXVENTOFF;
 extern signed short TBOXWARMON; 
 extern signed short TBOXWARMOFF;
 
+extern signed short U_OUT_SET;
+extern signed short U_NET_MAX;
+extern signed short U_NET_MIN;
+extern signed short U_BAT_MAX;
+extern signed short U_BAT_MIN;
 extern signed short NUMBAT;
 extern signed short NUMIST;
 extern signed short NUMINV;

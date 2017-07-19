@@ -1407,6 +1407,7 @@ if (NUMINV)
      		inv[i]._flags_tm=bps[i+20]._buff[7];
      		inv[i]._Uin=bps[i+20]._buff[8]+(bps[i+20]._buff[9]*256);
      		inv[i]._Uil=bps[i+20]._buff[10]+(bps[i+20]._buff[11]*256);
+			inv[i]._Udcin=bps[i+20]._buff[12]+(bps[i+20]._buff[13]*256);
 			inv[i]._cnt=0;    
      		} 
 		else 

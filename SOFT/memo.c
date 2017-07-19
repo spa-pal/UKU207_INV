@@ -111,6 +111,8 @@ U_NET_MAX=lc640_read_int(EE_U_NET_MAX);
 U_NET_MIN=lc640_read_int(EE_U_NET_MIN);
 U_BAT_MAX=lc640_read_int(EE_U_BAT_MAX);
 U_BAT_MIN=lc640_read_int(EE_U_BAT_MIN); 
+U_OUT_MAX=lc640_read_int(EE_U_OUT_MAX);
+U_OUT_MIN=lc640_read_int(EE_U_OUT_MIN);
 
 //BAT_IS_ON[0]=(enum_bat_is_on)lc640_read_int(EE_BAT1_IS_ON);
 //BAT_IS_ON[1]=(enum_bat_is_on)lc640_read_int(EE_BAT2_IS_ON);

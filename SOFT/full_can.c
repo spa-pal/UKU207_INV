@@ -1156,7 +1156,7 @@ if((RXBUFF[0]==sub_ind1)&&(RXBUFF[1]==PUTID)&&(RXBUFF[2]==0xdd)&&(RXBUFF[3]==0xd
 	}
 
 
-if((RXBUFF[1]==PUTTM1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
+/*if((RXBUFF[1]==PUTTM1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
      {
 	//can_debug_plazma[1][2]++;
      slave_num=RXBUFF[0]&0x1f;
@@ -1172,22 +1172,14 @@ if((RXBUFF[1]==PUTTM1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 	bps[slave_num]._buff[5]=RXBUFF[7];
 
 
-/*	can_slot[slave_num,0]=RXBUFF[0];
-	can_slot[slave_num,1]=RXBUFF[1];
-	can_slot[slave_num,2]=RXBUFF[2];
-	can_slot[slave_num,3]=RXBUFF[3];
-	can_slot[slave_num,4]=RXBUFF[4];
-	can_slot[slave_num,5]=RXBUFF[5];
-	can_slot[slave_num,6]=RXBUFF[6];
-	can_slot[slave_num,7]=RXBUFF[7]; */
-	
+
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
 	
  	if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
 
 	can_reset_cnt=0;
-     }
+     } *///может конфликтовать с 3 посылкой нового инвертора
 
 if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{
@@ -1221,13 +1213,9 @@ if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
    	}
 
 if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
-     {
-	//can_debug_plazma[1][2]++;
-     slave_num=RXBUFF[0]&0x3f;
-	rotor_can[2]++;
-     
-    //if((RXBUFF[0]&0xc0)==0)bps[slave_num]._device=dSRC;
-    /*else if((RXBUFF[0]&0xe0)==0x40)*/bps[slave_num]._device=dINV;
+    {
+    slave_num=RXBUFF[0]&0x3f;
+	bps[slave_num]._device=dINV;
      	
 	bps[slave_num]._buff[0]=RXBUFF[2]; 
 	bps[slave_num]._buff[1]=RXBUFF[3];
@@ -1235,33 +1223,19 @@ if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._buff[3]=RXBUFF[5];
 	bps[slave_num]._buff[4]=RXBUFF[6];
 	bps[slave_num]._buff[5]=RXBUFF[7];
-
-
-/*	can_slot[slave_num,0]=RXBUFF[0];
-	can_slot[slave_num,1]=RXBUFF[1];
-	can_slot[slave_num,2]=RXBUFF[2];
-	can_slot[slave_num,3]=RXBUFF[3];
-	can_slot[slave_num,4]=RXBUFF[4];
-	can_slot[slave_num,5]=RXBUFF[5];
-	can_slot[slave_num,6]=RXBUFF[6];
-	can_slot[slave_num,7]=RXBUFF[7]; */
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
 	
- 	if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
+ 	//if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
 
 	can_reset_cnt=0;
-     }
+    }
 
 if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
  	{
-     slave_num=RXBUFF[0]&0x3f;  
-
-    //if((RXBUFF[0]&0xe0)==0)bps[slave_num]._device=dSRC;
-    /*else if((RXBUFF[0]&0xe0)==0x40)*/bps[slave_num]._device=dINV;
-
-    rotor_can[2]++;
+    slave_num=RXBUFF[0]&0x3f;  
+	bps[slave_num]._device=dINV;
      
 	bps[slave_num]._buff[6]=RXBUFF[2]; 
 	bps[slave_num]._buff[7]=RXBUFF[3];
@@ -1270,20 +1244,27 @@ if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._buff[10]=RXBUFF[6];
 	bps[slave_num]._buff[11]=RXBUFF[7];	
 
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10; 
 
-/*	can_slot[slave_num,8]=RXBUFF[0];
-	can_slot[slave_num,9]=RXBUFF[1];
-	can_slot[slave_num,10]=RXBUFF[2];
-	can_slot[slave_num,11]=RXBUFF[3];
-	can_slot[slave_num,12]=RXBUFF[4];
-	can_slot[slave_num,13]=RXBUFF[5];
-	can_slot[slave_num,14]=RXBUFF[6];
-	can_slot[slave_num,15]=RXBUFF[7]; */
+	can_reset_cnt=0;
+   	}
+
+if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
+ 	{
+    slave_num=RXBUFF[0]&0x3f;  
+	bps[slave_num]._device=dINV;
+
+	bps[slave_num]._buff[12]=RXBUFF[2]; 
+	bps[slave_num]._buff[13]=RXBUFF[3];
+	bps[slave_num]._buff[14]=RXBUFF[4];
+	bps[slave_num]._buff[15]=RXBUFF[5];
+	bps[slave_num]._buff[16]=RXBUFF[6];
+	bps[slave_num]._buff[17]=RXBUFF[7];	
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10; 
 
-   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
 	can_reset_cnt=0;
    	}
 

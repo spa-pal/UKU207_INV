@@ -546,7 +546,7 @@ typedef enum {
 	iVent,
 	iK_power_net3,
 	iAvt,iLan_set,
-	iInv,iInv_v2,
+	iInv,iInv_v2,iInv_v3,
 	iNpn_set,
 	iByps}i_enum;
 typedef struct  
@@ -658,6 +658,8 @@ extern signed short TBOXWARMON;
 extern signed short TBOXWARMOFF;
 
 extern signed short U_OUT_SET;
+extern signed short U_OUT_MAX;
+extern signed short U_OUT_MIN;
 extern signed short U_NET_MAX;
 extern signed short U_NET_MIN;
 extern signed short U_BAT_MAX;
@@ -857,7 +859,7 @@ typedef struct
      char _cnt;
      char _cnt_old;
      char _cnt_more2;
-     char _buff[16]; 
+     char _buff[21]; 
      //char _av_net;
      //char _av_u_max;
      //char _av_u_min;
@@ -915,6 +917,7 @@ typedef struct
      signed _Ti; 
 	 signed _Uil;
 	 signed _Uin;
+	 signed _Udcin;
 	signed short _Pio;
      char _flags_tu;
      //char _flags_tu_old;

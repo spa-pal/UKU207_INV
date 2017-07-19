@@ -31,6 +31,7 @@
 #define PUTTM2 0xDB
 #define PUTTM1INV2 0xDD
 #define PUTTM2INV2 0xDE
+#define PUTTM3INV2 0xDA
 #define PUTTM_NET 0xEA
 #define PUTTM_NET1 0xEB
 #define PUTTM_IBATMETER 0xD1

@@ -1,0 +1,32 @@
+			 
+	//if((inv[sub_ind1]._flags_tm==0)&&(inv[sub_ind1]._cnt==0))
+	//	{
+		ptr[0]=		"      â ğàáîòå      ";
+	//	}
+	/*else */if((inv[sub_ind1]._flags_tm==0x04)&&(inv[sub_ind1]._cnt==0))
+		{
+		ptr[0]=		"  ÑÈËÜÍÛÉ ÍÀÃĞÅÂ!!! ";	      
+		}
+	else if((inv[sub_ind1]._flags_tm==0x24)&&(inv[sub_ind1]._cnt==0))
+		{
+		ptr[0]=		"îòêëş÷èëñÿ,ïåğåãğåâ ";	      
+		}
+	else if((!(inv[sub_ind1]._flags_tm&0x20))&&(inv[sub_ind1]._cnt==0))
+		{
+		ptr[0]=		"  îòñóòñòâóåò Uâûõ  ";
+		}
+	else if(inv[sub_ind1]._cnt!=0)
+	 	{
+		ptr[0]=		"    íå ïîäêëş÷åí    ";	
+		}
+
+
+	bgnd_par(			"     ÈÍÂÅĞÒÎĞ N&    ",
+					ptr[index_set],
+					ptr[index_set+1],
+					ptr[index_set+2]);
+
+	if(sub_ind-index_set>2)index_set=sub_ind-2;
+	else if (sub_ind<index_set)index_set=sub_ind;
+
+	if(sub_ind>=simax)	pointer_set(1);

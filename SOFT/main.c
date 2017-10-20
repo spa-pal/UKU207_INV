@@ -8096,7 +8096,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MAX++;
-	     	gran(&U_OUT_MAX,220,260);
+	     	//gran(&U_OUT_MAX,220,260);
 	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
@@ -8104,8 +8104,8 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_OUT_MAX--;
-	     	gran(&U_OUT_MAX,220,260);
-			gran(&U_OUT_MIN,170,U_OUT_MAX-10);
+	     	//gran(&U_OUT_MAX,220,260);
+			//gran(&U_OUT_MIN,170,U_OUT_MAX-10);
 	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
@@ -8117,8 +8117,8 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MIN++;
-	     	gran(&U_OUT_MIN,170,220);
-			gran(&U_OUT_MAX,U_OUT_MIN+10,260);
+	     	//gran(&U_OUT_MIN,170,220);
+			//gran(&U_OUT_MAX,U_OUT_MIN+10,260);
 			lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
@@ -8127,7 +8127,7 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_OUT_MIN--;
-	     	gran(&U_OUT_MIN,170,220);
+	     	//gran(&U_OUT_MIN,170,220);
 	     	lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
 	     	}

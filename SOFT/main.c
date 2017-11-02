@@ -844,12 +844,8 @@ max_net_slot=MINIM_INV_ADRESS+NUMINV+8;
 if(++cnt_net_drv>50) 
 	{
 	cnt_net_drv=0;
-	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)U_OUT_MAX,(char)U_NET_MIN,(char)U_NET_MAX,(char)U_BAT_MIN,(char)U_BAT_MAX);
+	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_MIN,(char)U_NET_MAX,(char)U_BAT_MIN,(char)U_BAT_MAX);
 	} 
-
-
-	
-	
 	
 if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+15))
 	{
@@ -8026,12 +8022,12 @@ else if(ind==iSet_INV)
 	     if(but==butE)
 	          	{
 	          	lc640_write_int(EE_U_OUT_SET,220);
-			  	lc640_write_int(EE_U_OUT_MAX,253);
-			  	lc640_write_int(EE_U_OUT_MIN,187);
-			  	lc640_write_int(EE_U_NET_MAX,192);
-				lc640_write_int(EE_U_NET_MIN,187);
+			  	lc640_write_int(EE_U_OUT_MAX,255);
+			  	lc640_write_int(EE_U_OUT_MIN,175);
+			  	lc640_write_int(EE_U_NET_MAX,187);
+				lc640_write_int(EE_U_NET_MIN,182);
 				lc640_write_int(EE_U_BAT_MAX,180);
-				lc640_write_int(EE_U_BAT_MIN,170);
+				lc640_write_int(EE_U_BAT_MIN,175);
 	          	}
 	     }	
 	
@@ -8077,16 +8073,20 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_SET++;
-	     	gran(&U_OUT_SET,210,230);
+	     	gran(&U_OUT_SET,220,230);
 	     	lc640_write_int(EE_U_OUT_SET,U_OUT_SET);
+			U_OUT_MAX=U_OUT_SET+35;
+	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_OUT_SET--;
-	     	gran(&U_OUT_SET,210,230);
+	     	gran(&U_OUT_SET,220,230);
 	     	lc640_write_int(EE_U_OUT_SET,U_OUT_SET);
+			U_OUT_MAX=U_OUT_SET+35;
+	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
           }
@@ -8096,7 +8096,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MAX++;
-	     	//gran(&U_OUT_MAX,220,260);
+	     	gran(&U_OUT_MAX,240,270);
 	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
@@ -8104,10 +8104,10 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_OUT_MAX--;
-	     	//gran(&U_OUT_MAX,220,260);
+	     	gran(&U_OUT_MAX,240,270);
 			//gran(&U_OUT_MIN,170,U_OUT_MAX-10);
 	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
-			lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
+			//lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
 	     	}
           }
@@ -8117,17 +8117,17 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MIN++;
-	     	//gran(&U_OUT_MIN,170,220);
+	     	gran(&U_OUT_MIN,0,200);
 			//gran(&U_OUT_MAX,U_OUT_MIN+10,260);
 			lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
-			lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
+		//	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_OUT_MIN--;
-	     	//gran(&U_OUT_MIN,170,220);
+	     	gran(&U_OUT_MIN,0,200);
 	     	lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
 	     	}
@@ -8138,7 +8138,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MAX++;
-	     	gran(&U_NET_MAX,180,220);
+	     	gran(&U_NET_MAX,180,205);
 	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
 			speed=1;
 	     	}
@@ -8146,8 +8146,8 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_NET_MAX--;
-	     	gran(&U_NET_MAX,180,220);
-			gran(&U_NET_MIN,170,U_NET_MAX-5);
+	     	gran(&U_NET_MAX,180,205);
+			gran(&U_NET_MIN,175,U_NET_MAX-5);
 	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
 			lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			speed=1;
@@ -8159,8 +8159,8 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MIN++; 
-			gran(&U_NET_MIN,170,220);
-			gran(&U_NET_MAX,U_NET_MIN+5,220);
+			gran(&U_NET_MIN,175,200);
+			gran(&U_NET_MAX,U_NET_MIN+5,205);
 	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
 			speed=1;
@@ -8169,7 +8169,7 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_NET_MIN--;
-	     	gran(&U_NET_MIN,170,220);
+	     	gran(&U_NET_MIN,175,200);
 	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			speed=1;
 	     	}
@@ -8180,7 +8180,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_BAT_MAX++;
-	     	gran(&U_BAT_MAX,170,230);
+	     	gran(&U_BAT_MAX,175,215);
 	     	lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
 			speed=1;
 	     	}
@@ -8188,7 +8188,7 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_BAT_MAX--;
-	     	gran(&U_BAT_MAX,170,230);
+	     	gran(&U_BAT_MAX,175,215);
 			gran(&U_BAT_MIN,170,U_BAT_MAX-5);
 	     	lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
 			lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
@@ -8202,7 +8202,7 @@ else if(ind==iSet_INV)
 	     	{
 	     	U_BAT_MIN++;
 	     	gran(&U_BAT_MIN,170,210);
-			gran(&U_BAT_MAX,U_BAT_MIN+5,230);
+			gran(&U_BAT_MAX,U_BAT_MIN+5,215);
 	     	lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
 			lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
 			speed=1;

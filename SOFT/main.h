@@ -14,7 +14,7 @@
 
 #define MINIM_INV_ADRESS	20
 //-минималный адрес инвертора в кановской сети, не может быть меньше 16
-#define MAX_NET_ADRESS		31
+#define MAX_NET_ADRESS		64
 //-максимальный адрес устройства в кановской сети »ЅЁѕа
 
 #define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
@@ -774,6 +774,7 @@ extern signed short ETH_GW_4;
 extern signed short RELE_VENT_LOGIC;
 extern signed short MODBUS_ADRESS;
 extern signed short MODBUS_BAUDRATE;
+extern signed short RS485_QWARZ_DIGIT;
 
 //***********************************************
 //—осто€ние батарей
@@ -881,16 +882,16 @@ typedef struct
      int _ist_blok_host_cnt;
      short _blok_cnt; //блокирование источников 
      char _flags_tm;
-	signed short _overload_av_cnt;     
+	//signed short _overload_av_cnt;     
      signed short _temp_av_cnt;
-     signed short _umax_av_cnt;
-     signed short _umin_av_cnt;
+     //signed short _umax_av_cnt;
+     //signed short _umin_av_cnt;
      signed _rotor;
      signed  short _x_; 
      char _adr_ee;
 	char _last_avar;
      } BPS_STAT; 
-extern BPS_STAT bps[40];
+extern BPS_STAT bps[100];
 
 //***********************************************
 //—осто€ние инверторов
@@ -904,9 +905,9 @@ typedef struct
 	//3бит - авари€ по обрыву св€зи	    
      enum {isAPV,isWRK,isRDY,isBL,isAV,isOFF_AV_NET}_state;
      char _cnt;
-     char _cnt_old;
-     char _cnt_more2;
-     char _buff[16]; 
+     //char _cnt_old;
+     //char _cnt_more2;
+     //char _buff[16]; 
      //char _av_net;
      //char _av_u_max;
      //char _av_u_min;
@@ -925,8 +926,8 @@ typedef struct
      //char _is_wrk;
      //char _is_link;
      //char _is_av;
-     signed _vol_u;
-     signed _vol_i;
+     //signed _vol_u;
+     //signed _vol_i;
      char _is_on_cnt;
      //int _ist_blok_host_cnt_; //блокирование источников извне(CAN или RS), если не 0 то источник заблокирован.
      int _ist_blok_host_cnt;
@@ -942,7 +943,7 @@ typedef struct
      char _adr_ee;
 	char _last_avar;
      } INV_STAT; 
-extern INV_STAT inv[30];
+extern INV_STAT inv[64];
 extern char first_inv_slot;
 
 //***********************************************

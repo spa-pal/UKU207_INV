@@ -1369,7 +1369,7 @@ if (NUMINV)
 	{
 	for(i=0;i<NUMINV;i++)
 		{
-		if(bps[i+first_inv_slot]._cnt<25)
+		if(bps[i+first_inv_slot]._cnt<5)
      		{
      		inv[i]._Ii=bps[i+first_inv_slot]._buff[0]+(bps[i+first_inv_slot]._buff[1]*256);
      		inv[i]._Uin=bps[i+first_inv_slot]._buff[2]+(bps[i+first_inv_slot]._buff[3]*256);
@@ -1398,7 +1398,7 @@ if (NUMINV)
 	{
 	for(i=0;i<NUMINV;i++)
 		{
-		if(bps[i+20]._cnt<25)
+		if(bps[i+20]._cnt<5)
      		{
      		inv[i]._Ii=bps[i+20]._buff[0]+(bps[i+20]._buff[1]*256);
      		inv[i]._Pio=((signed short)bps[i+20]._buff[2])+((signed short)(bps[i+20]._buff[3]<<8));
@@ -1419,6 +1419,7 @@ if (NUMINV)
      		inv[i]._flags_tm=0; 
      		inv[i]._Uil=0;
      		inv[i]._Uin=0;
+			inv[i]._Udcin=0;
 			inv[i]._cnt=25;    
      		}
      	}

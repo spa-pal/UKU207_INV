@@ -26,7 +26,7 @@
 //   <i> This is the size of a memory pool in bytes. Buffers for
 //   <i> TCPnet packets are allocated from this memory pool.
 //   <i> Default: 8000 bytes
-#define MEM_SIZE       4096
+#define MEM_SIZE       2048
 
 //   <o>Tick Timer interval <10=> 10 ms <20=> 20 ms <25=> 25 ms
 //                          <40=> 40 ms <50=> 50 ms <100=> 100 ms 

@@ -3086,8 +3086,8 @@ else if(ind==iSet_INV)
     ptrs[25]=		" Калибровки         "; 
     ptrs[26]=		"                    ";        
 	
-//	if((sub_ind-index_set)>2)index_set=sub_ind-2;
-//	else if(sub_ind<index_set)index_set=sub_ind;
+	if((sub_ind-index_set)>2)index_set=sub_ind-2;
+	else if(sub_ind<index_set)index_set=sub_ind;
 	
 	if((index_set==9)||(index_set==13)||(index_set==17))
 		{
@@ -8345,9 +8345,10 @@ else if(ind==iSet_INV)
 			else if(MODBUS_BAUDRATE==1920)MODBUS_BAUDRATE=3840;
 			//else if(MODBUS_BAUDRATE==3840)MODBUS_BAUDRATE=5760;
 			else if(MODBUS_BAUDRATE==3840)MODBUS_BAUDRATE=5760;
-			else if(MODBUS_BAUDRATE==5760)MODBUS_BAUDRATE=120;
+			else if(MODBUS_BAUDRATE==5760)MODBUS_BAUDRATE=11520;
+			else if(MODBUS_BAUDRATE==11520)MODBUS_BAUDRATE=120;
 			else MODBUS_BAUDRATE=960;
-	     	gran(&MODBUS_BAUDRATE,120,5760);
+	     	gran(&MODBUS_BAUDRATE,120,11520);
 	     	lc640_write_int(EE_MODBUS_BAUDRATE,MODBUS_BAUDRATE);
 			#ifdef SC16IS740_UART
 			sc16is700_init((uint32_t)(MODBUS_BAUDRATE*10UL));
@@ -8356,7 +8357,7 @@ else if(ind==iSet_INV)
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
-			if(MODBUS_BAUDRATE==120)MODBUS_BAUDRATE=5760;
+			if(MODBUS_BAUDRATE==120)MODBUS_BAUDRATE=11520;
 			else if(MODBUS_BAUDRATE==240)MODBUS_BAUDRATE=120;
 	     	else if(MODBUS_BAUDRATE==480)MODBUS_BAUDRATE=240;
 			else if(MODBUS_BAUDRATE==960)MODBUS_BAUDRATE=480;
@@ -8364,8 +8365,9 @@ else if(ind==iSet_INV)
 			else if(MODBUS_BAUDRATE==3840)MODBUS_BAUDRATE=1920;
 			//else if(MODBUS_BAUDRATE==3840)MODBUS_BAUDRATE=3840;
 			else if(MODBUS_BAUDRATE==5760)MODBUS_BAUDRATE=3840;
+			else if(MODBUS_BAUDRATE==11520)MODBUS_BAUDRATE=5760;
 			else MODBUS_BAUDRATE=960;
-	     	gran(&MODBUS_BAUDRATE,120,5760);
+	     	gran(&MODBUS_BAUDRATE,120,11520);
 	     	lc640_write_int(EE_MODBUS_BAUDRATE,MODBUS_BAUDRATE);
 			#ifdef SC16IS740_UART
 			sc16is700_init((uint32_t)(MODBUS_BAUDRATE*10UL));

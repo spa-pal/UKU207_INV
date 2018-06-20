@@ -32,6 +32,7 @@
 #include "mcp2515.h"
 #include "sc16is7xx.h"
 #include "modbus.h"
+#include "curr_version.h"
 
 extern U8 own_hw_adr[];
 extern U8  snmp_Community[];
@@ -1588,8 +1589,9 @@ if(ind==iMn_INV)
      ptrs[35+NUMBYPASS]=  					" Инвертор N32       ";
 	 ptrs[4+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
      ptrs[5+NUMBYPASS+NUMINV]= 				" Установки          "; 
-     ptrs[6+NUMBYPASS+NUMINV]=  				" Журнал событий     "; 
-     ptrs[7+NUMBYPASS+NUMINV]=  				" Выход              "; 
+     ptrs[6+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+     ptrs[7+NUMBYPASS+NUMINV]=  			" Выход              "; 
+	 ptrs[8+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
 
      if(sub_ind==0)index_set=0;
 	else if((index_set-sub_ind)>2)index_set=sub_ind+2;
@@ -6294,7 +6296,6 @@ else if(ind==iKlimat)
 	else sub_bgnd("ВЫКЛ.",'&',-2);
 	}
 
-
 else if(ind==iNpn_set)
 	{
 	ptrs[0]=				" Вывод          !   ";
@@ -6348,6 +6349,19 @@ else if(ind==iNpn_set)
 	int2lcd(UVNPN,'%',1);
 
 	}
+else if(ind==iFWabout)
+	{
+	bgnd_par(	" Версия             ",
+				" Сборка  0000.00.00 ",
+				"                    ",
+				"                    ");
+	int2lcdyx(BUILD_YEAR,1,12,0);
+	int2lcdyx(BUILD_MONTH,1,15,0);
+	int2lcdyx(BUILD_DAY,1,18,0);
+	
+	sprintf(&lcd_buffer[9],"%d.%d.%d",HARDVARE_VERSION,SOFT_VERSION,BUILD);
+	}
+
 
 #endif
 /*
@@ -6661,18 +6675,18 @@ else if(ind==iMn_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,3+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,5+NUMINV+NUMBYPASS);
 		}
 		
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,3+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,5+NUMINV+NUMBYPASS);
 		}	
 	else if(but==butD_)
 		{
 		//tree_up(iLog,0,0,0);
-		sub_ind=3+NUMBYPASS+NUMINV;
+		sub_ind=4+NUMBYPASS+NUMINV;
 		ret(1000);
 		}
 	else if(but==butE_)
@@ -6747,9 +6761,13 @@ else if(ind==iMn_INV)
 			{
 			sub_ind=0;
 			}
-
+		else if(sub_ind==(5+NUMBYPASS+NUMINV))
+			{
+			tree_up(iFWabout,0,0,0);
+		    ret(1000);
+			}
 		}
-    	}
+    }
 
 else if(ind==iMn_220_V2)
 	{
@@ -13732,6 +13750,15 @@ else if(ind==iNpn_set)
 		}
 
 
+	}
+else if(ind==iFWabout)
+	{
+	ret(1000);
+	if(but==butE)
+	     {
+	     tree_down(0,0);
+	     ret(0);
+	     }
 	}
 
 #endif		

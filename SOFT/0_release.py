@@ -5,8 +5,8 @@ import os
 import shutil
 import sys
 
-#targetDir = "P:\\ПТЭСТ\\ИНВЕРТОРНАЯ_СИСТЕМА\\"
-targetDir = "P:\\Прошивки2018\\ИНВЕРТОРНАЯ_СИСТЕМА\\"
+#targetDir = "P:\\ПТЭСТ\\ИНВЕРТОРНАЯ_СИСТЕМА\\УКУ\\"
+targetDir = "P:\\Прошивки2018\\ИНВЕРТОРНАЯ_СИСТЕМА\\УКУ\\"
 source_file = 'curr_version.c'
 source_file1 = ".\\EXE\\UKU2071x_INV.hex"
 

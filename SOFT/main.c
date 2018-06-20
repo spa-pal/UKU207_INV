@@ -3082,9 +3082,10 @@ else if(ind==iSet_INV)
 	ptrs[21]=		" MODBUS ADRESS     <";
 	ptrs[22]=		" MODBUS BAUDRATE    ";
 	ptrs[23]=		"                  >0";
-    ptrs[24]=		" Выход              ";
-    ptrs[25]=		" Калибровки         "; 
-    ptrs[26]=		"                    ";        
+	ptrs[24]=      	" Серийный N        w";
+    ptrs[25]=		" Выход              ";
+    ptrs[26]=		" Калибровки         "; 
+    ptrs[27]=		"                    ";        
 	
 	if((sub_ind-index_set)>2)index_set=sub_ind-2;
 	else if(sub_ind<index_set)index_set=sub_ind;
@@ -3125,7 +3126,8 @@ else if(ind==iSet_INV)
 	
 	//int2lcdyx(sub_ind,0,2,0);	
 	//int2lcdyx(index_set,0,4,0);
-		
+	
+	long2lcd_mmm(AUSW_MAIN_NUMBER,'w',0);	
 	}
 
 
@@ -8004,7 +8006,7 @@ else if(ind==iSet_INV)
             sub_ind=24;
 		 //index_set=18;
             }
-		gran_char(&sub_ind,0,25);
+		gran_char(&sub_ind,0,26);
 		if((sub_ind-index_set)>2)index_set=sub_ind-2;
 		}
 	else if(but==butU)
@@ -8056,7 +8058,7 @@ else if(ind==iSet_INV)
 			sub_ind=22;
 			//index_set=16;
 			}
-		gran_char(&sub_ind,0,25);
+		gran_char(&sub_ind,0,26);
 		if(sub_ind<index_set)index_set=sub_ind;
 		if((sub_ind==18)||(sub_ind==16))index_set=17;
 		if((sub_ind==14)||(sub_ind==12))index_set=13;
@@ -8064,7 +8066,7 @@ else if(ind==iSet_INV)
 		}
 	else if(but==butD_)
 		{
-		sub_ind=24;
+		sub_ind=25;
 		}
 		
 	else if(sub_ind==0)
@@ -8374,9 +8376,22 @@ else if(ind==iSet_INV)
 			#endif
 	     	}
           }
-                  		
  
-     else if(sub_ind==24)
+ 	else if(sub_ind==24)
+		{
+	    if(but==butR)AUSW_MAIN_NUMBER++;
+	    else if(but==butR_)AUSW_MAIN_NUMBER+=20;
+	    else if(but==butL)AUSW_MAIN_NUMBER--;
+	    else if(but==butL_)AUSW_MAIN_NUMBER-=20;
+		else if(but==butEL_)AUSW_MAIN_NUMBER=15000;
+		if(AUSW_MAIN_NUMBER<13000)AUSW_MAIN_NUMBER=100000;
+		if(AUSW_MAIN_NUMBER>100000)AUSW_MAIN_NUMBER=13000;
+	    lc640_write_int(EE_AUSW_MAIN_NUMBER,(short)(AUSW_MAIN_NUMBER&0x0000ffffUL));
+		lc640_write_int(EE_AUSW_MAIN_NUMBER+2,(short)((AUSW_MAIN_NUMBER&0xffff0000UL)>>16UL));
+	    speed=1;
+	    }                       		
+ 
+     else if(sub_ind==25)
 		{
 		if(but==butE)
 		     {
@@ -8385,7 +8400,7 @@ else if(ind==iSet_INV)
 		     }
 		}
 				
-	else if(sub_ind==25)
+	else if(sub_ind==26)
 		{
 		if(but==butE)
 		     {		

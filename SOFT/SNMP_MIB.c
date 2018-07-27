@@ -326,6 +326,8 @@ char* aaa_="abc";
 	{ MIB_INTEGER | MIB_ATR_RO,  	12, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BYPASS, DISPLAY_BYPASS_U_PRIM, 0},  			MIB_INT(snmpBypassUPrim),  NULL},			//Состояние БПС3
 	{ MIB_INTEGER | MIB_ATR_RO,  	12, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BYPASS, DISPLAY_BYPASS_U_BUS, 0},  			MIB_INT(snmpBypassUBus),  NULL},			//Состояние БПС3
 	{ MIB_INTEGER | MIB_ATR_RO,  	12, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BYPASS, DISPLAY_BYPASS_FLAGS, 0},  			MIB_INT(snmpBypassFlags),  NULL},			//Состояние БПС3
+	{ MIB_INTEGER | MIB_ATR_RO,  	12, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BYPASS, DISPLAY_BYPASS_U_DCIN, 0},  			MIB_INT(snmpBypassUdcin),  NULL},			//Состояние БПС3
+
 											 
 	{ MIB_INTEGER | MIB_ATR_RO,  	13, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BAT, DISPLAY_BAT_NUMBER, 1},  				MIB_INT(snmp_bat_number[0]),  	NULL},	//Напряжение батареи №1
 	{ MIB_INTEGER | MIB_ATR_RO,  	13, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_BAT, DISPLAY_BAT_NUMBER, 2},  				MIB_INT(snmp_bat_number[1]),  	NULL},	//Напряжение батареи №2

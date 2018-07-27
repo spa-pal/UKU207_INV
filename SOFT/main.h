@@ -176,6 +176,7 @@
 #define DISPLAY_BYPASS_U_PRIM				5
 #define DISPLAY_BYPASS_U_BUS				6
 #define DISPLAY_BYPASS_FLAGS				7
+#define DISPLAY_BYPASS_U_DCIN				8
 
 #define COMMAND_OK		0x5555
 #define COMAND_FAIL		0xaaaa
@@ -548,7 +549,7 @@ typedef enum {
 	iAvt,iLan_set,
 	iInv,iInv_v2,iInv_v3,
 	iNpn_set,
-	iByps,
+	iByps,iK_byps_sel,
 	iFWabout}i_enum;
 typedef struct  
 {
@@ -600,6 +601,7 @@ extern signed short Kunet_ext[3];
 extern signed short KunetA;
 extern signed short KunetB;
 extern signed short KunetC;
+extern signed short Kudcin;
 
 extern signed short MAIN_IST;
 extern signed short UMAX;
@@ -827,7 +829,7 @@ typedef struct
 	char			_cnt;
 	char 		_adress;
 	} BYPS_STAT; 
-extern BYPS_STAT byps;
+extern BYPS_STAT byps[3];
 
 //***********************************************
 //Мониторы АКБ
@@ -955,6 +957,9 @@ extern signed long load_P;
 extern signed short load_U_inv;
 extern signed short load_I_inv;
 extern signed long load_P_inv;
+
+extern signed short dcin_U;
+
 
 //***********************************************
 //Состояние первичной сети

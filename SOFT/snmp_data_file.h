@@ -52,6 +52,7 @@ extern signed short snmpBypassTemper;
 extern signed short snmpBypassUPrim;
 extern signed short snmpBypassUBus;
 extern signed short snmpBypassFlags;
+extern signed short snmpBypassUdcin;
 
 //Состояние Батарей
 extern signed short snmp_bat_number[2];

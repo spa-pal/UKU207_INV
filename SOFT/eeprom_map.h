@@ -29,6 +29,7 @@
 #define EE_KUNETA      	SECTOR_KOEF+44
 #define EE_KUNETB      	SECTOR_KOEF+46
 #define EE_KUNETC      	SECTOR_KOEF+48
+#define EE_KUDCIN      	SECTOR_KOEF+50
 
 #define SECTOR_SETS 	SECTOR_KOEF+100
 

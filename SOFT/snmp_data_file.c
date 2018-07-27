@@ -64,6 +64,7 @@ signed short snmpBypassTemper;
 signed short snmpBypassUPrim;
 signed short snmpBypassUBus;
 signed short snmpBypassFlags;
+signed short snmpBypassUdcin;
 
 //Состояние Батарей
 signed short snmp_bat_number[2];
@@ -500,14 +501,14 @@ snmp_inv_temperature[19]=inv[19]._Ti;
 snmp_inv_stat[19]=inv[19]._flags_tm;
 */
 
-snmpBypassULoad = byps._Uout;
-snmpBypassILoad = byps._Iout;
-snmpBypassPLoad = byps._Pout;
-snmpBypassTemper = byps._T;
-snmpBypassUPrim = byps._Unet;
-snmpBypassUBus = byps._Uin;
-snmpBypassFlags = byps._flags;
-
+snmpBypassULoad = 	byps[0]._Uout;
+snmpBypassILoad = 	byps[0]._Iout;
+snmpBypassPLoad = 	byps[0]._Pout;
+snmpBypassTemper = 	byps[0]._T;
+snmpBypassUPrim = 	byps[0]._Unet;
+snmpBypassUBus = 	byps[0]._Uin;
+snmpBypassFlags = 	byps[0]._flags;
+snmpBypassUdcin = 	dcin_U;
 
 snmp_sk_number[0]=1;
 memcpy(&snmp_sk_name[0][0],"Shock",10);

@@ -43,6 +43,7 @@ Kpes_eb2[2]=lc640_read_int(EE_KPES2_EB2);
 KunetA=lc640_read_int(EE_KUNETA);
 KunetB=lc640_read_int(EE_KUNETB);
 KunetC=lc640_read_int(EE_KUNETC);
+Kudcin=lc640_read_int(EE_KUDCIN);
 
 Ktext[0]=lc640_read_int(KT_EXT0);
 Ktext[1]=lc640_read_int(KT_EXT1);

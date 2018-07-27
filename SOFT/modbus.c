@@ -190,14 +190,14 @@ char i;
 
 if(NUMBYPASS)
 	{
-	modbus_registers[0]=(char)(byps._Iout/256);			//аху1
-	modbus_registers[1]=(char)(byps._Iout%256);
-	modbus_registers[2]=(char)(byps._Uout/256);			//аху2
-	modbus_registers[3]=(char)(byps._Uout%256);
-	modbus_registers[4]=(char)(byps._Pout/256);			//аху3
-	modbus_registers[5]=(char)(byps._Pout%256);
-	modbus_registers[6]=(char)(byps._T/256);			//аху4
-	modbus_registers[7]=(char)(byps._T%256);
+	modbus_registers[0]=(char)(byps[0]._Iout/256);			//аху1
+	modbus_registers[1]=(char)(byps[0]._Iout%256);
+	modbus_registers[2]=(char)(byps[0]._Uout/256);			//аху2
+	modbus_registers[3]=(char)(byps[0]._Uout%256);
+	modbus_registers[4]=(char)(byps[0]._Pout/256);			//аху3
+	modbus_registers[5]=(char)(byps[0]._Pout%256);
+	modbus_registers[6]=(char)(byps[0]._T/256);			//аху4
+	modbus_registers[7]=(char)(byps[0]._T%256);
 	}
 else 
 	{
@@ -222,10 +222,10 @@ modbus_registers[13]=(char)(NUMINV%256);
 modbus_registers[14]=(char)(num_of_wrks_inv/256);			//аху8
 modbus_registers[15]=(char)(num_of_wrks_inv%256);
 
-modbus_registers[6]=0;								//аху9
-modbus_registers[7]=0;
-modbus_registers[6]=0;								//аху10
-modbus_registers[7]=0;
+modbus_registers[16]=(char)(dcin_U/256);					//аху9
+modbus_registers[17]=(char)(dcin_U%256);
+modbus_registers[18]=(char)(byps[0]._Unet/256);			//аху10
+modbus_registers[19]=(char)(byps[0]._Unet%256);
 
 
 //Шэтх№ђю№ Й1

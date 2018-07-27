@@ -1269,27 +1269,39 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
    	}
 
 if((RXBUFF[1]==PUTTM1BYPS))
-     {
+	{
+	char bypass_adress;
 	//can_debug_plazma[1][2]++;
-     byps._adress=RXBUFF[0]&0x3f;
-     
-     	
-	byps._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
-	byps._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
-	byps._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+	bypass_adress=RXBUFF[0]&0x3f;
+    
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._adress=bypass_adress;
+		 
+     	byps[bypass_adress-61]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
+		byps[bypass_adress-61]._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
+		byps[bypass_adress-61]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 	
-	byps._cnt=0;
-	if(byps._Pout<0) byps._Pout=0;
-     }
+		byps[bypass_adress-61]._cnt=0;
+		if(byps[bypass_adress-61]._Pout<0) byps[bypass_adress-61]._Pout=0;
+		}
+    }
 
 if((RXBUFF[1]==PUTTM2BYPS))
  	{
-	byps._T=(char)RXBUFF[2];
-	byps._flags=(char)RXBUFF[3];
-	byps._Unet=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
-	byps._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
 
-	byps._cnt=0;
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._T=(char)RXBUFF[2];
+		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
+		byps[bypass_adress-61]._Unet=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[bypass_adress-61]._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[bypass_adress-61]._cnt=0;
+		}
    	}
 
 if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))

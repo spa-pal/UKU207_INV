@@ -1425,16 +1425,46 @@ if (NUMINV)
      	}
    	}
 
-if((NUMBYPASS&&(byps._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
 	{
-	byps._Iout=0;
-	byps._Pout=0;
-	byps._Uout=0;
-	byps._T=0;
-	byps._flags=0;
-	byps._Unet=0;
-	byps._Uin=0;
+	byps[0]._Iout=0;
+	byps[0]._Pout=0;
+	byps[0]._Uout=0;
+	byps[0]._T=0;
+	byps[0]._flags=0;
+	byps[0]._Unet=0;
+	byps[0]._Uin=0;
 	}
+
+if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+	{
+	byps[1]._Iout=0;
+	byps[1]._Pout=0;
+	byps[1]._Uout=0;
+	byps[1]._T=0;
+	byps[1]._flags=0;
+	byps[1]._Unet=0;
+	byps[1]._Uin=0;
+	}
+
+if((NUMBYPASS>=3&&(byps[2]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+	{
+	byps[2]._Iout=0;
+	byps[2]._Pout=0;
+	byps[2]._Uout=0;
+	byps[2]._T=0;
+	byps[2]._flags=0;
+	byps[2]._Unet=0;
+	byps[2]._Uin=0;
+	}
+
+
+temp_SL=(signed long)adc_buff_[2];
+temp_SL*=Kudcin;
+temp_SL/=500L;
+dcin_U=(signed short)temp_SL;
+
+//dcin_U=adc_buff_[2];
 
 #ifdef GLADKOV
 inv[0]._Ii=bps[4]._buff[0]+(bps[4]._buff[1]*256);

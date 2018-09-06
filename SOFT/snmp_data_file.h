@@ -26,6 +26,7 @@ extern signed short snmp_mains_power_voltage_phaseC;
 //Состояние нагрузки
 extern signed short snmp_load_voltage;
 extern signed short snmp_load_current;
+extern signed short snmp_load_power;
 
 //Состояние БПСов
 extern signed short snmp_bps_number[8];

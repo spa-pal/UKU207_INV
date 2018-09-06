@@ -56,6 +56,7 @@
 #define DISPLAY_LOAD				3
 #define DISPLAY_LOAD_VOLTAGE				1
 #define DISPLAY_LOAD_CURRENT				2
+#define DISPLAY_LOAD_POWER					3
 
 #define DISPLAY_PSU					4
 #define DISPLAY_PSU_ENTRY_NUMBER			1,1
@@ -530,7 +531,7 @@ typedef enum {
 	iTst,iTst_3U,iTst_RSTKM,iTst_6U,iTst_220,iTst_220_380,
 	iTst_klbr,iTst_BPS1,iTst_BPS2,iTst_BPS12,iDebug,
 	iDef,iDef_3U,iDef_RSTKM,iDef_6U,iDef_220,iDef_220_V2,
-	iSet_st_prl,iK_pdp,iSet_T,
+	iSet_st_prl,iK_pdp,iSet_T,iSet_T_avt,
 	iDeb,iJ_bat,iK_inv,iK_inv_sel,iK_byps,
 	iPrl_bat_in_out,iPdp1,iJAv_sel,iJAv_net_sel,iJAv_net,iJAv_src1,
 	iTst_bps,/*iJAv_bat,iJAv_bat_sel,*/iAusw,iAusw_prl,iAusw_set,

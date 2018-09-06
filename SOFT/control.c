@@ -1464,7 +1464,7 @@ temp_SL*=Kudcin;
 temp_SL/=500L;
 dcin_U=(signed short)temp_SL;
 
-//dcin_U=adc_buff_[2];
+//dcin_U=1234;//adc_buff_[2];
 
 #ifdef GLADKOV
 inv[0]._Ii=bps[4]._buff[0]+(bps[4]._buff[1]*256);

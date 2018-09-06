@@ -38,6 +38,7 @@ signed short snmp_mains_power_voltage_phaseC;
 //Состояние нагрузки
 signed short snmp_load_voltage;
 signed short snmp_load_current;
+signed short snmp_load_power;
 
 //Состояние БПСов
 signed short snmp_bps_number[8];
@@ -248,8 +249,11 @@ snmp_numofbat=1;
 
 */
 
-snmp_load_voltage=lc640_read_int(CNT_EVENT_LOG);//load_U;
+
+snmp_load_voltage=load_U;
 snmp_load_current=load_I;
+snmp_load_power=load_P;
+
 snmp_numofbat=NUMBAT;
 snmp_numofbps=NUMIST;
 snmp_numofinv=NUMINV;

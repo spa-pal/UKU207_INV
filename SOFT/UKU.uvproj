@@ -471,6 +471,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1032,6 +1037,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1595,6 +1605,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2156,6 +2171,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2719,6 +2739,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3280,6 +3305,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3843,6 +3873,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4404,6 +4439,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4967,6 +5007,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5528,6 +5573,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6091,6 +6141,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6652,6 +6707,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7215,6 +7275,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -7776,6 +7841,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -8339,6 +8409,11 @@
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
             </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8900,6 +8975,11 @@
               <FileName>curr_version.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\curr_version.c</FilePath>
+            </File>
+            <File>
+              <FileName>sntp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sntp.c</FilePath>
             </File>
           </Files>
         </Group>

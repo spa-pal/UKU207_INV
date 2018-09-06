@@ -33,6 +33,7 @@
 #include "sc16is7xx.h"
 #include "modbus.h"
 #include "curr_version.h"
+#include "sntp.h"
 
 extern U8 own_hw_adr[];
 extern U8  snmp_Community[];
@@ -243,6 +244,8 @@ signed short MODBUS_ADRESS;
 signed short MODBUS_BAUDRATE;
 signed short RS485_QWARZ_DIGIT;
 
+signed short SNTP_ENABLE;
+signed short SNTP_GMT;
 
 
 //***********************************************
@@ -554,6 +557,10 @@ char can_byps_plazma0,can_byps_plazma1;
 
 short reset_plazma;
 char plazma_rx;
+
+
+
+
 
 //-----------------------------------------------
 void rtc_init (void) 
@@ -1550,6 +1557,7 @@ if(ind==iMn_INV)
  		ptrs[1]="Uвых=  [В Iвых=   ]А";
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
+		ptrs[4]="    Udc.вх.   #В    ";
 		}
 	else
 		{
@@ -1627,6 +1635,7 @@ if(ind==iMn_INV)
 		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
      	else int2lcd(byps[0]._Iout,']',1);  
    		//int2lcd_mmm(byps._T,'[',0);
+
 		if(byps[0]._Pout>65000)byps[0]._Pout=0; 
 		long2lcd_mmm((unsigned short)byps[0]._Pout,'@',0);
 		}
@@ -3197,6 +3206,52 @@ else if(ind==iSet_T)
      if(phase==2)ptrs[2]="     ¤  - выход     ";
 	
 	bgnd_par(" УСТАНОВКА  ВРЕМЕНИ ",ptrs[0],ptrs[1],ptrs[2]);
+     if(sub_ind==0)lcd_buffer[42]='^';
+     else if(sub_ind==1)lcd_buffer[45]='^';
+     else if(sub_ind==2)lcd_buffer[48]='^';
+     else if(sub_ind==3)lcd_buffer[51]='^';
+     else if(sub_ind==4)lcd_buffer[54]='^';
+     else if(sub_ind==5)lcd_buffer[58]='^';
+  
+ 	int2lcd(LPC_RTC->SEC,'&',0);
+ 	int2lcd(LPC_RTC->MIN,'^',0);
+ 	int2lcd(LPC_RTC->HOUR,'%',0);
+ 	
+ 	int2lcd(LPC_RTC->DOM,'<',0);
+ 	sub_bgnd(sm_mont[LPC_RTC->MONTH],'>',0);
+ 	int2lcd(LPC_RTC->YEAR,'{',0);
+ 	if(bFL2)
+ 	     {
+ 	     lcd_buffer[find(':')]=' ';
+ 	     lcd_buffer[find(':')]=' ';
+ 	     }  
+	}  
+
+else if(ind==iSet_T_avt)
+	{
+	if(SNTP_ENABLE==0)		ptrs[0]=	" Выключено          ";
+	else if(SNTP_ENABLE==1)	ptrs[0]=	" Период        1 час";
+	else if(SNTP_ENABLE==2)	ptrs[0]=	" Период      1 сутки";
+	else if(SNTP_ENABLE==3)	ptrs[0]=	" Период     1 неделя";
+
+	if(SNTP_ENABLE==0)		ptrs[1]=	sm_exit;
+	else 
+		{
+		if((SNTP_GMT>=0)&&(SNTP_GMT<=9))	ptrs[1]=	" Часовой пояс GMT+! ";
+		else 								ptrs[1]=	" Часовой пояс GMT+ !";
+		}
+	ptrs[1]=" Инвертор 48(60)В   ";
+	ptrs[2]=" Инвертор 110В      ";
+	ptrs[0]=sm_time;
+	ptrs[1]=sm_;
+	if(phase==0)ptrs[2]="     <> - выбор     ";
+     if(phase==1)ptrs[2]="   ^v - установка   ";
+     if(phase==2)ptrs[2]="     ¤  - выход     ";
+	
+	bgnd_par(	"    СИНХРОНИЗАЦИЯ   ",
+				"    ВРЕМЕНИ (SNTP)  ",
+				ptrs[0],
+				ptrs[1]);
      if(sub_ind==0)lcd_buffer[42]='^';
      else if(sub_ind==1)lcd_buffer[45]='^';
      else if(sub_ind==2)lcd_buffer[48]='^';
@@ -5340,7 +5395,33 @@ if(ind==iDeb)
 		int2lcdyx(ibt._max_dispers_num,1,19,0);
 		int2lcdyx(t_box,3,19,0);
      	}		     	
-     			
+
+    else if(sub_ind==9)
+     	{
+     	bgnd_par(	"SNTP                ",
+     		    	"                    ",
+     		    	"                    ",
+     		    	"                    ");
+     	
+		int2lcdyx(socket_udp,0,10,0);
+		int2lcdyx(udp_callback_cnt,0,15,0);
+		int2lcdyx(udp_callback_cnt1,0,19,0);
+		//int2lcdyx(udp_callback_plazma[0],1,3,0);
+		int2lcdyx((U16)full_days_since_2000_01_01,1,4,0);
+		int2lcdyx(this_year,1,7,0);
+		int2lcdyx(this_month,1,10,0);
+		int2lcdyx(day_of_month,1,13,0);
+		int2lcdyx(hour_in_this_day,1,16,0);
+		int2lcdyx(min_in_this_hour,1,19,0);
+		int2lcdyx(udp_callback_plazma[4],3,5,0);
+		int2lcdyx(udp_callback_plazma[5],2,3,0);
+		int2lcdyx(udp_callback_plazma[6],2,7,0);
+		int2lcdyx(udp_callback_plazma[7],2,11,0);
+		int2lcdyx(udp_callback_plazma[8],2,15,0);
+		int2lcdyx(udp_callback_plazma[9],3,13,0);
+		int2lcdyx(udp_callback_plazma[10],3,19,0);
+		int2lcdyx(sec_in_this_min,3,10,0);
+     	}		      			
      }
 
 else if((ind==iAv_view)||(ind==iAv_view_avt))
@@ -6696,7 +6777,13 @@ else if(ind==iDeb)
 		}
 		}
 		
-		
+	 else if(sub_ind==9)
+	 	{
+		if(but==butE)
+			{
+			sntp_requ ();
+			}
+		}		
 		
 			
      else if(but==butU)
@@ -13903,6 +13990,9 @@ LPC_WDT->WDFEED=0x55;
 }
 
 
+
+
+
 //***********************************************
 //***********************************************
 //***********************************************
@@ -14301,6 +14391,12 @@ sc16is700_init((uint32_t)(MODBUS_BAUDRATE*10UL));
 modbusTimeoutInMills=3000/MODBUS_BAUDRATE;
 if(modbusTimeoutInMills<2)modbusTimeoutInMills=2;
 modbusTimeoutInMills+=2;
+
+socket_udp = udp_get_socket (0, UDP_OPT_SEND_CS | UDP_OPT_CHK_CS, udp_callback);
+if (socket_udp != 0) 
+	{
+    udp_open (socket_udp, PORT_NUM);
+  }
 		
 while (1)  
 	{

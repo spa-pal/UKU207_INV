@@ -780,6 +780,9 @@ extern signed short MODBUS_ADRESS;
 extern signed short MODBUS_BAUDRATE;
 extern signed short RS485_QWARZ_DIGIT;
 
+extern signed short SNTP_ENABLE;
+extern signed short SNTP_GMT;
+
 //***********************************************
 //Состояние батарей
 typedef struct

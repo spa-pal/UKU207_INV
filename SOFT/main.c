@@ -6869,7 +6869,7 @@ else if(ind==iMn_INV)
 		    	}
 		else if((sub_ind>(1+NUMBYPASS))&&(sub_ind<=(1+NUMBYPASS+NUMINV)))
 		    	{
-		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-1);
+		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-2);
 		    	}
 
 		else if(sub_ind==(2+NUMBYPASS+NUMINV))
@@ -8229,7 +8229,10 @@ else if(ind==iSet_INV)
 		{
 		sub_ind=27;
 		}
-		
+	else if(but==butU_)
+		{
+		sub_ind=0;
+		}		
 	else if(sub_ind==0)
 	     {
 	     if(but==butE)
@@ -10443,18 +10446,18 @@ else if(ind==iK_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,3+NUMBYPASS);
+		gran_char(&sub_ind,0,2+(NUMBYPASS!=0)+(NUMINV!=0));
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,3+NUMBYPASS);
+		gran_char(&sub_ind,0,2+(NUMBYPASS!=0)+(NUMINV!=0));
 		}
 	else if(but==butD_)
 		{
-		sub_ind=1+NUMBYPASS;
+		sub_ind=1+(NUMBYPASS!=0)+(NUMINV!=0);
 		}
-	else if(sub_ind==(3+NUMBYPASS))
+	else if(sub_ind==(2+(NUMBYPASS!=0)+(NUMINV!=0)))
 			{
 			if((but==butR)||(but==butR_))
 				{
@@ -10472,7 +10475,7 @@ else if(ind==iK_INV)
 			lc640_write_int(EE_RS485_QWARZ_DIGIT,RS485_QWARZ_DIGIT);
 			speed=0;
 			}
-	else if(sub_ind==2)
+	else if(sub_ind==(NUMBYPASS!=0)+(NUMINV!=0))
 		{
 		temp_SS=lc640_read_int(EE_KUDCIN);
 		if(but==butR)
@@ -10497,27 +10500,27 @@ else if(ind==iK_INV)
 		}									
 	else if(but==butE)
 		{
-		if(sub_ind==0)
+		if((sub_ind==0)&&(NUMINV!=0))
 			{
 			tree_up(iK_inv_sel,0,0,1);	
 			ret(1000);
 			}		
 
-		else if((sub_ind==1)&&(NUMBYPASS>1))
+		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS>1))
 			{
-			tree_up(iK_byps_sel,0,0,1);	
+			tree_up(iK_byps_sel,0,0,0);	
 			ret(1000);
 			}
 
-		else if((sub_ind==1)&&(NUMBYPASS))
+		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS==1))
 			{
-			tree_up(iK_byps,0,0,1);	
+			tree_up(iK_byps,0,0,0);	
 			ret(1000);
 			}
 
 
 		              				
-		else if((sub_ind==3)||((sub_ind==2)&&(!NUMBYPASS))	)
+		else if(1+(NUMBYPASS!=0)+(NUMINV!=0))
 			{
 			tree_down(0,0);
 			ret(0);

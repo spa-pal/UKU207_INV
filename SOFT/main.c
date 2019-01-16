@@ -143,6 +143,7 @@ signed short NUMEXT;
 signed short NUMAVT;
 signed short NUMMAKB;
 signed short NUMBYPASS;
+signed short NUMPHASE;
 
 enum_apv_on APV_ON1,APV_ON2;
 signed short APV_ON2_TIME;
@@ -1191,7 +1192,7 @@ else
 void ind_hndl(void)
 {
 //const char* ptr;
-const char* ptrs[40];
+const char* ptrs[80];
 const char* sub_ptrs[40];
 static char sub_cnt,sub_cnt1;
 char i,sub_cnt_max;
@@ -1558,8 +1559,50 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
+
+		 ptrs[5]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
+		 ptrs[6]=  								" Байпасс  N2        ";
+		 ptrs[7]=  								" Байпасс  N3        ";
+	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
 		}
-	else
+	else if((NUMBYPASS==1)&&(NUMPHASE==1))
 		{
 
 		ptrs[0]	=	"  В работе    !инв. ";
@@ -1568,55 +1611,103 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
+
+		 ptrs[5]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
+		 ptrs[6]=  								" Байпасс  N2        ";
+		 ptrs[7]=  								" Байпасс  N3        ";
+	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
 		}
 	 
- /*    i=0;
- 	
- 	ptrs[1]="Uбz=   ]В Iбz=    @А";
-     ptrs[2]="Uн=    #В Iн=     $А";
-     ptrs[3]=" 0%:0^:0& 0</>  /0{ ";  */
-     
-	 ptrs[5]=  								" Байпасс            ";     
-	 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
-	 ptrs[6]=  								" Байпасс  N2        ";
-	 ptrs[7]=  								" Байпасс  N3        ";
-     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
-     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
-     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
-     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
-     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
-     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
-     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
-     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
-     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
-     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
-     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
-     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
-     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
-     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
-     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
-     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
-     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
-     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
-     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
-     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
-     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
-     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
-     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
-     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
-     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
-     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
-     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
-     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
-     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
-     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
-     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
-     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
-	 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
-     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
-	 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+ 	else if((NUMBYPASS==1)&&(NUMPHASE==3))
+		{
+
+		ptrs[0]	=	"  В работе    !инв. ";
+
+		ptrs[1]="    Pвых=     @Вт   ";
+ 		ptrs[2]="Uвых=  [В/  zВ/  ZВ";
+     //	ptrs[2]="    Pвых=     @Вт   ";
+     	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
+		ptrs[4]="    Udc.вх.   #В    ";
+
+		 ptrs[5]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
+		 ptrs[6]=  								" Байпасс  N2        ";
+		 ptrs[7]=  								" Байпасс  N3        ";
+	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		}
 
      if(sub_ind==0)index_set=0;
 	else if((index_set-sub_ind)>2)index_set=sub_ind+2;
@@ -1632,12 +1723,18 @@ if(ind==iMn_INV)
 	if(NUMBYPASS)
 		{
 		int2lcd(byps[0]._Uout/10,'[',0);
+		int2lcd(byps[1]._Uout/10,'z',0);
+		int2lcd(byps[2]._Uout/10,'Z',0);
+
 		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
      	else int2lcd(byps[0]._Iout,']',1);  
    		//int2lcd_mmm(byps._T,'[',0);
 
 		if(byps[0]._Pout>65000)byps[0]._Pout=0; 
-		long2lcd_mmm((unsigned short)byps[0]._Pout,'@',0);
+		if(byps[1]._Pout>65000)byps[1]._Pout=0;
+		if(byps[2]._Pout>65000)byps[2]._Pout=0;
+
+		if(NUMPHASE==3)long2lcd_mmm((unsigned short)(byps[0]._Pout+byps[1]._Pout+byps[2]._Pout),'@',0);
 		}
 	else 
 		{
@@ -2045,14 +2142,14 @@ else if(ind==iByps)
 
 	if(NUMBYPASS>=2)
 		{
-		bgnd_par(	"    БАЙПАСС N@     ",
+		bgnd_par(	"     БАЙПАС N@     ",
 					ptr[index_set],
 					ptr[index_set+1],
 					ptr[index_set+2]);
 		}
 	 else 
 	 	{
-		bgnd_par(		"  БАЙПАСС (адр.= !) ",
+		bgnd_par(		"   БАЙПАС (адр.= !) ",
 						ptr[index_set],
 						ptr[index_set+1],
 						ptr[index_set+2]);
@@ -2076,6 +2173,99 @@ else if(ind==iByps)
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
 	int2lcd(byps[sub_ind1]._adress-19,'!',0);
 	int2lcd(sub_ind1+1,'@',0);
+    }
+else if(ind==iByps3f)
+	{
+	const char* ptr[8];
+
+	static char iByps_ind_cnt;
+	
+	if(++iByps_ind_cnt>=40)iByps_ind_cnt=0;
+
+
+
+	simax=7;
+
+	ptr[1]=			" Uвых=  {В/  {В/  {В";
+	ptr[2]=			" Iвых=  }A/  }A/  }A";
+	ptr[3]=			" Pвых=  ]/  ]/  ]кВт";
+	ptr[4]=			" tбп=   [/  [/  [°С ";
+	ptr[5]=			" Uсети=   </  </  <В";
+	ptr[6]=			" Uшины=   >/  >/  >В";
+	ptr[7]=			sm_exit;
+
+	ptr[0]=		"      в работе      ";
+	
+	if(iByps_ind_cnt<=20)
+		{
+		if(byps[0]._flags&0x40)ptr[0]=				"Приоритет инверторы ";
+		else ptr[0]=								"Приоритет сеть      ";
+		}
+
+	if(iByps_ind_cnt>20)
+		{
+		if(byps[0]._flags&0x80)ptr[0]=				"Работа от инверторов";
+		else ptr[0]=								"Работа от сети      ";
+		}
+
+	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5))
+		{
+		ptr[0]=		"  СИЛЬНЫЙ НАГРЕВ!!! ";	      
+		}
+	else if((byps[0]._flags&0x02)&&(byps[0]._cnt<5))
+		{
+		ptr[0]=		"отключился,перегрев ";	      
+		}
+	else if(byps[0]._cnt>10)
+	 	{
+		ptr[0]=		"    не подключен    ";	
+		}
+	   //"  БАЙПАСС (адр.= !) ",
+
+	bgnd_par(	"     БАЙПАС 3Ф     ",
+					ptr[index_set],
+					ptr[index_set+1],
+					ptr[index_set+2]);
+
+	if(sub_ind-index_set>2)index_set=sub_ind-2;
+	else if (sub_ind<index_set)index_set=sub_ind;
+
+	if(sub_ind>=simax)	pointer_set(1);
+
+
+	int2lcd(byps[0]._Uout/10,'{',0);
+	int2lcd(byps[1]._Uout/10,'{',0);
+	int2lcd(byps[2]._Uout/10,'{',0);
+	if(byps[0]._Iout>99)int2lcd(byps[0]._Iout/10,'}',0);
+    else int2lcd(byps[0]._Iout,'}',1); 
+	if(byps[1]._Iout>99)int2lcd(byps[1]._Iout/10,'}',0);
+    else int2lcd(byps[1]._Iout,'}',1); 
+	if(byps[2]._Iout>99)int2lcd(byps[2]._Iout/10,'}',0);
+    else int2lcd(byps[2]._Iout,'}',1); 
+			 
+   	int2lcd_mmm(byps[0]._T,'[',0);
+	int2lcd_mmm(byps[1]._T,'[',0);
+	int2lcd_mmm(byps[2]._T,'[',0);
+	 
+	if(byps[0]._Pout>65000)byps[0]._Pout=0;
+	if(byps[1]._Pout>65000)byps[1]._Pout=0;
+	if(byps[2]._Pout>65000)byps[2]._Pout=0;
+	 
+	long2lcd_mmm((unsigned short)(byps[0]._Pout/100),']',1);
+	long2lcd_mmm((unsigned short)(byps[1]._Pout/100),']',1);
+	long2lcd_mmm((unsigned short)(byps[2]._Pout/100),']',1);
+
+	//int2lcd_mmm(byps._Pout,']',0);
+	int2lcd(byps[0]._Unet/10,'<',0);
+	int2lcd(byps[1]._Unet/10,'<',0);
+	int2lcd(byps[2]._Unet/10,'<',0);
+
+	int2lcd(byps[0]._Uin/10,'>',0);
+	int2lcd(byps[1]._Uin/10,'>',0);
+	int2lcd(byps[2]._Uin/10,'>',0);
+	//int2lcdyx(iByps_ind_cnt,0,2,0);
+	//int2lcd(byps[sub_ind1]._adress-19,'!',0);
+	//int2lcd(sub_ind1+1,'@',0);
     }
 #ifndef _DEBUG_	 	  
 else if(ind==iNet)
@@ -3268,6 +3458,7 @@ else if(ind==iStr_INV)
 	{
 	ptrs[0]=" Инверторов        ^";	
 	ptrs[1]=" Байпасов          [";
+	if(NUMBYPASS==1) ptrs[1]=" Байпас            [";
 	ptrs[2]=" Выход              ";
 
 	if(sub_ind<index_set) index_set=sub_ind;
@@ -3277,7 +3468,11 @@ else if(ind==iStr_INV)
 	pointer_set(1);
 	 
 	int2lcd(NUMINV,'^',0);
-	int2lcd(NUMBYPASS,'[',0);
+	if(NUMBYPASS==0) int2lcd(NUMBYPASS,'[',0);
+	else if(NUMPHASE==1) sub_bgnd("1ф.",'[',-2);
+	else if(NUMPHASE==3) sub_bgnd("3ф.",'[',-2); 
+	
+
 	}
 
 else if (ind==iLan_set)
@@ -3839,7 +4034,7 @@ else if(ind==iK_INV)
 	if(NUMBYPASS>1)
     ptrs[i++]=" Байпасы            ";
 	else if(NUMBYPASS)
-    ptrs[i++]=" Байпасс            ";
+    ptrs[i++]=" Байпас             ";
 
 	ptrs[i++]=" Udc.вх.       #В   ";
     ptrs[i++]=" Выход              ";
@@ -4635,6 +4830,148 @@ int2lcdyx(MSG_IND2OUT_EN_SRC2,0,6,0); */
 //int2lcdyx(u_necc,0,19,0);  
 	 }
 
+else if(ind==iK_byps_3f)
+	{
+	
+	ptrs[0]=	" UвыхA =    !В      ";
+	ptrs[1]=	"откалибруйте Uвых   ";
+	ptrs[2]=	"  нажатием љ или њ  ";
+	ptrs[3]=	" UвыхB =    @В      ";
+	ptrs[4]=	"откалибруйте Uвых   ";
+	ptrs[5]=	"  нажатием љ или њ  ";
+	ptrs[6]=	" UвыхC =    #В      ";
+	ptrs[7]=	"откалибруйте Uвых   ";
+	ptrs[8]=	"  нажатием љ или њ  ";	
+		 
+	ptrs[9]=	" IвыхA =     $А     ";
+	if(phase==0)
+		{
+		ptrs[10]=	"   нажмите ¤ для    ";
+		ptrs[11]=	"калибровки нуля Iвых";
+		}
+     else
+		{
+		ptrs[10]=" откалибруйте Iвых  ";
+		ptrs[11]="  нажатием љ или њ  ";     	
+     	} 
+	ptrs[12]=	" IвыхB =     %А     ";
+	if(phase==0)
+		{
+		ptrs[13]=	"   нажмите ¤ для    ";
+		ptrs[14]=	"калибровки нуля Iвых";
+		}
+     else
+		{
+		ptrs[13]=" откалибруйте Iвых  ";
+		ptrs[14]="  нажатием љ или њ  ";     	
+     	}
+	ptrs[15]=	" IвыхC =     ^А     ";
+	if(phase==0)
+		{
+		ptrs[16]=	"   нажмите ¤ для    ";
+		ptrs[17]=	"калибровки нуля Iвых";
+		}
+     else
+		{
+		ptrs[16]=" откалибруйте Iвых  ";
+		ptrs[17]="  нажатием љ или њ  ";     	
+     	}
+				     	
+	ptrs[18]=	" tA    =   &°C      ";    
+	ptrs[19]=	" откалибруйте t     ";
+	ptrs[20]=	"  нажатием љ или њ  ";
+	ptrs[21]=	" tB    =   *°C      ";    
+	ptrs[22]=	" откалибруйте t     ";
+	ptrs[23]=	"  нажатием љ или њ  ";
+	ptrs[24]=	" tC    =   (°C      ";    
+	ptrs[25]=	" откалибруйте t     ";
+	ptrs[26]=	"  нажатием љ или њ  ";
+
+	ptrs[27]=	" UшиныA =    )В     ";
+	ptrs[28]=	"откалибруйте Uшины  ";
+	ptrs[29]=	"  нажатием љ или њ  ";
+	ptrs[30]=	" UшиныB =    -В     ";
+	ptrs[31]=	"откалибруйте Uшины  ";
+	ptrs[32]=	"  нажатием љ или њ  ";
+	ptrs[33]=	" UшиныC =    +В     ";
+	ptrs[34]=	"откалибруйте Uшины  ";
+	ptrs[35]=	"  нажатием љ или њ  ";
+			 
+	ptrs[36]=	" UсетиA =    {В     ";
+	ptrs[37]=	"откалибруйте Uсети  ";
+	ptrs[38]=	"  нажатием љ или њ  "; 
+	ptrs[39]=	" UсетиB =    }В     ";
+	ptrs[40]=	"откалибруйте Uсети  ";
+	ptrs[41]=	"  нажатием љ или њ  "; 
+	ptrs[42]=	" UсетиC =    [В     ";
+	ptrs[43]=	"откалибруйте Uсети  ";
+	ptrs[44]=	"  нажатием љ или њ  ";
+	 
+	ptrs[45]=	" PвыхA  =    ]Вт    ";
+	ptrs[46]=	"откалибруйте Pвых   ";
+	ptrs[47]=	"  нажатием љ или њ  "; 
+	ptrs[48]=	" PвыхB  =    <Вт    ";
+	ptrs[49]=	"откалибруйте Pвых   ";
+	ptrs[50]=	"  нажатием љ или њ  ";
+	ptrs[51]=	" PвыхC  =    >Вт    ";
+	ptrs[52]=	"откалибруйте Pвых   ";
+	ptrs[53]=	"  нажатием љ или њ  ";
+
+	ptrs[54]=	sm_exit;
+	ptrs[55]=	sm_;
+	ptrs[56]=	sm_;     	     	    
+	
+
+   	if((sub_ind==0)||(sub_ind==1)||(sub_ind==2))index_set=0;
+	else if((sub_ind==3)||(sub_ind==4)||(sub_ind==5))index_set=3;
+	else if((sub_ind==6)||(sub_ind==7)||(sub_ind==8))index_set=6;
+	else if((sub_ind==9)||(sub_ind==10)||(sub_ind==11))index_set=9;
+	else if((sub_ind==12)||(sub_ind==13)||(sub_ind==14))index_set=12;
+	else if((sub_ind==15)||(sub_ind==16)||(sub_ind==17))index_set=15;
+	else if((sub_ind==18)||(sub_ind==19)||(sub_ind==20))index_set=18;
+	else if((sub_ind==21)||(sub_ind==22)||(sub_ind==23))index_set=21;
+	else if((sub_ind==24)||(sub_ind==25)||(sub_ind==26))index_set=24;
+	else if((sub_ind==27)||(sub_ind==28)||(sub_ind==29))index_set=27;
+	else if((sub_ind==30)||(sub_ind==31)||(sub_ind==32))index_set=30;
+	else if((sub_ind==33)||(sub_ind==34)||(sub_ind==35))index_set=33;
+	else if((sub_ind==36)||(sub_ind==37)||(sub_ind==38))index_set=36;
+	else if((sub_ind==39)||(sub_ind==40)||(sub_ind==41))index_set=39;
+	else if((sub_ind==42)||(sub_ind==43)||(sub_ind==44))index_set=42;
+	else if((sub_ind==45)||(sub_ind==46)||(sub_ind==47))index_set=45;
+	else if((sub_ind==48)||(sub_ind==49)||(sub_ind==50))index_set=48;
+	else if((sub_ind==51)||(sub_ind==52)||(sub_ind==53))index_set=51;
+
+
+	else index_set=54;
+	
+ 	bgnd_par(" КАЛИБРОВКА БАЙПАСА ",ptrs[index_set],ptrs[index_set+1],ptrs[index_set+2]);
+
+	pointer_set(1);	
+	int2lcd(byps[0]._Uout,'!',1);
+	int2lcd(byps[1]._Uout,'@',1);
+	int2lcd(byps[2]._Uout,'#',1);
+	int2lcd(byps[0]._Iout,'$',1);
+	int2lcd(byps[1]._Iout,'%',1);
+	int2lcd(byps[2]._Iout,'^',1);
+	int2lcd(byps[0]._T,'&',0);
+	int2lcd(byps[1]._T,'*',0);
+	int2lcd(byps[2]._T,'(',0);		 
+	int2lcd(byps[0]._Uin,')',1);
+	int2lcd(byps[1]._Uin,'-',1);
+	int2lcd(byps[2]._Uin,'+',1);
+	int2lcd(byps[0]._Unet,'{',1);
+	int2lcd(byps[1]._Unet,'}',1);
+	int2lcd(byps[2]._Unet,'[',1);
+	//int2lcd(sub_ind1+1,'!',0);
+	//int2lcd_mmm(byps._Pout,'(',0); 
+	if(byps[0]._Pout>65000)byps[0]._Pout=0;
+	if(byps[1]._Pout>65000)byps[1]._Pout=0;
+	if(byps[2]._Pout>65000)byps[2]._Pout=0; 
+	long2lcd_mmm((unsigned short)byps[0]._Pout,']',0);
+	long2lcd_mmm((unsigned short)byps[1]._Pout,'<',0);
+	long2lcd_mmm((unsigned short)byps[2]._Pout,'>',0);
+
+	}
 else if(ind==iK_byps_sel)
 	{
 	ptrs[0]=						" Байпасс N1         ";
@@ -6826,10 +7163,10 @@ else if(ind==iMn_INV)
 		{
 		//can1_init(BITRATE62_5K25MHZ);
 		//FullCAN_SetFilter(0,0x18e);
-     	NUMINV=1;
-     	lc640_write_int(EE_NUMINV,NUMINV);
-     	NUMBYPASS=0;
-     	lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
+     	//NUMINV=1;
+     	//lc640_write_int(EE_NUMINV,NUMINV);
+     	//NUMBYPASS=0;
+     	//lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
 		}
 	else if(but==butDR_)
 		{
@@ -6865,7 +7202,8 @@ else if(ind==iMn_INV)
 			}
 		else if((sub_ind>1)&&(sub_ind<=(1+NUMBYPASS)))
 		    	{
-		    	tree_up(iByps,0,0,sub_ind-2);
+		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-2);
+				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-2);
 		    	}
 		else if((sub_ind>(1+NUMBYPASS))&&(sub_ind<=(1+NUMBYPASS+NUMINV)))
 		    	{
@@ -7206,6 +7544,36 @@ else if(ind==iInv_tabl)
 
 
 else if(ind==iByps)
+	{
+	ret_ind(0,0,0);
+	if (but==butU)
+		{      
+		sub_ind--;
+		if(sub_ind==3)sub_ind=1;
+		else if(sub_ind==1)sub_ind=0;
+		gran_char(&sub_ind,0,simax);
+		}
+		
+	else if (but==butD)
+		{
+		sub_ind++;
+		if(sub_ind<3)sub_ind=3;
+		gran_char(&sub_ind,0,simax);
+		}
+		
+/*	else if((but==butE)&&(sub_ind==4))
+		{
+		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
+		}
+		*/		
+	else if(((but==butE)&&(sub_ind==simax))||(but==butL))
+		{
+	    tree_down(0,0);
+	    ret(0);
+		}		
+	}
+
+else if(ind==iByps3f)
 	{
 	ret_ind(0,0,0);
 	if (but==butU)
@@ -8900,18 +9268,46 @@ else if(ind==iStr_INV)
 	     {
 	     if((but==butR)||(but==butR_))
 	     	{
-	     	NUMBYPASS++;
-	     	gran(&NUMBYPASS,0,3);
-	     	lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
-	     	}
+			if(NUMBYPASS==0)
+				{
+				NUMBYPASS=1;
+	     		NUMPHASE=1;
+				}
+			else if((NUMBYPASS==1)&&(NUMPHASE==1))
+				{
+				NUMBYPASS=1;
+	     		NUMPHASE=3;
+				}
+			else
+				{
+				NUMBYPASS=0;
+	     		NUMPHASE=0;
+				}
+			lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
+			lc640_write_int(EE_NUMPHASE,NUMPHASE);
+			}
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
-	     	NUMBYPASS--;
-	     	gran(&NUMBYPASS,0,3);
-	     	lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
-	     	}
-          }	     			  
+			if(NUMBYPASS==0)
+				{
+				NUMBYPASS=1;
+	     		NUMPHASE=3;
+				}
+			else if((NUMBYPASS==1)&&(NUMPHASE==3))
+				{
+				NUMBYPASS=1;
+	     		NUMPHASE=1;
+				}
+			else
+				{
+				NUMBYPASS=0;
+	     		NUMPHASE=0;
+				}
+			lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
+			lc640_write_int(EE_NUMPHASE,NUMPHASE);
+			}
+       	}	     			  
           
     else if(sub_ind==2)
 	     {
@@ -10506,18 +10902,23 @@ else if(ind==iK_INV)
 			ret(1000);
 			}		
 
-		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS>1))
+/*		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS>1))
 			{
 			tree_up(iK_byps_sel,0,0,0);	
 			ret(1000);
-			}
+			}*/
 
-		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS==1))
+		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS==1)&&(NUMPHASE==1))
 			{
 			tree_up(iK_byps,0,0,0);	
 			ret(1000);
 			}
 
+		else if((sub_ind==(NUMINV!=0))&&(NUMBYPASS==1)&&(NUMPHASE==3))
+			{
+			tree_up(iK_byps_3f,0,0,0);	
+			ret(1000);
+			}
 
 		              				
 		else if(1+(NUMBYPASS!=0)+(NUMINV!=0))
@@ -12119,6 +12520,252 @@ else if(ind==iK_byps)
 		}							
 							
 	else if(sub_ind==18)
+		{
+		if(but==butE)
+			{
+			//a=b[--ptr_ind];
+			//sub_ind++;
+			tree_down(0,1);
+			ret(0);
+			}
+		}			
+	}
+
+else if(ind==iK_byps_3f)
+	{
+	ret(1000);
+	if(but==butD)
+		{
+		sub_ind++;
+		if((sub_ind==1)||(sub_ind==2))sub_ind=3;
+		else if((sub_ind==4)||(sub_ind==5))sub_ind=6;
+		else if((sub_ind==7)||(sub_ind==8))sub_ind=9;
+		else if((sub_ind==10)||(sub_ind==11))sub_ind=12;
+		else if((sub_ind==13)||(sub_ind==14))sub_ind=15;
+		else if((sub_ind==16)||(sub_ind==17))sub_ind=18;
+		else if((sub_ind==19)||(sub_ind==20))sub_ind=21;
+		else if((sub_ind==22)||(sub_ind==23))sub_ind=24;
+		else if((sub_ind==25)||(sub_ind==26))sub_ind=27;
+		else if((sub_ind==28)||(sub_ind==29))sub_ind=30;
+		else if((sub_ind==31)||(sub_ind==32))sub_ind=33;
+		else if((sub_ind==34)||(sub_ind==35))sub_ind=36;
+		else if((sub_ind==37)||(sub_ind==38))sub_ind=39;
+		else if((sub_ind==40)||(sub_ind==41))sub_ind=42;
+		else if((sub_ind==43)||(sub_ind==44))sub_ind=45;
+		else if((sub_ind==46)||(sub_ind==47))sub_ind=48;
+		else if((sub_ind==49)||(sub_ind==50))sub_ind=51;
+		else if((sub_ind==52)||(sub_ind==53))sub_ind=54;
+
+		gran_char(&sub_ind,0,54);
+		phase=0;
+		}
+	else if(but==butU)
+		{
+		sub_ind--;
+		if((sub_ind==1)||(sub_ind==2))sub_ind=0;
+		else if((sub_ind==4)||(sub_ind==5))sub_ind=3;
+		else if((sub_ind==7)||(sub_ind==8))sub_ind=6;
+		else if((sub_ind==10)||(sub_ind==11))sub_ind=9;
+		else if((sub_ind==13)||(sub_ind==14))sub_ind=12;
+		else if((sub_ind==16)||(sub_ind==17))sub_ind=15;
+		else if((sub_ind==19)||(sub_ind==20))sub_ind=18;
+		else if((sub_ind==22)||(sub_ind==23))sub_ind=21;
+		else if((sub_ind==25)||(sub_ind==26))sub_ind=24;
+		else if((sub_ind==28)||(sub_ind==29))sub_ind=27;
+		else if((sub_ind==31)||(sub_ind==32))sub_ind=30;
+		else if((sub_ind==34)||(sub_ind==35))sub_ind=33;
+		else if((sub_ind==37)||(sub_ind==38))sub_ind=36;
+		else if((sub_ind==40)||(sub_ind==41))sub_ind=39;
+		else if((sub_ind==43)||(sub_ind==44))sub_ind=42;
+		else if((sub_ind==46)||(sub_ind==47))sub_ind=45;
+		else if((sub_ind==49)||(sub_ind==50))sub_ind=48;
+		else if((sub_ind==52)||(sub_ind==53))sub_ind=51;
+		gran_char(&sub_ind,0,54);
+		phase=0;
+		}
+	else if(but==butD_)
+		{
+		sub_ind=55;
+		}
+	else if (sub_ind == 0)
+		{
+		if(but==butLR) 		mcp2515_transmit(61,61,KLBR,	(0*16)+1,(0*16)+1,0,0,0);
+	    else if(but==butR) 	mcp2515_transmit(61,61,KLBR,	(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(0*16)+3,(0*16)+3,0,0,0);
+    	else if(but==butL) 	mcp2515_transmit(61,61,KLBR,	(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(0*16)+5,(0*16)+5,0,0,0);
+		speed=1;
+		}	
+	else if (sub_ind == 3)
+		{
+		if(but==butLR) 		mcp2515_transmit(62,62,KLBR,	(0*16)+1,(0*16)+1,0,0,0);
+	    else if(but==butR) 	mcp2515_transmit(62,62,KLBR,	(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(0*16)+3,(0*16)+3,0,0,0);
+    	else if(but==butL) 	mcp2515_transmit(62,62,KLBR,	(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(0*16)+5,(0*16)+5,0,0,0);
+		speed=1;
+		}
+	else if (sub_ind == 6)
+		{
+		if(but==butLR) 		mcp2515_transmit(63,63,KLBR,	(0*16)+1,(0*16)+1,0,0,0);
+	    else if(but==butR) 	mcp2515_transmit(63,63,KLBR,	(0*16)+2,(0*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(0*16)+3,(0*16)+3,0,0,0);
+    	else if(but==butL) 	mcp2515_transmit(63,63,KLBR,	(0*16)+4,(0*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(0*16)+5,(0*16)+5,0,0,0);
+		speed=1;
+		}				
+	else if (sub_ind == 9)
+		{
+		if(but==butE)
+			{
+			mcp2515_transmit(61,61,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			phase=1;
+			}
+		else if(but==butR) mcp2515_transmit(61,61,KLBR,		(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(2*16)+3,(2*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(61,61,KLBR,		(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(2*16)+5,(2*16)+5,0,0,0);
+		speed=1;
+		}		
+
+	else if (sub_ind == 12)
+		{
+		if(but==butE)
+			{
+			mcp2515_transmit(62,62,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			phase=1;
+			}
+		else if(but==butR) mcp2515_transmit(62,62,KLBR,		(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(2*16)+3,(2*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(62,62,KLBR,		(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(2*16)+5,(2*16)+5,0,0,0);
+		speed=1;
+		}
+			
+	else if (sub_ind == 15)
+		{
+		if(but==butE)
+			{
+			mcp2515_transmit(63,63,KLBR,(2*16)+1,(2*16)+1,0,0,0);
+			phase=1;
+			}
+		else if(but==butR) mcp2515_transmit(63,63,KLBR,		(2*16)+2,(2*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(2*16)+3,(2*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(63,63,KLBR,		(2*16)+4,(2*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(2*16)+5,(2*16)+5,0,0,0);
+		speed=1;
+		}
+							
+	else if (sub_ind == 18)
+		{
+		if(but==butR) mcp2515_transmit(61,61,KLBR,			(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(61,61,KLBR,		(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(3*16)+5,(3*16)+5,0,0,0);
+		speed=1;
+		}
+										
+	else if (sub_ind == 21)
+		{
+		if(but==butR) mcp2515_transmit(62,62,KLBR,			(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(62,62,KLBR,		(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(3*16)+5,(3*16)+5,0,0,0);
+		speed=1;
+		}
+
+	else if (sub_ind == 24)
+		{
+		if(but==butR) mcp2515_transmit(63,63,KLBR,			(3*16)+2,(3*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(3*16)+3,(3*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(63,63,KLBR,		(3*16)+4,(3*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(3*16)+5,(3*16)+5,0,0,0);
+		speed=1;
+		}
+							
+	else if (sub_ind == 27)
+		{
+		if(but==butR) mcp2515_transmit(61,61,KLBR,			(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(4*16)+3,(4*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(61,61,KLBR,		(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(4*16)+5,(4*16)+5,0,0,0);
+		speed=1;
+		}
+							
+	else if (sub_ind == 30)
+		{
+		if(but==butR) mcp2515_transmit(62,62,KLBR,			(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(4*16)+3,(4*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(62,62,KLBR,		(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(4*16)+5,(4*16)+5,0,0,0);
+		speed=1;
+		}
+							
+	else if (sub_ind == 33)
+		{
+		if(but==butR) mcp2515_transmit(63,63,KLBR,			(4*16)+2,(4*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(4*16)+3,(4*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(63,63,KLBR,		(4*16)+4,(4*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(4*16)+5,(4*16)+5,0,0,0);
+		speed=1;
+		}
+
+	else if (sub_ind == 36)
+		{
+		if(but==butR) mcp2515_transmit(61,61,KLBR,			(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(61,61,KLBR,		(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(5*16)+5,(5*16)+5,0,0,0);
+		speed=1;
+		}
+
+	else if (sub_ind == 39)
+		{
+		if(but==butR) mcp2515_transmit(62,62,KLBR,			(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(62,62,KLBR,		(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(5*16)+5,(5*16)+5,0,0,0);
+		speed=1;
+		}
+
+	else if (sub_ind == 42)
+		{
+		if(but==butR) mcp2515_transmit(63,63,KLBR,			(5*16)+2,(5*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(5*16)+3,(5*16)+3,0,0,0);
+    	else if(but==butL) mcp2515_transmit(63,63,KLBR,		(5*16)+4,(5*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(5*16)+5,(5*16)+5,0,0,0);
+		speed=1;
+		}
+
+	else if (sub_ind == 45)
+		{
+		if(but==butR) mcp2515_transmit(61,61,KLBR,			(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(61,61,KLBR,	(6*16)+3,(6*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(61,61,KLBR,		(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(61,61,KLBR,	(6*16)+5,(6*16)+5,0,0,0);
+		speed=1;
+		}
+									
+	else if (sub_ind == 48)
+		{
+		if(but==butR) mcp2515_transmit(62,62,KLBR,			(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(62,62,KLBR,	(6*16)+3,(6*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(62,62,KLBR,		(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(62,62,KLBR,	(6*16)+5,(6*16)+5,0,0,0);
+		speed=1;
+		}							
+
+	else if (sub_ind == 51)
+		{
+		if(but==butR) mcp2515_transmit(63,63,KLBR,			(6*16)+2,(6*16)+2,0,0,0);
+		else if(but==butR_)	mcp2515_transmit(63,63,KLBR,	(6*16)+3,(6*16)+3,0,0,0);
+		else if(but==butL) mcp2515_transmit(63,63,KLBR,		(6*16)+4,(6*16)+4,0,0,0); 
+		else if(but==butL_) mcp2515_transmit(63,63,KLBR,	(6*16)+5,(6*16)+5,0,0,0);
+		speed=1;
+		}							
+
+							
+	else if(sub_ind==54)
 		{
 		if(but==butE)
 			{

@@ -55,6 +55,30 @@ extern signed short snmpBypassUBus;
 extern signed short snmpBypassFlags;
 extern signed short snmpBypassUdcin;
 
+extern signed short snmpBypassULoadA;
+extern signed short snmpBypassILoadA;
+extern signed short snmpBypassPLoadA;
+extern signed short snmpBypassTemperA;
+extern signed short snmpBypassUPrimA;
+extern signed short snmpBypassUBusA;
+extern signed short snmpBypassFlagsA;
+
+extern signed short snmpBypassULoadB;
+extern signed short snmpBypassILoadB;
+extern signed short snmpBypassPLoadB;
+extern signed short snmpBypassTemperB;
+extern signed short snmpBypassUPrimB;
+extern signed short snmpBypassUBusB;
+extern signed short snmpBypassFlagsB;
+
+extern signed short snmpBypassULoadC;
+extern signed short snmpBypassILoadC;
+extern signed short snmpBypassPLoadC;
+extern signed short snmpBypassTemperC;
+extern signed short snmpBypassUPrimC;
+extern signed short snmpBypassUBusC;
+extern signed short snmpBypassFlagsC;
+
 //Состояние Батарей
 extern signed short snmp_bat_number[2];
 extern signed short snmp_bat_voltage[2];

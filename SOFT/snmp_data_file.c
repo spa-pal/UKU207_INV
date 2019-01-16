@@ -67,6 +67,29 @@ signed short snmpBypassUBus;
 signed short snmpBypassFlags;
 signed short snmpBypassUdcin;
 
+signed short snmpBypassULoadA;
+signed short snmpBypassILoadA;
+signed short snmpBypassPLoadA;
+signed short snmpBypassTemperA;
+signed short snmpBypassUPrimA;
+signed short snmpBypassUBusA;
+signed short snmpBypassFlagsA;
+
+signed short snmpBypassULoadB;
+signed short snmpBypassILoadB;
+signed short snmpBypassPLoadB;
+signed short snmpBypassTemperB;
+signed short snmpBypassUPrimB;
+signed short snmpBypassUBusB;
+signed short snmpBypassFlagsB;
+
+signed short snmpBypassULoadC;
+signed short snmpBypassILoadC;
+signed short snmpBypassPLoadC;
+signed short snmpBypassTemperC;
+signed short snmpBypassUPrimC;
+signed short snmpBypassUBusC;
+signed short snmpBypassFlagsC;
 //Состояние Батарей
 signed short snmp_bat_number[2];
 signed short snmp_bat_voltage[2];
@@ -513,6 +536,16 @@ snmpBypassUPrim = 	byps[0]._Unet;
 snmpBypassUBus = 	byps[0]._Uin;
 snmpBypassFlags = 	byps[0]._flags;
 snmpBypassUdcin = 	dcin_U;
+
+snmpBypassULoadA = 	byps[0]._Uout;
+snmpBypassILoadA = 	byps[0]._Iout;
+snmpBypassPLoadA = 	byps[0]._Pout;
+snmpBypassTemperA = 	byps[0]._T;
+snmpBypassUPrimA = 	byps[0]._Unet;
+snmpBypassUBusA = 	byps[0]._Uin;
+snmpBypassFlagsA = 	byps[0]._flags;
+
+
 
 snmp_sk_number[0]=1;
 memcpy(&snmp_sk_name[0][0],"Shock",10);

@@ -178,6 +178,24 @@
 #define DISPLAY_BYPASS_U_BUS				6
 #define DISPLAY_BYPASS_FLAGS				7
 #define DISPLAY_BYPASS_U_DCIN				8
+#define DISPLAY_BYPASS_U_LOAD_A				9
+#define DISPLAY_BYPASS_I_LOAD_A				10	
+#define DISPLAY_BYPASS_P_LOAD_A				11	
+#define DISPLAY_BYPASS_TEMPER_A				12	
+#define DISPLAY_BYPASS_U_PRIM_A				13			
+#define DISPLAY_BYPASS_U_BUS_A				14			
+#define DISPLAY_BYPASS_U_LOAD_B				15		
+#define DISPLAY_BYPASS_I_LOAD_B				16	
+#define DISPLAY_BYPASS_P_LOAD_B				17
+#define DISPLAY_BYPASS_TEMPER_B				18			
+#define DISPLAY_BYPASS_U_PRIM_B				19	
+#define DISPLAY_BYPASS_U_BUS_B				20	
+#define DISPLAY_BYPASS_U_LOAD_C				21	
+#define DISPLAY_BYPASS_I_LOAD_C				22 		
+#define DISPLAY_BYPASS_P_LOAD_C				23
+#define DISPLAY_BYPASS_TEMPER_C				24
+#define DISPLAY_BYPASS_U_PRIM_C				25 
+#define DISPLAY_BYPASS_U_BUS_C				26  
 
 #define COMMAND_OK		0x5555
 #define COMAND_FAIL		0xaaaa
@@ -532,7 +550,7 @@ typedef enum {
 	iTst_klbr,iTst_BPS1,iTst_BPS2,iTst_BPS12,iDebug,
 	iDef,iDef_3U,iDef_RSTKM,iDef_6U,iDef_220,iDef_220_V2,
 	iSet_st_prl,iK_pdp,iSet_T,iSet_T_avt,
-	iDeb,iJ_bat,iK_inv,iK_inv_sel,iK_byps,
+	iDeb,iJ_bat,iK_inv,iK_inv_sel,iK_byps,iK_byps_3f,
 	iPrl_bat_in_out,iPdp1,iJAv_sel,iJAv_net_sel,iJAv_net,iJAv_src1,
 	iTst_bps,/*iJAv_bat,iJAv_bat_sel,*/iAusw,iAusw_prl,iAusw_set,
 	iK_t_ext,iK_t_3U,iK_t_ext_6U,
@@ -550,7 +568,7 @@ typedef enum {
 	iAvt,iLan_set,
 	iInv,iInv_v2,iInv_v3,
 	iNpn_set,
-	iByps,iK_byps_sel,
+	iByps,iByps3f,iK_byps_sel,
 	iFWabout}i_enum;
 typedef struct  
 {
@@ -677,6 +695,7 @@ extern signed short NUMEXT;
 extern signed short NUMAVT;
 extern signed short NUMMAKB;
 extern signed short NUMBYPASS;
+extern signed short NUMPHASE;
 
 typedef enum {apvON=0x01,apvOFF=0x00}enum_apv_on;
 extern enum_apv_on APV_ON1,APV_ON2;

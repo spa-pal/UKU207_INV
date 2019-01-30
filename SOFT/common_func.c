@@ -354,6 +354,14 @@ for (n=0;n<5;n++)
 	}
 }
 
+//-----------------------------------------------
+void checkboxing(char xy,short in)
+{
+char i;
+i=find(xy);
+if(in)lcd_buffer[i]=3;
+else lcd_buffer[i]=4;	 
+}
 
 //-----------------------------------------------
 void event2ind(char num, char simbol)

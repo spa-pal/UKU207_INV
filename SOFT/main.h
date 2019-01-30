@@ -564,6 +564,8 @@ typedef enum {
 	iExt_ddv,iExt_ddi,iExt_dud,iExt_dp,iSM,iLog,iLog_,iBatLog,iKlimat,
 	iEnerg3,iEnerg,
 	iVent,
+	iRele_set_sel,iRele_set,
+	iByps_av_set,
 	iK_power_net3,
 	iAvt,iLan_set,
 	iInv,iInv_v2,iInv_v3,
@@ -686,6 +688,12 @@ extern signed short U_NET_MAX;
 extern signed short U_NET_MIN;
 extern signed short U_BAT_MAX;
 extern signed short U_BAT_MIN;
+extern signed short U_OUT_AC_MAX_AV;
+extern signed short U_OUT_AC_MIN_AV;
+extern signed short U_IN_AC_MAX_AV;
+extern signed short U_IN_AC_MIN_AV;
+extern signed short U_IN_DC_MAX_AV;
+extern signed short U_IN_DC_MIN_AV;
 extern signed short NUMBAT;
 extern signed short NUMIST;
 extern signed short NUMINV;
@@ -1109,6 +1117,10 @@ extern short bIBAT_SMKLBR;
 extern signed short npn_tz_cnt;
 typedef enum {npnsOFF=0,npnsON} enum_npn_stat;
 extern enum_npn_stat npn_stat;
+
+//-----------------------------------------------
+//”правление реле
+extern signed short RELE_SET_MASK[2];
 
 extern char snmp_plazma;
 

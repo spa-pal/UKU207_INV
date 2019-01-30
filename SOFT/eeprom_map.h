@@ -114,6 +114,15 @@
 #define EE_SNTP_ENABLE		SECTOR_SETS+158
 #define EE_SNTP_GMT			SECTOR_SETS+160
 #define EE_NUMPHASE			SECTOR_SETS+162
+#define EE_RELE_SET_MASK0	SECTOR_SETS+164
+#define EE_RELE_SET_MASK1	SECTOR_SETS+166
+#define EE_U_OUT_AC_MAX_AV		SECTOR_SETS+168
+#define EE_U_OUT_AC_MIN_AV		SECTOR_SETS+170
+#define EE_U_IN_AC_MAX_AV		SECTOR_SETS+172
+#define EE_U_IN_AC_MIN_AV		SECTOR_SETS+174
+#define EE_U_IN_DC_MAX_AV		SECTOR_SETS+176
+#define EE_U_IN_DC_MIN_AV		SECTOR_SETS+178
+
 
 #define SECTOR_AUSW  		SECTOR_KOEF+300
 
@@ -412,3 +421,4 @@ extern const unsigned short ADR_SK_ZVUK_EN[4];
 extern const unsigned short ADR_SK_LCD_EN[4];
 extern const unsigned short ADR_SK_RS_EN[4];
 
+extern const unsigned short ADR_EE_RELE_SET_MASK[2];

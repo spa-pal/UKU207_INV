@@ -28,6 +28,7 @@ void show_mess(char* p1, char* p2, char* p3, char* p4,int m_sec);
 void event2ind(char num, char simbol);
 char ptr_carry(signed int in,unsigned char modul,signed int carry);
 void event_data2ind(char num, char simbol);
+void checkboxing(char xy,short in);
 void ip2lcd(	short in1,
 			short in2,
 			short in3,

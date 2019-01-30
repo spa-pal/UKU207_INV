@@ -2029,17 +2029,20 @@ void rele_hndl(void)
 
 //temp=0;
 
-
+char ii_,temp_inv_avar;
+/*
+SET_REG(LPC_PINCON->PINSEL0,0,5*2,6*2);
+SET_REG(LPC_GPIO0->FIODIR,63,4,6);*/
 SET_REG(LPC_PINCON->PINSEL0,0,4*2,6*2);
 SET_REG(LPC_GPIO0->FIODIR,63,4,6);
-SET_REG(LPC_PINCON->PINSEL7,0,(25-16)*2,2);
+/*SET_REG(LPC_PINCON->PINSEL7,0,(25-16)*2,2);
 SET_REG(LPC_GPIO3->FIODIR,1,25,1);
 SET_REG(LPC_PINCON->PINSEL1,0,(29-16)*2,2);
-SET_REG(LPC_GPIO0->FIODIR,1,29,1);
+SET_REG(LPC_GPIO0->FIODIR,1,29,1);*/
 
 
 
-
+/*
 
 
 if	(
@@ -2059,7 +2062,54 @@ if	(
 	SET_REG(LPC_GPIO0->FIOSET,1,4,1);
 	}
 else SET_REG(LPC_GPIO0->FIOCLR,1,4,1);	  	
+*/
+temp_inv_avar=0;
+for	(ii_=0;ii_<NUMINV;ii_++)
+	{
+	if((inv[ii_]._flags_tm&0x20)||(inv[ii_]._cnt>30))temp_inv_avar=1;
+	}
 
+
+//char bdr_avar_stat_temp=0;
+for	(ii_=0;ii_<2;ii_++)
+		{
+		char avar_stat_temp=0;
+		//Авария инверторов
+		if((RELE_SET_MASK[ii_]&0x01)&& // Авария инверторов подключена к этому реле
+		   temp_inv_avar) avar_stat_temp=1;
+ /*
+		//Ускоренный заряд
+		if((RELE_SET_MASK[ii_]&0x02)&&
+			(sp_ch_stat==scsWRK))			bdr_avar_stat_temp|=(1<<ii_);
+		//Выравнивающий заряд
+		if((RELE_SET_MASK[ii_]&0x04)&&
+			(spc_stat==spcVZ))			bdr_avar_stat_temp|=(1<<ii_);
+		//Общая авария ЗВУ
+		if((RELE_SET_MASK[ii_]&0x08)&&
+			(avar_stat))					bdr_avar_stat_temp|=(1<<ii_);
+		//Uвых завышено
+		if((RELE_SET_MASK[ii_]&0x10)&&
+			(uout_av==1))					bdr_avar_stat_temp|=(1<<ii_);
+		//Uвых занижено
+		if((RELE_SET_MASK[ii_]&0x20)&&
+			(uout_av==2))					bdr_avar_stat_temp|=(1<<ii_);
+		if((RELE_SET_MASK[ii_]&0x40)&&*/
+	/*		(
+			((bps[0]._av&(1<<4))&&(NUMIST>=1))||
+			((bps[1]._av&(1<<4))&&(NUMIST>=2))||
+			((bps[2]._av&(1<<4))&&(NUMIST>=3))
+			))bdr_avar_stat_temp|=(1<<ii_);
+		if((RELE_SET_MASK[ii_]&0x80)&&
+			(
+			((bps[0]._av&(0x0f))&&(NUMIST>=1))||
+			((bps[1]._av&(0x0f))&&(NUMIST>=2))||
+			((bps[2]._av&(0x0f))&&(NUMIST>=3))
+			))bdr_avar_stat_temp|=(1<<ii_);	*/
+
+	/*	if(!(RELE_SET_MASK[ii_]&(1<<15))) bdr_avar_stat_temp^=(1<<ii_); 
+		} */
+//	bdr_avar_stat=bdr_avar_stat_temp;
+	}
 
 }
 

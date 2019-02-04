@@ -855,31 +855,21 @@ typedef struct
 	signed long 	_Pout;
 	signed short 	_Unet; 	
 	signed short 	_Uin;
+	signed char		_unet_av_cnt;
+	char 			_unet_av_stat;
+	signed char		_uout_av_cnt;
+	char 			_uout_av_stat;
+	signed char		_uin_av_cnt;
+	char 			_uin_av_stat;
+	signed char 	_temper_av_cnt;
+	char 			_temper_av_stat;
 	char			_T;
 	char 		_flags;
 	char			_cnt;
 	char 		_adress;
+	char _valid;
 	} BYPS_STAT; 
 extern BYPS_STAT byps[3];
-
-//***********************************************
-//Мониторы АКБ
-typedef struct
-     {
-	signed short	_U[5];
-	signed short	_Ub[5];
-	signed short	_T[5];
-	signed short	_T_nd[5];
-	signed short 	_cnt; 	
-	} MAKB_STAT; 
-extern MAKB_STAT makb[4];
-
-//***********************************************
-//Телеметрия по внутренней шине
-//extern char can_slot[12][16];
-
-//***********************************************
-//Состояние источников
 
 
 typedef struct
@@ -946,14 +936,13 @@ typedef struct
      //char _av_u_max;
      //char _av_u_min;
      //char _av_temper; 
-     signed _Uio; 
-     //signed _Uin;
-     signed _Ii;
-     signed _Ti; 
-	 signed _Uil;
-	 signed _Uin;
-	 signed _Udcin;
-	signed short _Pio;
+	signed _Uout; 
+	signed _Iout;
+	signed _T; 
+	signed _Uload;
+	signed _Unet;
+	signed _Udcin;
+	signed short _Pout;
      char _flags_tu;
      //char _flags_tu_old;
      //char _is_ready;
@@ -967,18 +956,27 @@ typedef struct
      int _ist_blok_host_cnt;
      short _blok_cnt; //блокирование источников 
      char _flags_tm;
+	 char _flags_tm_dop;
+	char _avIsOn;
 	char _flags_tm_old;
 	signed short _overload_av_cnt;     
-     signed short _temp_av_cnt;
-     signed short _umax_av_cnt;
-     signed short _umin_av_cnt;
-     signed _rotor;
-     signed  short _x_; 
-     char _adr_ee;
+	signed short _temp_av_cnt;
+	signed short _umax_av_cnt;
+	signed short _umin_av_cnt;
+	signed _rotor;
+	signed  short _x_; 
+	char _adr_ee;
 	char _last_avar;
-     } INV_STAT; 
+	char _valid;
+	signed char _uout_av_cnt;
+	char _uout_av_stat;
+	signed char _temper_av_cnt;
+	char _temper_av_stat;
+
+	} INV_STAT; 
 extern INV_STAT inv[64];
 extern char first_inv_slot;
+//extern char someInvAvIsOn;
 
 //***********************************************
 //Состояние нагрузки
@@ -1121,8 +1119,19 @@ extern enum_npn_stat npn_stat;
 //-----------------------------------------------
 //Управление реле
 extern signed short RELE_SET_MASK[2];
+extern char avar_stat_temp[2];
+
+//-----------------------------------------------
+//Флаги состояния системы
+extern char someInvAvIsOn;		//авария какого-либо инвертора
+extern char dcAvIsOn; 			//авария по входному напряжению DC
+extern char uOutAvIsOn;			//авария по выходному напряжению
+extern char uNetAvIsOn;			//авария по входному напряжению AC
+extern char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
+
 
 extern char snmp_plazma;
+extern char plazma_bypas;
 
 
 extern char ips_bat_av_vzvod;

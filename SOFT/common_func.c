@@ -394,6 +394,8 @@ if(dt[0]=='U')
 	lcd_buffer[iii++]=' ';     		
    	lcd_buffer[iii++]=' ';
    	lcd_buffer[iii++]=' ';
+   	lcd_buffer[iii++]=' ';
+   	lcd_buffer[iii++]=' ';
 
     	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     		{
@@ -428,29 +430,31 @@ if(dt[0]=='U')
      
 else if(dt[0]=='P')
 	{
-     lcd_buffer[iii++]='Ï';
-     lcd_buffer[iii++]='Ñ';
-    	lcd_buffer[iii++]=' ';
-     lcd_buffer[iii++]=' ';     		
-     lcd_buffer[iii++]=' ';
-     lcd_buffer[iii++]=' ';
-     lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]='Ï';
+	lcd_buffer[iii++]='Ñ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';     		
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
      	
-     if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
-     	{
-         	lcd_buffer[iii++]='0';
+	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+		{
+		lcd_buffer[iii++]='0';
      	lcd_buffer[iii++]='!';
-    	    	lcd_buffer[iii++]=':'; 
-    		lcd_buffer[iii++]='0';
-    		lcd_buffer[iii++]='@';
+		lcd_buffer[iii++]=':'; 
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='@';
      	lcd_buffer[iii++]=':';
      	lcd_buffer[iii++]='0';
      	lcd_buffer[iii++]='#';
-         	int2lcd(dt__[0],'!',0);
+		int2lcd(dt__[0],'!',0);
      	int2lcd(dt__[1],'@',0);
      	int2lcd(dt__[2],'#',0);    		     		
      	}	                   
-    	else      	
+	else      	
      	{
       	lcd_buffer[iii++]=' ';
      	lcd_buffer[iii++]='0';
@@ -465,66 +469,247 @@ else if(dt[0]=='P')
       	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
 	 	sub_bgnd(sm_mont[dt_[1]],'@',0);  
   		}     	
-     }   
+	}   
+else if(dt[0]=='I')
+    {
+	lcd_buffer[iii++]='È';
+	lcd_buffer[iii++]='í';
+	lcd_buffer[iii++]='â';
+	if(dt[1]<9)
+		{
+		lcd_buffer[iii++]=0x31+dt[1];
+		lcd_buffer[iii++]='À';
+    	lcd_buffer[iii++]='â';
+		lcd_buffer[iii++]=' ';
+		}
+    else if((dt[1]>=9)&&(dt[1]<99))
+		{
+		lcd_buffer[iii++]=0x30+((dt[1]+1)/10);
+		lcd_buffer[iii++]=0x30+((dt[1]+1)%10);
+		lcd_buffer[iii++]='À';
+    	lcd_buffer[iii++]='â';
+		}
+/*    	else 
+    		{
+    		lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';     		
+    		} */
+    lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+    if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    	{
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='!';
+		lcd_buffer[iii++]=':'; 
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='@';
+		lcd_buffer[iii++]=':';
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='#';
+		int2lcd(dt__[0],'!',0);
+		int2lcd(dt__[1],'@',0);
+		int2lcd(dt__[2],'#',0);    		     		
+		}	                   
+	else      	
+		{
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='!';
+		lcd_buffer[iii++]='@'; 
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]='0';
+		lcd_buffer[iii++]='#';
+		int2lcd(dt_[2],'!',0);
+		int2lcd(dt_[0],'#',0);   
+		if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		}
+	}    
 
 else if(dt[0]=='B')
     	{
-    	if(dt[2]=='C')
+    	if(dt[2]=='N')
     		{
-    		lcd_buffer[iii++]='Á';
-    		lcd_buffer[iii++]='à';
+			lcd_buffer[iii++]='À';
+    		lcd_buffer[iii++]='â';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='ñ';
+    		lcd_buffer[iii++]='å';
     		lcd_buffer[iii++]='ò';
-		if(dt[1]<9)
-    			{
-    			lcd_buffer[iii++]=0x31+dt[1];
-    			lcd_buffer[iii++]='À';
-    			lcd_buffer[iii++]=' ';
-    			}
-    		else if((dt[1]>=9)&&(dt[1]<99))
-    			{
-    			lcd_buffer[iii++]=0x30+((dt[1]+1)/10);
-    			lcd_buffer[iii++]=0x30+((dt[1]+1)%10);
-    			lcd_buffer[iii++]='À';
-    			}
-    		else 
-    			{
-    			lcd_buffer[iii++]=' ';
-    			lcd_buffer[iii++]=' '; 
-    			lcd_buffer[iii++]=' ';    		
-    			} 
+			lcd_buffer[iii++]='ü';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      	
     		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
-    		    	lcd_buffer[iii++]='0';
-   	 		lcd_buffer[iii++]='!';
-    		    	lcd_buffer[iii++]=':'; 
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
     			lcd_buffer[iii++]='0';
     			lcd_buffer[iii++]='@';
-   	 		lcd_buffer[iii++]=':';
-   	 		lcd_buffer[iii++]='0';
-   	 		lcd_buffer[iii++]='#';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
    	 	    	int2lcd(dt__[0],'!',0);
-   	 		int2lcd(dt__[1],'@',0);
-   	 		int2lcd(dt__[2],'#',0);    		     		
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
     			}	                   
     		else      	
     			{
     	 		lcd_buffer[iii++]=' ';
     			lcd_buffer[iii++]='0';
     			lcd_buffer[iii++]='!';
-    	    		lcd_buffer[iii++]='@'; 
+    	    	lcd_buffer[iii++]='@'; 
     			lcd_buffer[iii++]=' ';
     			lcd_buffer[iii++]=' ';
     			lcd_buffer[iii++]='0';
     			lcd_buffer[iii++]='#';
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
-    	    		if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-			sub_bgnd(sm_mont[dt_[1]],'@',0);  
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				sub_bgnd(sm_mont[dt_[1]],'@',0);  
     			}
     		}
-
+    	else if(dt[2]=='O')
+    		{
+			lcd_buffer[iii++]='À';
+    		lcd_buffer[iii++]='â';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='â';
+    		lcd_buffer[iii++]='û';
+    		lcd_buffer[iii++]='õ';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+    		
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+    			}
+    		}
+    	else if(dt[2]=='I')
+    		{
+			lcd_buffer[iii++]='À';
+    		lcd_buffer[iii++]='â';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='è';
+    		lcd_buffer[iii++]='í';
+    		lcd_buffer[iii++]='â';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+    		
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+    			}
+    		}
+    	else if(dt[2]=='T')
+    		{
+			lcd_buffer[iii++]='Á';
+    		lcd_buffer[iii++]='à';
+    		lcd_buffer[iii++]='é';
+    		lcd_buffer[iii++]='ï';
+    		lcd_buffer[iii++]='à';
+    		lcd_buffer[iii++]='ñ';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+    		
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+    			}
+    		}
+/*
     	if(dt[2]=='S')
     		{
     		lcd_buffer[iii++]='Á';
@@ -649,24 +834,7 @@ else if(dt[0]=='B')
     		lcd_buffer[iii++]=' ';    		
     		
     		
- /*   		lcd_buffer[iii++]='Á';
-		if(dt[1]<9)
-    			{
-    			lcd_buffer[iii++]=0x31+dt[1];
-    			lcd_buffer[iii++]='ð';
-    			}
-    		else if((dt[1]>=9)&&(dt[1]<99))
-    			{
-    			lcd_buffer[iii++]=0x30+((dt[1]+1)/10);
-    			lcd_buffer[iii++]=0x30+((dt[1]+1)%10);
-    			}
-    		else 
-    			{
-    			lcd_buffer[iii++]=' ';
-    			lcd_buffer[iii++]=' '; 
-    			}
-    		lcd_buffer[iii++]=' ';	 
-    		lcd_buffer[iii++]=' ';   */ 		
+ 		
     		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     	    		lcd_buffer[iii++]='0';
@@ -756,8 +924,54 @@ else if(dt[0]=='B')
     			}  		
     		}    		
 
-    		     	     	
+    	*/	     	     	
     	}     	    
+
+else if(dt[0]=='D')
+	{
+	if(dt[2]=='U')
+		{
+		lcd_buffer[iii++]='À';
+		lcd_buffer[iii++]='â';
+		lcd_buffer[iii++]='U';
+		lcd_buffer[iii++]='d';
+		lcd_buffer[iii++]='c';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+     	
+		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+			{
+			lcd_buffer[iii++]='0';
+			lcd_buffer[iii++]='!';
+			lcd_buffer[iii++]=':'; 
+			lcd_buffer[iii++]='0';
+			lcd_buffer[iii++]='@';
+			lcd_buffer[iii++]=':';
+			lcd_buffer[iii++]='0';
+			lcd_buffer[iii++]='#';
+			int2lcd(dt__[0],'!',0);
+			int2lcd(dt__[1],'@',0);
+			int2lcd(dt__[2],'#',0);    		     		
+			}	                   
+		else      	
+			{
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]='0';
+			lcd_buffer[iii++]='!';
+			lcd_buffer[iii++]='@'; 
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]='0';
+			lcd_buffer[iii++]='#';
+			int2lcd(dt_[2],'!',0);
+			int2lcd(dt_[0],'#',0);   
+			if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+			sub_bgnd(sm_mont[dt_[1]],'@',0);  
+			}
+		}
+	}
      	
 else if(dt[0]=='S')
     	{
@@ -836,28 +1050,7 @@ else if(dt[0]=='B')
     	lcd_buffer[iii++]=' ';
     	}     	    
      	
-else if(dt[0]=='I')
-    	{
-    	lcd_buffer[iii++]='È';
-    	lcd_buffer[iii++]='í';
-    	lcd_buffer[iii++]='â';
-	if(dt[1]<9)
-    		{
-    		lcd_buffer[iii++]=0x31+dt[1];
-    		lcd_buffer[iii++]=' ';
-    		}
-    	else if((dt[1]>=9)&&(dt[1]<99))
-    		{
-    		lcd_buffer[iii++]=0x30+((dt[1]+1)/10);
-    		lcd_buffer[iii++]=0x30+((dt[1]+1)%10);
-    		}
-    	else 
-    		{
-    		lcd_buffer[iii++]=' ';
-    		lcd_buffer[iii++]=' ';     		
-    		} 
-    	lcd_buffer[iii++]=' ';
-    	}    
+
 }	
 
 //-----------------------------------------------

@@ -12,6 +12,11 @@ extern unsigned short bps_on_mask,bps_off_mask;
 extern char num_necc_up,num_necc_down;
 extern unsigned char sh_cnt0,b1Hz_sh;
 
+//**********************************************
+//Аварии DC
+extern signed char dcin_av_cnt;
+extern char dcin_av_stat;
+
 
 extern short cntrl_stat_blok_cnt,cntrl_stat_blok_cnt_,cntrl_stat_blok_cnt_plus[2],cntrl_stat_blok_cnt_minus[2];
 

@@ -24,6 +24,7 @@ void avar_bat_as_hndl(char b, char in);
 void ke_mem_hndl(char b,unsigned short in);
 void vz_mem_hndl(unsigned short in);
 void wrk_mem_hndl(char b);
+void avar_byps_hndl(char dev, char v, char in, short value);
 
 
 

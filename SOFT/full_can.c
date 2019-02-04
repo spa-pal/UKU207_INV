@@ -897,7 +897,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
 	{ 
      char temp;      		
 
-	temp=vz_start(RXBUFF[7]);
+	//temp=vz_start(RXBUFF[7]);
 
      TXBUFF[0]=0x30;
 	TXBUFF[1]=0x20+3;
@@ -1226,6 +1226,7 @@ if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1;
 	
  	//if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
 
@@ -1245,7 +1246,8 @@ if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._buff[11]=RXBUFF[7];	
 
 	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10; 
+	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1; 
 
 	can_reset_cnt=0;
    	}
@@ -1263,7 +1265,8 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._buff[17]=RXBUFF[7];	
 	
 	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10; 
+	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1; 
 
 	can_reset_cnt=0;
    	}
@@ -1283,6 +1286,8 @@ if((RXBUFF[1]==PUTTM1BYPS))
 		byps[bypass_adress-61]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 	
 		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
+
 		if(byps[bypass_adress-61]._Pout<0) byps[bypass_adress-61]._Pout=0;
 		}
 	else
@@ -1294,6 +1299,8 @@ if((RXBUFF[1]==PUTTM1BYPS))
 		byps[0]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 	
 		byps[0]._cnt=0;
+		byps[0]._valid=1;
+
 		if(byps[0]._Pout<0) byps[0]._Pout=0;
 		}
     }
@@ -1312,6 +1319,7 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		byps[bypass_adress-61]._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 
 		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
 		}
 	else 
 		{
@@ -1321,6 +1329,7 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		byps[0]._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 
 		byps[0]._cnt=0;
+		byps[0]._valid=1;
 		}
    	}
 
@@ -1492,7 +1501,7 @@ if( ((RXBUFF[0]&0x1f)==23)&&((RXBUFF[1])==PUTTM) )
 
 	can_reset_cnt=0;
      }
-
+/*
 if( (RXBUFF[1]==PUTTM_MAKB1)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
      {
 	makb[RXBUFF[0]]._U[0]=*((short*)&RXBUFF[2]);
@@ -1543,7 +1552,7 @@ if( (RXBUFF[1]==PUTTM_MAKB3)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
 
 	makb[RXBUFF[0]]._cnt=0;
      }
-
+*/
 CAN_IN_AN1_end:
 bIN2=0;
 }

@@ -160,6 +160,21 @@ unsigned short bps_on_mask,bps_off_mask;
 char num_necc_up,num_necc_down;
 unsigned char sh_cnt0,b1Hz_sh;
 
+//**********************************************
+//Аварии байпаса
+#define CONST_AV_BYPS_HNDL_MAX_CNT	50
+
+
+//**********************************************
+//Аварии инверторов
+#define CONST_AV_INV_HNDL_MAX_CNT	50
+
+//**********************************************
+//Аварии DC
+#define CONST_AV_DCIN_HNDL_MAX_CNT	50
+signed char dcin_av_cnt;
+char dcin_av_stat;
+
 //***********************************************
 //Спецфункции
 enum_spc_stat spc_stat;
@@ -282,7 +297,7 @@ else
 //-----------------------------------------------
 void ke_drv(void)
 {
-
+/*
 if(spc_stat==spcKE)
 	{
 	if(spc_phase==0)
@@ -342,14 +357,14 @@ if(spc_stat==spcKE)
 		lc640_write_int(EE_SPC_STAT,spcOFF);
 		}
 	}
-			
+*/			
 }
-
+/*
 //-----------------------------------------------
 char vz_start(char hour)
 {          
-char out;
-out=0;
+ochar out;
+ut=0;
 if(spc_stat==spcOFF)
 	{
 	spc_stat=spcVZ;
@@ -368,12 +383,12 @@ if(spc_stat==spcOFF)
 //else if((spc_stat==spc_KE2p1)||(spc_stat==spc_KE2p2)) out=33;
 //plazma=out;	
 return out;
-}
+}		   	*/
 
 //-----------------------------------------------
 void vz_stop(void)
 {
-if(spc_stat==spcVZ)
+/*if(spc_stat==spcVZ)
      {
 vz_mem_hndl(vz_cnt_h);          
 vz_cnt_s=0;
@@ -384,7 +399,7 @@ spc_stat=spcOFF;
 		__ee_spc_stat=spcOFF;
 		lc640_write_int(EE_SPC_STAT,spcOFF);
      }
-
+*/
 }
 
 //-----------------------------------------------
@@ -410,7 +425,7 @@ lc640_write_int(EE_MIN_AVZ,LPC_RTC->MIN);
 lc640_write_int(EE_SEC_AVZ,LPC_RTC->SEC);
 
 }
-
+/*
 //-----------------------------------------------
 void avz_drv(void)                               
 {                
@@ -431,7 +446,7 @@ if(bAVZ)
 	}	
 
 }
-
+*/
 
 
 //-----------------------------------------------
@@ -1361,7 +1376,7 @@ for(i=0;i<NUMIST;i++)
 
 
 
-inv[0]._Uio=6;
+inv[0]._Uout=6;
 
 #ifdef UKU_GLONASS
 
@@ -1387,7 +1402,8 @@ if (NUMINV)
      		inv[i]._Ti=0;
      		inv[i]._flags_tm=0; 
 //	     	inv[i]._rotor0;
-			inv[i]._cnt=25;    
+			inv[i]._cnt=25;  
+			inv[i]._valid=0;  
      		}
      	}
    	}
@@ -1396,31 +1412,43 @@ if (NUMINV)
 
 if (NUMINV)
 	{
+	//someInvAvIsOn=0; 
 	for(i=0;i<NUMINV;i++)
 		{
 		if(bps[i+20]._cnt<5)
      		{
-     		inv[i]._Ii=bps[i+20]._buff[0]+(bps[i+20]._buff[1]*256);
-     		inv[i]._Pio=((signed short)bps[i+20]._buff[2])+((signed short)(bps[i+20]._buff[3]<<8));
-     		inv[i]._Uio=bps[i+20]._buff[4]+(bps[i+20]._buff[5]*256);
-     		inv[i]._Ti=(signed)(bps[i+20]._buff[6]);
+     		inv[i]._Iout=bps[i+20]._buff[0]+(bps[i+20]._buff[1]*256);
+     		inv[i]._Pout=((signed short)bps[i+20]._buff[2])+((signed short)(bps[i+20]._buff[3]<<8));
+     		inv[i]._Uout=bps[i+20]._buff[4]+(bps[i+20]._buff[5]*256);
+     		inv[i]._T=(signed)(bps[i+20]._buff[6]);
      		inv[i]._flags_tm=bps[i+20]._buff[7];
-     		inv[i]._Uin=bps[i+20]._buff[8]+(bps[i+20]._buff[9]*256);
-     		inv[i]._Uil=bps[i+20]._buff[10]+(bps[i+20]._buff[11]*256);
+     		inv[i]._Unet=bps[i+20]._buff[8]+(bps[i+20]._buff[9]*256);
+     		inv[i]._Uload=bps[i+20]._buff[10]+(bps[i+20]._buff[11]*256);
 			inv[i]._Udcin=bps[i+20]._buff[12]+(bps[i+20]._buff[13]*256);
-			inv[i]._cnt=0;    
+			inv[i]._flags_tm_dop=bps[i+20]._buff[14];
+			inv[i]._cnt=0;
+			if(inv[i]._flags_tm&0x1a)
+				{
+				inv[i]._avIsOn=1;
+				//someInvAvIsOn=1;
+				}
+			else 
+				{
+				inv[i]._avIsOn=0;
+				}    
      		} 
 		else 
      		{
-      		inv[i]._Ii=0;
-			inv[i]._Pio=0;
-			inv[i]._Uio=0;
-     		inv[i]._Ti=0;
+      		inv[i]._Iout=0;
+			inv[i]._Pout=0;
+			inv[i]._Uout=0;
+     		inv[i]._T=0;
      		inv[i]._flags_tm=0; 
-     		inv[i]._Uil=0;
-     		inv[i]._Uin=0;
+     		inv[i]._Uload=0;
+     		inv[i]._Unet=0;
 			inv[i]._Udcin=0;
-			inv[i]._cnt=25;    
+			inv[i]._cnt=25;
+			inv[i]._avIsOn=0;    
      		}
      	}
    	}
@@ -1434,6 +1462,7 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[0]._flags=0;
 	byps[0]._Unet=0;
 	byps[0]._Uin=0;
+	byps[0]._valid=0;
 	}
 
 if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
@@ -1445,6 +1474,7 @@ if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[1]._flags=0;
 	byps[1]._Unet=0;
 	byps[1]._Uin=0;
+	byps[1]._valid=0;
 	}
 
 if((NUMBYPASS>=3&&(byps[2]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
@@ -1456,6 +1486,7 @@ if((NUMBYPASS>=3&&(byps[2]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[2]._flags=0;
 	byps[2]._Unet=0;
 	byps[2]._Uin=0;
+	byps[2]._valid=0;
 	}
 
 
@@ -2072,45 +2103,41 @@ for	(ii_=0;ii_<NUMINV;ii_++)
 
 //char bdr_avar_stat_temp=0;
 for	(ii_=0;ii_<2;ii_++)
+	{
+	avar_stat_temp[ii_]=0;
+	//Авария инверторов
+	if(someInvAvIsOn && (RELE_SET_MASK[ii_]&0x01)) // Есть авария какого-то инвертора и авария инверторов разрешена для этого реле
 		{
-		char avar_stat_temp=0;
-		//Авария инверторов
-		if((RELE_SET_MASK[ii_]&0x01)&& // Авария инверторов подключена к этому реле
-		   temp_inv_avar) avar_stat_temp=1;
- /*
-		//Ускоренный заряд
-		if((RELE_SET_MASK[ii_]&0x02)&&
-			(sp_ch_stat==scsWRK))			bdr_avar_stat_temp|=(1<<ii_);
-		//Выравнивающий заряд
-		if((RELE_SET_MASK[ii_]&0x04)&&
-			(spc_stat==spcVZ))			bdr_avar_stat_temp|=(1<<ii_);
-		//Общая авария ЗВУ
-		if((RELE_SET_MASK[ii_]&0x08)&&
-			(avar_stat))					bdr_avar_stat_temp|=(1<<ii_);
-		//Uвых завышено
-		if((RELE_SET_MASK[ii_]&0x10)&&
-			(uout_av==1))					bdr_avar_stat_temp|=(1<<ii_);
-		//Uвых занижено
-		if((RELE_SET_MASK[ii_]&0x20)&&
-			(uout_av==2))					bdr_avar_stat_temp|=(1<<ii_);
-		if((RELE_SET_MASK[ii_]&0x40)&&*/
-	/*		(
-			((bps[0]._av&(1<<4))&&(NUMIST>=1))||
-			((bps[1]._av&(1<<4))&&(NUMIST>=2))||
-			((bps[2]._av&(1<<4))&&(NUMIST>=3))
-			))bdr_avar_stat_temp|=(1<<ii_);
-		if((RELE_SET_MASK[ii_]&0x80)&&
-			(
-			((bps[0]._av&(0x0f))&&(NUMIST>=1))||
-			((bps[1]._av&(0x0f))&&(NUMIST>=2))||
-			((bps[2]._av&(0x0f))&&(NUMIST>=3))
-			))bdr_avar_stat_temp|=(1<<ii_);	*/
+		avar_stat_temp[ii_]=1;
+		}
+	//Авария DC
+	if(dcAvIsOn && (RELE_SET_MASK[ii_]&0x02)) // Есть авария входного напряжения (DC) и эта авария разрешена для этого реле
+		{
+		avar_stat_temp[ii_]=1;
+		}
+	//Авария Uвых
+	if(uOutAvIsOn && (RELE_SET_MASK[ii_]&0x04)) // Есть авария выходного напряжения и эта авария разрешена для этого реле
+		{
+		avar_stat_temp[ii_]=1;
+		}
 
-	/*	if(!(RELE_SET_MASK[ii_]&(1<<15))) bdr_avar_stat_temp^=(1<<ii_); 
-		} */
-//	bdr_avar_stat=bdr_avar_stat_temp;
+	//Авария Unet
+	if(uNetAvIsOn && (RELE_SET_MASK[ii_]&0x08)) // Есть авария входного напряжения (AC) и эта авария разрешена для этого реле
+		{
+		avar_stat_temp[ii_]=1;
+		}
+
+	if((wrkFromNet1Inv0)&&(RELE_SET_MASK[ii_]&0x10))  //если система работает от инверторов и включен флажек воздействия этого сигнала на это реле
+		{
+		avar_stat_temp[ii_]=1;
+		}
 	}
 
+if(((avar_stat_temp[0]==0)&&(RELE_SET_MASK[0]&0x8000)) || ((avar_stat_temp[0]==1)&&(!(RELE_SET_MASK[0]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,4,1);
+else SET_REG(LPC_GPIO0->FIOSET,1,4,1);
+
+if(((avar_stat_temp[1]==0)&&(RELE_SET_MASK[1]&0x8000)) || ((avar_stat_temp[1]==1)&&(!(RELE_SET_MASK[1]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,5,1);
+else SET_REG(LPC_GPIO0->FIOSET,1,5,1);
 }
 
 
@@ -2274,15 +2301,12 @@ temp_SL3=0;
 num_of_wrks_inv=0;
 for(i=0;i<NUMINV;i++)
 	{
-
-
-
 	if((inv[i]._flags_tm&0x20))
 		{
 		num_of_wrks_inv++;
-		temp_SL1+=(signed long)inv[i]._Uio;
-		temp_SS2+=inv[i]._Ii;
-		temp_SL3+=(signed long)inv[i]._Pio;
+		temp_SL1+=(signed long)inv[i]._Uout;
+		temp_SS2+=inv[i]._Iout;
+		temp_SL3+=(signed long)inv[i]._Pout;
 		}
 
 	}
@@ -2304,11 +2328,286 @@ load_P_inv=temp_SL3;
 #define AVUMIN	4
 
 //-----------------------------------------------
+void inv_av_hndl(void)
+{
+char ii;
+if(NUMINV==0)return;
+
+for(ii=0;ii<NUMINV;ii++)
+	{
+	// Авария по выходным напряжениям инверторов
+	if((inv[ii]._flags_tm&0x18) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._uout_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._uout_av_cnt++;
+			if((inv[ii]._uout_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._uout_av_stat))
+				{
+				inv[ii]._uout_av_stat=1;
+				avar_inv_hndl(ii,'O',1,inv[ii]._Uout);
+				}  
+			}
+		}  
+	else if((!(inv[ii]._flags_tm&0x18)) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._uout_av_cnt)
+			{
+			inv[ii]._uout_av_cnt--;
+			if((inv[ii]._uout_av_cnt==0)&&(inv[ii]._uout_av_stat))
+				{
+				inv[ii]._uout_av_stat=0;
+				avar_inv_hndl(ii,'O',0,0);
+				} 
+			}
+		}
+	}
+}
+
+//-----------------------------------------------
+void system_status_hndl(void)
+{
+char ii;
+char temp;
+
+temp=0;
+for(ii=0;ii<NUMINV;ii++)
+	{
+	if((inv[ii]._uout_av_stat)||(inv[ii]._temper_av_stat)) temp=1;
+	}
+someInvAvIsOn = temp;
+
+dcAvIsOn=dcin_av_stat;
+
+
+if(NUMBYPASS==0)
+	{
+	temp=0;
+	for(ii=0;ii<NUMINV;ii++)
+		{
+		if(inv[ii]._uout_av_stat)
+			{
+			temp=1;
+			break;
+			}
+		}
+	uOutAvIsOn=temp;
+	}
+else
+	{
+	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(byps[ii]._uout_av_stat)
+			{
+			temp=1;
+			break;
+			}
+		}
+	uOutAvIsOn=temp;
+	}
+
+if(NUMBYPASS==0)
+	{
+	temp=0;
+	for(ii=0;ii<NUMINV;ii++)
+		{
+		if(inv[ii]._flags_tm_dop&0x03)
+			{
+			temp=1;
+			break;
+			}
+		}
+	uNetAvIsOn=temp;
+	}
+else
+	{
+	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(byps[ii]._unet_av_stat)
+			{
+			temp=1;
+			break;
+			}
+		}
+	uNetAvIsOn=temp;
+	}
+
+if(NUMBYPASS==0)
+	{
+	wrkFromNet1Inv0=0;
+	}
+else
+	{
+	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(!(byps[ii]._flags&0x80))
+			{
+			temp=1;
+			break;
+			}
+		}
+	wrkFromNet1Inv0=temp;
+	}
+}
+
+
+//-----------------------------------------------
+void dc_in_av_hndl(void)
+{
+// Авария по входному напряжению DC
+if((dcin_U>=U_IN_DC_MAX_AV)||(dcin_U<=U_IN_DC_MIN_AV))
+	{
+	if(dcin_av_cnt<CONST_AV_DCIN_HNDL_MAX_CNT)
+		{
+		dcin_av_cnt++;
+		if((dcin_av_cnt>=CONST_AV_DCIN_HNDL_MAX_CNT)&&(!dcin_av_stat))
+			{
+			dcin_av_stat=1;
+			avar_dcin_hndl(1,dcin_U);
+			}  
+		}
+	}
+
+else if((dcin_U<U_IN_DC_MAX_AV)&&(dcin_U>U_IN_DC_MIN_AV))
+	{
+	if(dcin_av_cnt)
+		{
+		dcin_av_cnt--;
+		if((dcin_av_cnt==0)&&(dcin_av_stat))
+			{
+			dcin_av_stat=0;
+			avar_dcin_hndl(0,0);
+			}  
+		}
+	}
+}
+
+//-----------------------------------------------
+void byps_av_hndl(void)
+{
+char ii;
+char SHIFT_CONST=0;
+if(NUMBYPASS==0)return;
+
+/*if(NUMPHASE==1)		SHIFT_CONST=0;
+else*/ if(NUMPHASE==3)SHIFT_CONST=1;
+
+for(ii=0;ii<NUMPHASE;ii++)
+	{
+	// Авария по выходному напряжению байпаса
+	if((((byps[ii]._Uout/10)>=U_OUT_AC_MAX_AV) || ((byps[ii]._Uout/10)<=U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._uout_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+			{
+			byps[ii]._uout_av_cnt++;
+			if((byps[ii]._uout_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uout_av_stat))
+				{
+				byps[ii]._uout_av_stat=1;
+				avar_byps_hndl(ii+SHIFT_CONST,'O',1,byps[ii]._Uout/10);
+				}  
+			}
+		}  
+	else if((((byps[ii]._Uout/10)<U_OUT_AC_MAX_AV) && ((byps[ii]._Uout/10)>U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._uout_av_cnt)
+			{
+			byps[ii]._uout_av_cnt--;
+			if((byps[ii]._uout_av_cnt==0)&&(byps[ii]._uout_av_stat))
+				{
+				byps[ii]._uout_av_stat=0;
+				avar_byps_hndl(ii+SHIFT_CONST,'O',0,0);
+				} 
+			}
+		}
+		 
+	// Авария по входному(сетевому) напряжению байпаса
+	if((((byps[ii]._Unet/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._Unet/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._unet_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+			{
+			byps[ii]._unet_av_cnt++;
+			if((byps[ii]._unet_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._unet_av_stat))
+				{
+				byps[ii]._unet_av_stat=1;
+				avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._Unet/10);
+				}  
+			}
+		}  
+	else if((((byps[ii]._Unet/10)<U_IN_AC_MAX_AV) && ((byps[ii]._Unet/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._unet_av_cnt)
+			{
+			byps[ii]._unet_av_cnt--;
+			if((byps[ii]._unet_av_cnt==0)&&(byps[ii]._unet_av_stat))
+				{
+				byps[ii]._unet_av_stat=0;
+				avar_byps_hndl(ii+SHIFT_CONST,'N',0,0);
+				} 
+			}
+		} 
+
+	// Авария по входному(инверторному) напряжению байпаса
+	if((((byps[ii]._Uin/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._Uin/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._uin_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+			{
+			byps[ii]._uin_av_cnt++;
+			if((byps[ii]._uin_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uin_av_stat))
+				{
+				byps[ii]._uin_av_stat=1;
+				avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._Uin/10);
+				}  
+			}
+		}  
+	else if((((byps[ii]._Uin/10)<U_IN_AC_MAX_AV) && ((byps[ii]._Uin/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._uin_av_cnt)
+			{
+			byps[ii]._uin_av_cnt--;
+			if((byps[ii]._uin_av_cnt==0)&&(byps[ii]._uin_av_stat))
+				{
+				byps[ii]._uin_av_stat=0;
+				avar_byps_hndl(ii+SHIFT_CONST,'I',0,0);
+				} 
+			}
+		}  
+
+	// Авария по температуре байпаса
+	if((byps[ii]._flags&0x02) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._temper_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+			{
+			byps[ii]._temper_av_cnt++;
+			if((byps[ii]._temper_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._temper_av_stat))
+				{
+				byps[ii]._temper_av_stat=1;
+				avar_byps_hndl(ii+SHIFT_CONST,'T',1,byps[ii]._T);
+				}  
+			}
+		}  
+	else if((!(byps[ii]._flags&0x02)) &&  byps[ii]._valid)
+		{
+		if(byps[ii]._temper_av_cnt)
+			{
+			byps[ii]._temper_av_cnt--;
+			if((byps[ii]._temper_av_cnt==0)&&(byps[ii]._temper_av_stat))
+				{
+				byps[ii]._temper_av_stat=0;
+				avar_byps_hndl(ii+SHIFT_CONST,'T',0,0);
+				} 
+			}
+		} 
+	} 
+}
+
+//-----------------------------------------------
 void inv_drv(char in)
 {
 char temp,temp_;
 //if (bps[in]._device!=dINV) return;
-plazma_inv[4];
+//plazma_inv[4];
 
 gran_char(&first_inv_slot,1,7);
 

@@ -395,13 +395,13 @@ snmp_bps_stat[7]=bps[7]._av;
 for(i = 0; i<20 ; i++)
 	{
 	snmp_inv_number[i]=i+1;
-	snmp_inv_voltage[i]=inv[i]._Uio;
-	snmp_inv_current[i]=inv[i]._Ii;
-	snmp_inv_temperature[i]=inv[i]._Ti;
+	snmp_inv_voltage[i]=inv[i]._Uout;
+	snmp_inv_current[i]=inv[i]._Iout;
+	snmp_inv_temperature[i]=inv[i]._T;
 	snmp_inv_stat[i]=inv[i]._flags_tm;
-	snmp_inv_u_prim[i]=inv[i]._Uin;
-	snmp_inv_u_in[i]=inv[i]._Uil;
-	snmp_inv_p_out[i]=inv[i]._Pio;
+	snmp_inv_u_prim[i]=inv[i]._Unet;
+	snmp_inv_u_in[i]=inv[i]._Uload;
+	snmp_inv_p_out[i]=inv[i]._Pout;
 	}
 /*
 snmp_inv_number[0]=1;

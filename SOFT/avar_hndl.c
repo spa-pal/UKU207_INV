@@ -565,10 +565,517 @@ __nop();
 }
 
 //-----------------------------------------------
+void avar_inv_hndl(char dev, char v, char in, short value)
+{
+char data[4];
+unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
+char avar_simbol;
+
+avar_simbol='O'; 			
+if(v=='O')avar_simbol=v;  		//Выходное напряжение
+//else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
+//else if(v=='N')avar_simbol=v;	//Входное напряжение(сеть)
+else if(v=='T')avar_simbol=v;	//Температура байпаса
+
+if(in==1)
+	{
+	//bps[dev]._last_avar=v;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr++;	
+	if(event_ptr>63)event_ptr=0;	
+	lc640_write_int(PTR_EVENT_LOG,event_ptr);	
+	
+    event_cnt=lc640_read_int(CNT_EVENT_LOG);
+	if(event_cnt!=63)event_cnt=event_ptr;
+	lc640_write_int(CNT_EVENT_LOG,event_cnt); 
+	
+	lc640_adr=EVENT_LOG+(lc640_read_int(PTR_EVENT_LOG)*32);
+	
+	data[0]='I';
+	data[1]=dev; 
+	data[2]=avar_simbol;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr,data);
+
+	data[0]=(char)value;
+	data[1]=(char)(value>>8);
+	data[2]=0;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+4,data);
+
+	data[0]=LPC_RTC->YEAR;
+	data[1]=LPC_RTC->MONTH;
+	data[2]=LPC_RTC->DOM;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+8,data);
+
+	data[0]=LPC_RTC->HOUR;
+	data[1]=LPC_RTC->MIN;
+	data[2]=LPC_RTC->SEC;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+12,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+16,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+20,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+24,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+28,data);		
+	
+	}
+
+else if(in==0)
+	{      
+	char i;     
+//	event_ptr_find=0;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr_find=event_ptr;
+
+	for (i=0;i<63;i++)
+		{
+		lc640_adr=EVENT_LOG+(event_ptr_find*32);
+
+     	lc640_read_long_ptr(lc640_adr,data);
+     
+     	if(!((data[0]=='I')&&(data[1]==dev)&&(data[2]==avar_simbol)))
+     		{        
+     		if(event_ptr_find)event_ptr_find--;
+     		else event_ptr_find=63;
+     		if(event_ptr_find==event_ptr)
+				{
+				lc640_adr=0;
+				break;
+				}
+     		else continue;
+     		}
+     	else 
+     		{
+     		lc640_read_long_ptr(lc640_adr+16,data);
+     		if(!((data[0]=='A')&&(data[1]=='A')&&(data[2]=='A')&&(data[3]=='A')))
+     			{        
+     			if(event_ptr_find)event_ptr_find--;
+         		else event_ptr_find=63;
+         		if(event_ptr_find==event_ptr)
+					{
+					lc640_adr=0;
+					break;
+					}
+     			else continue;
+     			}
+     		}	
+		}
+	if(lc640_adr!=0)
+		{
+		data[0]=LPC_RTC->YEAR;
+		data[1]=LPC_RTC->MONTH;
+		data[2]=LPC_RTC->DOM;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+16,data);
+	
+		data[0]=LPC_RTC->HOUR;
+		data[1]=LPC_RTC->MIN;
+		data[2]=LPC_RTC->SEC;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+20,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+24,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+28,data);
+		}
+	}
+
+
+}
+
+//-----------------------------------------------
+void avar_dcin_hndl(char in, short value)
+{
+char data[4];
+unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
+char avar_simbol;
+
+avar_simbol='U'; 			
+
+if(in==1)
+	{
+	//bps[dev]._last_avar=v;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr++;	
+	if(event_ptr>63)event_ptr=0;	
+	lc640_write_int(PTR_EVENT_LOG,event_ptr);	
+	
+    event_cnt=lc640_read_int(CNT_EVENT_LOG);
+	if(event_cnt!=63)event_cnt=event_ptr;
+	lc640_write_int(CNT_EVENT_LOG,event_cnt); 
+	
+	lc640_adr=EVENT_LOG+(lc640_read_int(PTR_EVENT_LOG)*32);
+	
+	data[0]='D';
+	data[1]=0; 
+	data[2]=avar_simbol;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr,data);
+
+	data[0]=(char)value;
+	data[1]=(char)(value>>8);
+	data[2]=0;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+4,data);
+
+	data[0]=LPC_RTC->YEAR;
+	data[1]=LPC_RTC->MONTH;
+	data[2]=LPC_RTC->DOM;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+8,data);
+
+	data[0]=LPC_RTC->HOUR;
+	data[1]=LPC_RTC->MIN;
+	data[2]=LPC_RTC->SEC;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+12,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+16,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+20,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+24,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+28,data);		
+	
+	}
+
+else if(in==0)
+	{      
+	char i;     
+//	event_ptr_find=0;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr_find=event_ptr;
+
+	for (i=0;i<63;i++)
+		{
+		lc640_adr=EVENT_LOG+(event_ptr_find*32);
+
+     	lc640_read_long_ptr(lc640_adr,data);
+     
+     	if(!((data[0]=='D')&&(data[1]==0)&&(data[2]==avar_simbol)))
+     		{        
+     		if(event_ptr_find)event_ptr_find--;
+     		else event_ptr_find=63;
+     		if(event_ptr_find==event_ptr)
+				{
+				lc640_adr=0;
+				break;
+				}
+     		else continue;
+     		}
+     	else 
+     		{
+     		lc640_read_long_ptr(lc640_adr+16,data);
+     		if(!((data[0]=='A')&&(data[1]=='A')&&(data[2]=='A')&&(data[3]=='A')))
+     			{        
+     			if(event_ptr_find)event_ptr_find--;
+         		else event_ptr_find=63;
+         		if(event_ptr_find==event_ptr)
+					{
+					lc640_adr=0;
+					break;
+					}
+     			else continue;
+     			}
+     		}	
+		}
+	if(lc640_adr!=0)
+		{
+		data[0]=LPC_RTC->YEAR;
+		data[1]=LPC_RTC->MONTH;
+		data[2]=LPC_RTC->DOM;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+16,data);
+	
+		data[0]=LPC_RTC->HOUR;
+		data[1]=LPC_RTC->MIN;
+		data[2]=LPC_RTC->SEC;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+20,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+24,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+28,data);
+		}
+	}
+
+
+}
+
+
+//-----------------------------------------------
+void avar_byps_hndl(char dev, char v, char in, short value)
+{
+char data[4];
+unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
+char avar_simbol;
+
+avar_simbol='O'; 			
+if(v=='O')avar_simbol=v;  		//Выходное напряжение
+else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
+else if(v=='N')avar_simbol=v;	//Входное напряжение(сеть)
+else if(v=='T')avar_simbol=v;	//Температура байпаса
+
+if(in==1)
+	{
+	//bps[dev]._last_avar=v;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr++;	
+	if(event_ptr>63)event_ptr=0;	
+	lc640_write_int(PTR_EVENT_LOG,event_ptr);	
+	
+    event_cnt=lc640_read_int(CNT_EVENT_LOG);
+	if(event_cnt!=63)event_cnt=event_ptr;
+	lc640_write_int(CNT_EVENT_LOG,event_cnt); 
+	
+	lc640_adr=EVENT_LOG+(lc640_read_int(PTR_EVENT_LOG)*32);
+	
+	data[0]='B';
+	data[1]=dev; 
+	data[2]=avar_simbol;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr,data);
+
+	data[0]=(char)value;
+	data[1]=(char)(value>>8);
+	data[2]=0;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+4,data);
+
+	data[0]=LPC_RTC->YEAR;
+	data[1]=LPC_RTC->MONTH;
+	data[2]=LPC_RTC->DOM;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+8,data);
+
+	data[0]=LPC_RTC->HOUR;
+	data[1]=LPC_RTC->MIN;
+	data[2]=LPC_RTC->SEC;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+12,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+16,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+20,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+24,data);
+	
+	data[0]='A';
+	data[1]='A';
+	data[2]='A';
+	data[3]='A';
+	lc640_write_long_ptr(lc640_adr+28,data);		
+	
+	}
+
+else if(in==0)
+	{      
+	char i;     
+//	event_ptr_find=0;
+
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr_find=event_ptr;
+
+	for (i=0;i<63;i++)
+		{
+		lc640_adr=EVENT_LOG+(event_ptr_find*32);
+
+     	lc640_read_long_ptr(lc640_adr,data);
+     
+     	if(!((data[0]=='B')&&(data[1]==dev)&&(data[2]==avar_simbol)))
+     		{        
+     		if(event_ptr_find)event_ptr_find--;
+     		else event_ptr_find=63;
+     		if(event_ptr_find==event_ptr)
+				{
+				lc640_adr=0;
+				break;
+				}
+     		else continue;
+     		}
+     	else 
+     		{
+     		lc640_read_long_ptr(lc640_adr+16,data);
+     		if(!((data[0]=='A')&&(data[1]=='A')&&(data[2]=='A')&&(data[3]=='A')))
+     			{        
+     			if(event_ptr_find)event_ptr_find--;
+         		else event_ptr_find=63;
+         		if(event_ptr_find==event_ptr)
+					{
+					lc640_adr=0;
+					break;
+					}
+     			else continue;
+     			}
+     		}	
+		}
+	if(lc640_adr!=0)
+		{
+		data[0]=LPC_RTC->YEAR;
+		data[1]=LPC_RTC->MONTH;
+		data[2]=LPC_RTC->DOM;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+16,data);
+	
+		data[0]=LPC_RTC->HOUR;
+		data[1]=LPC_RTC->MIN;
+		data[2]=LPC_RTC->SEC;
+		data[3]=0;
+		lc640_write_long_ptr(lc640_adr+20,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+24,data);
+		
+		data[0]='B';
+		data[1]='B';
+		data[2]='B';
+		data[3]='B';
+		lc640_write_long_ptr(lc640_adr+28,data);
+		}
+	}
+
+/*
+ 
+	event_ptr=lc640_read_int(PTR_EVENT_LOG);
+	event_ptr_find=event_ptr;
+	
+avar_src_hndl_lbl1: 
+
+	lc640_adr=EVENT_LOG+(event_ptr_find*32);
+
+     lc640_read_long_ptr(lc640_adr,data);
+     
+     if(!((data[0]=='S')&&(data[1]==dev)&&(data[2]==avar_simbol)))
+     	{        
+     	if(event_ptr_find)event_ptr_find--;
+     	else event_ptr_find=63;
+     	if(event_ptr_find==event_ptr)goto avar_src_hndl_end;
+     	else goto avar_src_hndl_lbl1;
+     	}
+     else 
+     	{
+     	lc640_read_long_ptr(lc640_adr+16,data);
+     	if(!((data[0]=='A')&&(data[1]=='A')&&(data[2]=='A')&&(data[3]=='A')))
+     		{        
+     		if(event_ptr_find)event_ptr_find--;
+         		else event_ptr_find=63;
+         		if(event_ptr_find==event_ptr)goto avar_src_hndl_end;
+     		else goto avar_src_hndl_lbl1;
+     		}
+
+     	}	
+
+
+	
+	data[0]=LPC_RTC->YEAR;
+	data[1]=LPC_RTC->MONTH;
+	data[2]=LPC_RTC->DOM;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+16,data);
+
+	data[0]=LPC_RTC->HOUR;
+	data[1]=LPC_RTC->MIN;
+	data[2]=LPC_RTC->SEC;
+	data[3]=0;
+	lc640_write_long_ptr(lc640_adr+20,data);
+	
+	data[0]='B';
+	data[1]='B';
+	data[2]='B';
+	data[3]='B';
+	lc640_write_long_ptr(lc640_adr+24,data);
+	
+	data[0]='B';
+	data[1]='B';
+	data[2]='B';
+	data[3]='B';
+	lc640_write_long_ptr(lc640_adr+28,data);
+	
+	}*/
+	
+//avar_src_hndl_end:
+//__nop();		
+}
+/*
+//-----------------------------------------------
 void wrk_mem_hndl(char b)
 {
 char data[4];
-unsigned short event_ptr,lc640_adr/*,event_ptr_find*/,event_cnt;
+unsigned short event_ptr,lc640_adr,event_cnt;
 
 signed short temp_temp;
 
@@ -623,152 +1130,9 @@ lc640_write_long_ptr(lc640_adr+20,data);
 wrk_mem_hndl_end:	
 __nop();
 }  
+*/
 
-#ifdef UKU_220_IPS_TERMOKOMPENSAT
-//-----------------------------------------------
-void avar_bat_ips_hndl(char in)
-{
-char data[4];
-unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
-
-if(in==1)
-	{
-	bat_ips._av|=1;
-    	ips_bat_av_stat=1;
-	ips_bat_av_vzvod=1;
-
-	event_ptr=lc640_read_int(PTR_EVENT_LOG);
-	event_ptr++;	
-	if(event_ptr>63)event_ptr=0;	
-	lc640_write_int(PTR_EVENT_LOG,event_ptr);	
-	
-     event_cnt=lc640_read_int(CNT_EVENT_LOG);
-	if(event_cnt!=63)event_cnt=event_ptr;
-	lc640_write_int(CNT_EVENT_LOG,event_cnt); 
-	
-	lc640_adr=EVENT_LOG+(lc640_read_int(PTR_EVENT_LOG)*32);
-	
-	data[0]='B';
-	data[1]=0;
-	data[2]='C';
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr,data);
-
-	data[0]=0;
-	data[1]=0;
-	data[2]=0;
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr+4,data);
-
-	data[0]=LPC_RTC->YEAR;
-	data[1]=LPC_RTC->MONTH;
-	data[2]=LPC_RTC->DOM;
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr+8,data);
-
-	data[0]=LPC_RTC->HOUR;
-	data[1]=LPC_RTC->MIN;
-	data[2]=LPC_RTC->SEC;
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr+12,data);
-	
-	data[0]='A';
-	data[1]='A';
-	data[2]='A';
-	data[3]='A';
-	lc640_write_long_ptr(lc640_adr+16,data);
-	
-	data[0]='A';
-	data[1]='A';
-	data[2]='A';
-	data[3]='A';
-	lc640_write_long_ptr(lc640_adr+20,data);
-	
-	data[0]='A';
-	data[1]='A';
-	data[2]='A';
-	data[3]='A';
-	lc640_write_long_ptr(lc640_adr+24,data);
-	
-	data[0]='A';
-	data[1]='A';
-	data[2]='A';
-	data[3]='A';
-	lc640_write_long_ptr(lc640_adr+28,data);
-					
-	snmp_trap_send("BAT №1 Alarm, lost",5,1,1);
-		
-	}
-
-else if(in==0)
-	{
-	bat_ips._av&=~1;
-	ips_bat_av_stat=0;
-	ips_bat_av_vzvod=0;
-     
-	event_ptr=lc640_read_int(PTR_EVENT_LOG);
-	event_ptr_find=event_ptr;
-	
-avar_bat_ips_hndl_lbl1: 
-
-	lc640_adr=EVENT_LOG+(event_ptr_find*32);
-
-     lc640_read_long_ptr(lc640_adr,data);
-     
-     if(!((data[0]=='B')&&(data[1]==0)&&(data[2]=='C')))
-     	{        
-     	if(event_ptr_find)event_ptr_find--;
-     	else event_ptr_find=63;
-     	if(event_ptr_find==event_ptr)goto avar_bat_ips_hndl_end;
-     	else goto avar_bat_ips_hndl_lbl1;
-     	}
-     else 
-     	{
-     	lc640_read_long_ptr(lc640_adr+16,data);
-     	if(!((data[0]=='A')&&(data[1]=='A')&&(data[2]=='A')&&(data[3]=='A')))
-     		{        
-     		if(event_ptr_find)event_ptr_find--;
-         		else event_ptr_find=63;
-         	    	if(event_ptr_find==event_ptr)goto avar_bat_ips_hndl_end;
-     		else goto avar_bat_ips_hndl_lbl1;
-     		}
-
-     	}
-     		
-	data[0]=LPC_RTC->YEAR;
-	data[1]=LPC_RTC->MONTH;
-	data[2]=LPC_RTC->DOM;
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr+16,data);
-
-	data[0]=LPC_RTC->HOUR;
-	data[1]=LPC_RTC->MIN;
-	data[2]=LPC_RTC->SEC;
-	data[3]=0;
-	lc640_write_long_ptr(lc640_adr+20,data);
-	
-	data[0]='B';
-	data[1]='B';
-	data[2]='B';
-	data[3]='B';
-	lc640_write_long_ptr(lc640_adr+24,data);
-	
-	data[0]='B';
-	data[1]='B';
-	data[2]='B';
-	data[3]='B';
-	lc640_write_long_ptr(lc640_adr+28,data);
-	
-
-	
-	}
-	
-avar_bat_ips_hndl_end:
-__nop();		
-}
-
-#endif
-
+ /*
 //-----------------------------------------------
 void avar_bat_hndl(char b, char in)
 {
@@ -912,8 +1276,8 @@ avar_bat_hndl_lbl1:
 	
 avar_bat_hndl_end:
 __nop();		
-}
-
+} */
+/*
 //-----------------------------------------------
 void avar_bat_as_hndl(char b, char in)
 {
@@ -1058,13 +1422,13 @@ avar_bat_as_hndl_lbl1:
 avar_bat_as_hndl_end:
 __nop();		
 }
-
-
+*/
+/*
 //-----------------------------------------------
 void ke_mem_hndl(char b,unsigned short in)
 {
 char data[4];
-unsigned int event_ptr=0,lc640_adr/*,event_ptr_find*/,event_cnt;
+unsigned int event_ptr=0,lc640_adr,event_cnt;
 //unsigned char temp,temp_;
 //unsigned int tempUI;
 //unsigned long tempUL; 
@@ -1114,8 +1478,8 @@ data[3]=0;
 lc640_write_long_ptr(lc640_adr+20,data);
  
 }
-
-
+*/
+ /*
 //-----------------------------------------------
 void vz_mem_hndl(unsigned short in)
 {
@@ -1247,7 +1611,7 @@ vz_mem_hndl_end:
 __nop(); 
 
 }
-  
+ */ 
 
 
 

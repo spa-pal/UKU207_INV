@@ -1448,7 +1448,8 @@ if (NUMINV)
      		inv[i]._Unet=0;
 			inv[i]._Udcin=0;
 			inv[i]._cnt=25;
-			inv[i]._avIsOn=0;    
+			inv[i]._avIsOn=0;  
+			inv[i]._valid=0;   
      		}
      	}
    	}
@@ -1496,6 +1497,17 @@ temp_SL/=500L;
 dcin_U=(signed short)temp_SL;
 
 //dcin_U=1234;//adc_buff_[2];
+
+//Внешний датчик температуры №1(температура внешнего воздуха)
+if((adc_buff_[5]>800)&&(adc_buff_[5]<3800))ND_EXT[0]=0;
+else ND_EXT[0]=1;
+temp_SL=(signed long)adc_buff_[5];
+temp_SL*=Ktext[0];
+temp_SL/=20000L;
+temp_SL-=273L;
+t_ext[0]=(signed short)temp_SL;
+
+//t_ext[0]=13;
 
 #ifdef GLADKOV
 inv[0]._Ii=bps[4]._buff[0]+(bps[4]._buff[1]*256);
@@ -2360,6 +2372,59 @@ for(ii=0;ii<NUMINV;ii++)
 				} 
 			}
 		}
+
+	// Авария по перегреву инверторов
+	if((inv[ii]._flags_tm&0x02) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._temper_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._temper_av_cnt++;
+			if((inv[ii]._temper_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._temper_av_stat))
+				{
+				inv[ii]._temper_av_stat=1;
+				avar_inv_hndl(ii,'T',1,inv[ii]._T);
+				}  
+			}
+		}  
+	else if((!(inv[ii]._flags_tm&0x02)) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._temper_av_cnt)
+			{
+			inv[ii]._temper_av_cnt--;
+			if((inv[ii]._temper_av_cnt==0)&&(inv[ii]._temper_av_stat))
+				{
+				inv[ii]._temper_av_stat=0;
+				avar_inv_hndl(ii,'T',0,0);
+				} 
+			}
+		}
+
+	// Авария по пропаданию связи инверторов
+	if(!(inv[ii]._valid))
+		{
+		if(inv[ii]._conn_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._conn_av_cnt++;
+			if((inv[ii]._conn_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._conn_av_stat))
+				{
+				inv[ii]._conn_av_stat=1;
+				avar_inv_hndl(ii,'C',1,0);
+				}  
+			}
+		}  
+	else if(inv[ii]._valid)
+		{
+		if(inv[ii]._conn_av_cnt)
+			{
+			inv[ii]._conn_av_cnt--;
+			if((inv[ii]._conn_av_cnt==0)&&(inv[ii]._conn_av_stat))
+				{
+				inv[ii]._conn_av_stat=0;
+				avar_inv_hndl(ii,'O',0,0);
+				} 
+			}
+		}
+
 	}
 }
 
@@ -2372,7 +2437,7 @@ char temp;
 temp=0;
 for(ii=0;ii<NUMINV;ii++)
 	{
-	if((inv[ii]._uout_av_stat)||(inv[ii]._temper_av_stat)) temp=1;
+	if((inv[ii]._uout_av_stat)||(inv[ii]._temper_av_stat)||(inv[ii]._conn_av_stat)) temp=1;
 	}
 someInvAvIsOn = temp;
 
@@ -2457,7 +2522,7 @@ else
 void dc_in_av_hndl(void)
 {
 // Авария по входному напряжению DC
-if((dcin_U>=U_IN_DC_MAX_AV)||(dcin_U<=U_IN_DC_MIN_AV))
+if(((dcin_U/10)>=U_IN_DC_MAX_AV)||((dcin_U/10)<=U_IN_DC_MIN_AV))
 	{
 	if(dcin_av_cnt<CONST_AV_DCIN_HNDL_MAX_CNT)
 		{
@@ -2465,12 +2530,12 @@ if((dcin_U>=U_IN_DC_MAX_AV)||(dcin_U<=U_IN_DC_MIN_AV))
 		if((dcin_av_cnt>=CONST_AV_DCIN_HNDL_MAX_CNT)&&(!dcin_av_stat))
 			{
 			dcin_av_stat=1;
-			avar_dcin_hndl(1,dcin_U);
+			avar_dcin_hndl(1,dcin_U/10);
 			}  
 		}
 	}
 
-else if((dcin_U<U_IN_DC_MAX_AV)&&(dcin_U>U_IN_DC_MIN_AV))
+else if(((dcin_U/10)<U_IN_DC_MAX_AV)&&((dcin_U/10)>U_IN_DC_MIN_AV))
 	{
 	if(dcin_av_cnt)
 		{

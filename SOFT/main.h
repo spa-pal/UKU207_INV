@@ -972,6 +972,8 @@ typedef struct
 	char _uout_av_stat;
 	signed char _temper_av_cnt;
 	char _temper_av_stat;
+	signed char _conn_av_cnt;
+	char _conn_av_stat;
 
 	} INV_STAT; 
 extern INV_STAT inv[64];

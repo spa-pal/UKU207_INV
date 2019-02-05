@@ -572,10 +572,10 @@ unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
 char avar_simbol;
 
 avar_simbol='O'; 			
-if(v=='O')avar_simbol=v;  		//Выходное напряжение
+if(v=='O')avar_simbol=v;  		//Выходное напряжение инвертора
 //else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
-//else if(v=='N')avar_simbol=v;	//Входное напряжение(сеть)
-else if(v=='T')avar_simbol=v;	//Температура байпаса
+else if(v=='C')avar_simbol=v;	//разрыв связи инвертора
+else if(v=='T')avar_simbol=v;	//Температура инвертора
 
 if(in==1)
 	{

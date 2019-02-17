@@ -155,6 +155,7 @@ extern char bMCP2515_IN;
 extern char mcp2515_out_buff[8][8];
 extern char mcp2515_buff_wr_ptr;
 extern char mcp2515_buff_rd_ptr;
+extern char mcp2515_tec,mcp2515_rec,mcp2515_eflg;
 
 
 //-----------------------------------------------

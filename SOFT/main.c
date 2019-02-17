@@ -6260,64 +6260,13 @@ if(ind==iDeb)
 
     	else if(sub_ind==1) 
      	{
-     	bgnd_par("Б                   ",
-     	         "                    ",
+     	bgnd_par("Ошибки передачи    !",
+     	         "Ошибки приема      @",
      	         "                    ",
      	         "                    ");
 
-		int2lcdyx(bAVG,0,0,0);
-		int2lcdyx(max_net_slot/*LPC_CAN1->GSR*/,0,6,0);
-		int2lcdyx(NUMINV/*(LPC_CAN1->GSR)>>16*/,0,16,0);
-		int2lcdyx(avg,0,19,0);
- /*         int2lcdyx(bat[0]._Ubm,1,7,0); 	int2lcdyx(bat[0]._av,1,10,0);
-		int2lcdyx(bat[0]._dUbm,2,7,0);
-		int2lcdyx(bat[0]._cnt_as,3,7,0);
-		
- 
-		int2lcdyx(bat[1]._Ub,0,14,0);
-          int2lcdyx(bat[1]._Ubm,1,14,0);	int2lcdyx(bat[1]._av,1,17,0);
-		int2lcdyx(bat[1]._dUbm,2,14,0);
-		int2lcdyx(bat[1]._cnt_as,3,14,0);*/
-
-		int2lcdyx(sub_ind1+0,1,1,0);
-		int2lcdyx(sub_ind1+1,2,1,0);
-		int2lcdyx(sub_ind1+2,3,1,0);
-		
-		
-		int2lcdyx(bps[sub_ind1  ]._cnt,1,3,0);
-		int2lcdyx(bps[sub_ind1+1]._cnt,2,3,0);
-		int2lcdyx(bps[sub_ind1+2]._cnt,3,3,0);		
-		
-	/*	int2lcdyx(bps[sub_ind1  ]._ist_blok_cnt,1,5,0);
-		int2lcdyx(bps[sub_ind1+1]._ist_blok_cnt,2,5,0);
-		int2lcdyx(bps[sub_ind1+2]._ist_blok_cnt,3,5,0);*/			
-		
-	/*	char2lcdhyx(bps[sub_ind1  ]._flags_tu,1,8);
-		char2lcdhyx(bps[sub_ind1+1]._flags_tu,2,8);
-		char2lcdhyx(bps[sub_ind1+2]._flags_tu,3,8);
-
-		int2lcdyx(bps[sub_ind1  ]._vol_u,1,12,0);
-		int2lcdyx(bps[sub_ind1+1]._vol_u,2,12,0);
-		int2lcdyx(bps[sub_ind1+2]._vol_u,3,12,0);		
-
-
-		char2lcdhyx(bps[sub_ind1]._flags_tm,1,15);
-		char2lcdhyx(bps[sub_ind1+1]._flags_tm,2,15);
-		char2lcdhyx(bps[sub_ind1+2]._flags_tm,3,15);	
-		*/
-		int2lcdyx(bps[sub_ind1]._Ii,1,15,0);
-		int2lcdyx(bps[sub_ind1+1]._Ii,2,15,0);
-		int2lcdyx(bps[sub_ind1+2]._Ii,3,15,0);
-	/*
-		char2lcdhyx(bps[sub_ind1]._rotor>>8,1,15);
-		char2lcdhyx(bps[sub_ind1+1]._rotor>>8,2,15);
-		char2lcdhyx(bps[sub_ind1+2]._rotor>>8,3,15);		
-		*/
-		
-		int2lcdyx(bps[sub_ind1]._rotor,1,19,0);
-		int2lcdyx(bps[sub_ind1+1]._rotor,2,19,0);
-		int2lcdyx(bps[sub_ind1+2]._rotor,3,19,0);
-
+		int2lcd(mcp2515_tec,'!',0);
+		int2lcd(mcp2515_rec,'@',0);
 
  		}
 

@@ -10,6 +10,7 @@ char bMCP2515_IN;
 char mcp2515_out_buff[8][8];
 char mcp2515_buff_wr_ptr;
 char mcp2515_buff_rd_ptr;
+char mcp2515_tec,mcp2515_rec,mcp2515_eflg;
 
 //-----------------------------------------------
 void mcp2515_reset(void)
@@ -178,6 +179,9 @@ static char ch_cnt;
 //#asm("cli")
 mcp2515_can_st=mcp2515_read_status();
 mcp2515_can_st_old=mcp2515_can_st;
+mcp2515_tec=mcp2515_read(TEC);
+mcp2515_rec=mcp2515_read(REC);
+mcp2515_eflg=mcp2515_read(EFLG);
 
 
 if(mcp2515_can_st&0x02/*0b00000010*/)

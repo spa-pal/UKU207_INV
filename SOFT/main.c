@@ -275,7 +275,7 @@ MAKB_STAT makb[4];
 
 //***********************************************
 //Состояние источников
-BPS_STAT bps[100];
+BPS_STAT bps[64];
 
 //***********************************************
 //Состояние инверторов
@@ -2024,10 +2024,17 @@ if(sub_cnt1>=20)
 	  
 if(ind==iMn_INV)
 	{
+	char flfl=0;
+	if((NUMBYPASS>3)||(NUMBYPASS<0))
+		{
+		//NUMBYPASS=1;
+		//NUMPHASE=1;
+		flfl=1;
+		}
 
 	ptrs[0]	=	"  неопределенность  ";
 
-	if((NUMBYPASS==0))	
+	if((NUMBYPASS!=1))	
 		{
 		ptrs[0]	=	"  В работе    kинв. ";
 
@@ -2040,6 +2047,8 @@ if(ind==iMn_INV)
 		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
 		 ptrs[6]=  								" Байпасс  N2        ";
 		 ptrs[7]=  								" Байпасс  N3        ";
+ 		ptrs[8]=  								" Байпасс  N4        ";
+ 		ptrs[9]=  								" Байпасс  N5        ";
 	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
 	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
 	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
@@ -2190,6 +2199,8 @@ if(ind==iMn_INV)
 
 		}
 
+	if(flfl) ptrs[0]	=	"Проверьте структуру ";
+
      if(sub_ind==0)index_set=0;
 	else if((index_set-sub_ind)>2)index_set=sub_ind+2;
 	else if(sub_ind>index_set)index_set=sub_ind;
@@ -2269,6 +2280,7 @@ if(ind==iMn_INV)
 	//int2lcdyx(inv[0]._conn_av_stat,0,10,0);
 	//int2lcdyx(inv[0]._conn_av_cnt,0,15,0);	
  	//int2lcdyx(NUMPHASE,0,10,0);
+	//int2lcdyx(NUMBYPASS,0,19,0);
 	//int2lcdyx(inv[0]._valid,0,19,0);
 
 	}
@@ -2574,7 +2586,8 @@ else if(ind==iInv_v3)
 //int2lcdyx(plazma_inv[3],0,11,0);
 	//int2lcdyx(sub_ind,0,2,0);
 	//int2lcdyx(index_set,0,4,0);
-	//char2lcdbyx(inv[sub_ind1]._flags_tm,0,8);
+	//int2lcdyx(inv[sub_ind1]._flags_tm,0,8,0);
+	//int2lcdyx(inv[sub_ind1]._flags_tm_dop,0,4,0);
     }
 
 else if(ind==iByps)
@@ -10114,6 +10127,7 @@ else if(ind==iStr_INV)
 	     	NUMINV++;
 	     	gran(&NUMINV,0,32);
 	     	lc640_write_int(EE_NUMINV,NUMINV);
+			speed=1;
 	     	}
 	     
 	     else if((but==butL)||(but==butL_))
@@ -10121,6 +10135,7 @@ else if(ind==iStr_INV)
 	     	NUMINV--;
 	     	gran(&NUMINV,0,32);
 	     	lc640_write_int(EE_NUMINV,NUMINV);
+			speed=1;
 	     	}
           }
      else if(sub_ind==1)
@@ -16480,7 +16495,7 @@ while (1)
 		//zar_drv();
 		ubat_old_drv();
 		beep_hndl();
-		avg_hndl();
+		//avg_hndl();
 		ke_drv();
 		mnemo_hndl();
 		vent_hndl();

@@ -36,14 +36,14 @@ extern signed short snmp_bps_temperature[8];
 extern signed short snmp_bps_stat[8];
 
 //Состояние инверторов
-extern signed short snmp_inv_number[20];
-extern signed short snmp_inv_voltage[20];
-extern signed short snmp_inv_current[20];
-extern signed short snmp_inv_temperature[20];
-extern signed short snmp_inv_stat[20];
-extern signed short snmp_inv_u_prim[20];
-extern signed short snmp_inv_u_in[20];
-extern signed short snmp_inv_p_out[20];
+extern signed short snmp_inv_number[32];
+extern signed short snmp_inv_voltage[32];
+extern signed short snmp_inv_current[32];
+extern signed short snmp_inv_temperature[32];
+extern signed short snmp_inv_stat[32];
+extern signed short snmp_inv_u_prim[32];
+extern signed short snmp_inv_u_in[32];
+extern signed short snmp_inv_p_out[32];
 
 //Состояние байпаса
 extern signed short snmpBypassULoad;

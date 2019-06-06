@@ -48,14 +48,14 @@ signed short snmp_bps_temperature[8];
 signed short snmp_bps_stat[8];
 
 //Состояние инверторов
-signed short snmp_inv_number[20];
-signed short snmp_inv_voltage[20];
-signed short snmp_inv_current[20];
-signed short snmp_inv_temperature[20];
-signed short snmp_inv_stat[20];
-signed short snmp_inv_u_prim[20];
-signed short snmp_inv_u_in[20];
-signed short snmp_inv_p_out[20];
+signed short snmp_inv_number[32];
+signed short snmp_inv_voltage[32];
+signed short snmp_inv_current[32];
+signed short snmp_inv_temperature[32];
+signed short snmp_inv_stat[32];
+signed short snmp_inv_u_prim[32];
+signed short snmp_inv_u_in[32];
+signed short snmp_inv_p_out[32];
 
 //Состояние байпаса
 signed short snmpBypassULoad;
@@ -392,13 +392,15 @@ snmp_bps_temperature[7]=bps[7]._Ti;
 snmp_bps_stat[7]=bps[7]._av;
 
 
-for(i = 0; i<20 ; i++)
+for(i = 0; i<32 ; i++)
 	{
 	snmp_inv_number[i]=i+1;
 	snmp_inv_voltage[i]=inv[i]._Uout;
 	snmp_inv_current[i]=inv[i]._Iout;
 	snmp_inv_temperature[i]=inv[i]._T;
 	snmp_inv_stat[i]=inv[i]._flags_tm;
+	if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<7);
+	else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<7);
 	snmp_inv_u_prim[i]=inv[i]._Unet;
 	snmp_inv_u_in[i]=inv[i]._Uload;
 	snmp_inv_p_out[i]=inv[i]._Pout;
@@ -545,6 +547,21 @@ snmpBypassUPrimA = 	byps[0]._Unet;
 snmpBypassUBusA = 	byps[0]._Uin;
 snmpBypassFlagsA = 	byps[0]._flags;
 
+snmpBypassULoadB = 	byps[1]._Uout;
+snmpBypassILoadB = 	byps[1]._Iout;
+snmpBypassPLoadB = 	byps[1]._Pout;
+snmpBypassTemperB = 	byps[1]._T;
+snmpBypassUPrimB = 	byps[1]._Unet;
+snmpBypassUBusB = 	byps[1]._Uin;
+snmpBypassFlagsB = 	byps[1]._flags;
+
+snmpBypassULoadC = 	byps[2]._Uout;
+snmpBypassILoadC = 	byps[2]._Iout;
+snmpBypassPLoadC = 	byps[2]._Pout;
+snmpBypassTemperC = 	byps[2]._T;
+snmpBypassUPrimC = 	byps[2]._Unet;
+snmpBypassUBusC = 	byps[2]._Uin;
+snmpBypassFlagsC = 	byps[2]._flags;
 
 
 snmp_sk_number[0]=1;

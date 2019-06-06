@@ -1976,81 +1976,7 @@ ADCR_bit.START=1;
 
 
 
-//-----------------------------------------------
-void avg_hndl(void)
-{ 
-char i;
 
-#define AVGCNTMAX	5
-if(avg_main_cnt)
-	{
-	avg_main_cnt--;
-	goto avg_hndl_end;
-	}                 
-
-avg_num=0;
-
-for(i=0;i<NUMIST;i++)
-	{
-	if((bps[i]._state==bsWRK)&&(bps[i]._cnt<20))avg_num++;
-	}
-
-/*if((K[NUMI]>=1)&&(bps_state[0]==ssWRK))	avg_num++;
-if((K[NUMI]>=2)&&(bps_state[1]==ssWRK))	avg_num++;
-if((K[NUMI]>=3)&&(bps_state[2]==ssWRK))	avg_num++;*/
-
-	
-if(avg_num<2)
-	{
-	goto avg_hndl_end;
-	}
-	
-else
-	{
-	i_avg_min=5000;
-	i_avg_max=0;
-	i_avg_summ=0;
-	for(i=0;i<NUMIST;i++)
-		{
-		if(bps[i]._state==bsWRK)
-			{
-			if(bps[i]._Ii>i_avg_max)i_avg_max=bps[i]._Ii;
-			if(bps[i]._Ii<i_avg_min)i_avg_min=bps[i]._Ii;
-			
-			i_avg_summ+=bps[i]._Ii;
-			}
-		}
-	i_avg=i_avg_summ/avg_num;	
-	
-	if(i_avg_min==0)i_avg_min=1;
-
-	avg=i_avg_max;
-	avg*=100;
-	avg/=i_avg_min;
-
-	if(avg>160) bAVG=1;
-	if(avg<120) bAVG=0;
-
-	if(bAVG==1)
-		{
-		for(i=0;i<NUMIST;i++)
-			{
-			if(bps[i]._state==bsWRK)
-				{
-				if(bps[i]._Ii>i_avg)bps[i]._x_--;
-				if(bps[i]._Ii<i_avg)bps[i]._x_++;
-			
-				if(bps[i]._x_<-50)bps[i]._x_=-50;
-				if(bps[i]._x_>50)bps[i]._x_=50;	
-				}
-			}		
-		}			
-	}   	 
-
-
-avg_hndl_end:
-__nop();  
-}
 
 /*//-----------------------------------------------
 void bp_on_(char in)
@@ -2145,11 +2071,11 @@ for	(ii_=0;ii_<2;ii_++)
 		}
 	}
 
-if(((avar_stat_temp[0]==0)&&(RELE_SET_MASK[0]&0x8000)) || ((avar_stat_temp[0]==1)&&(!(RELE_SET_MASK[0]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,4,1);
-else SET_REG(LPC_GPIO0->FIOSET,1,4,1);
-
-if(((avar_stat_temp[1]==0)&&(RELE_SET_MASK[1]&0x8000)) || ((avar_stat_temp[1]==1)&&(!(RELE_SET_MASK[1]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,5,1);
+if(((avar_stat_temp[0]==0)&&(RELE_SET_MASK[0]&0x8000)) || ((avar_stat_temp[0]==1)&&(!(RELE_SET_MASK[0]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,5,1);
 else SET_REG(LPC_GPIO0->FIOSET,1,5,1);
+
+if(((avar_stat_temp[1]==0)&&(RELE_SET_MASK[1]&0x8000)) || ((avar_stat_temp[1]==1)&&(!(RELE_SET_MASK[1]&0x8000))))	SET_REG(LPC_GPIO0->FIOCLR,1,4,1);
+else SET_REG(LPC_GPIO0->FIOSET,1,4,1);
 }
 
 
@@ -2420,7 +2346,7 @@ for(ii=0;ii<NUMINV;ii++)
 			if((inv[ii]._conn_av_cnt==0)&&(inv[ii]._conn_av_stat))
 				{
 				inv[ii]._conn_av_stat=0;
-				avar_inv_hndl(ii,'O',0,0);
+				avar_inv_hndl(ii,'C',0,0);
 				} 
 			}
 		}
@@ -2476,7 +2402,7 @@ if(NUMBYPASS==0)
 	temp=0;
 	for(ii=0;ii<NUMINV;ii++)
 		{
-		if(inv[ii]._flags_tm_dop&0x03)
+		if((inv[ii]._flags_tm_dop&0x02))
 			{
 			temp=1;
 			break;

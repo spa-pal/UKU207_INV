@@ -181,7 +181,7 @@ if(crc16_calculated==crc16_incapsulated)
 //-----------------------------------------------
 void modbus_input_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity)
 {
-char modbus_registers[350];
+char modbus_registers[1000];
 char modbus_tx_buff[120];
 unsigned short crc_temp;
 char i;
@@ -587,6 +587,77 @@ modbus_registers[316]=0;								//Рег159
 modbus_registers[317]=0;
 modbus_registers[318]=0;								//Рег160
 modbus_registers[319]=0;
+
+//Инвертор №16
+modbus_registers[320]=(char)(inv[14]._Uout/256);			//Рег151
+modbus_registers[321]=(char)(inv[14]._Uout%256);
+modbus_registers[322]=(char)(inv[14]._Iout/256);			//Рег152
+modbus_registers[323]=(char)(inv[14]._Iout%256);
+modbus_registers[324]=(char)(inv[14]._T/256);			//Рег153
+modbus_registers[325]=(char)(inv[14]._T%256);
+modbus_registers[326]=(char)(inv[14]._Pout/256);			//Рег154
+modbus_registers[327]=(char)(inv[14]._Pout%256);
+modbus_registers[328]=(char)(inv[14]._Unet/256);			//Рег155
+modbus_registers[329]=(char)(inv[14]._Unet%256);
+modbus_registers[330]=(char)(inv[14]._Uload/256);			//Рег156
+modbus_registers[331]=(char)(inv[14]._Uload%256);
+i=inv[14]._flags_tm;
+if(inv[14]._cnt>10)i|=0x80;
+modbus_registers[332]=0;								//Рег157
+modbus_registers[333]=i;
+modbus_registers[334]=0;								//Рег158
+modbus_registers[335]=0;
+modbus_registers[336]=0;								//Рег159
+modbus_registers[337]=0;
+modbus_registers[338]=0;								//Рег160
+modbus_registers[339]=0;
+
+//Байпас
+modbus_registers[800]=(char)(byps[0]._Uout/256);			//Рег401	  Напряжение выхода байпас Ф.А (0.1В)
+modbus_registers[801]=(char)(byps[0]._Uout%256);
+modbus_registers[802]=(char)(byps[1]._Uout/256);			//Рег402	  Напряжение выхода байпас Ф.B (0.1В)
+modbus_registers[803]=(char)(byps[1]._Uout%256);
+modbus_registers[804]=(char)(byps[2]._Uout/256);			//Рег403	  Напряжение выхода байпас Ф.C (0.1В)
+modbus_registers[805]=(char)(byps[2]._Uout%256);
+modbus_registers[806]=(char)(byps[0]._Iout/256);			//Рег404	  Ток выхода байпас Ф.А (0.1А)
+modbus_registers[807]=(char)(byps[0]._Iout%256);
+modbus_registers[808]=(char)(byps[1]._Iout/256);			//Рег405	  Ток выхода байпас Ф.B (0.1А)
+modbus_registers[809]=(char)(byps[1]._Iout%256);
+modbus_registers[810]=(char)(byps[2]._Iout/256);			//Рег406	  Ток выхода байпас Ф.C (0.1А)
+modbus_registers[811]=(char)(byps[2]._Iout%256);
+modbus_registers[812]=(char)(byps[0]._Pout/256);			//Рег407	  Мощность выхода байпас Ф.А (0.1Вт)
+modbus_registers[813]=(char)(byps[0]._Pout%256);
+modbus_registers[814]=(char)(byps[1]._Pout/256);			//Рег408	  Мощность выхода байпас Ф.B (0.1Вт)
+modbus_registers[815]=(char)(byps[1]._Pout%256);
+modbus_registers[816]=(char)(byps[2]._Pout/256);			//Рег409	  Мощность выхода байпас Ф.C (0.1Вт)
+modbus_registers[817]=(char)(byps[2]._Pout%256);
+modbus_registers[818]=(char)(byps[0]._T/256);				//Рег410	  Температура байпас Ф.А (1г.Ц.)
+modbus_registers[819]=(char)(byps[0]._T%256);
+modbus_registers[820]=(char)(byps[1]._T/256);				//Рег411	  Температура байпас Ф.B (1г.Ц.)
+modbus_registers[821]=(char)(byps[1]._T%256);
+modbus_registers[822]=(char)(byps[2]._T/256);				//Рег412	  Температура байпас Ф.C (1г.Ц.)
+modbus_registers[823]=(char)(byps[2]._T%256);
+modbus_registers[824]=(char)(byps[0]._Unet/256);			//Рег413	  Напряжение входа AC байпас Ф.А (0.1В)
+modbus_registers[825]=(char)(byps[0]._Unet%256);
+modbus_registers[826]=(char)(byps[1]._Unet/256);			//Рег414	  Напряжение входа AC байпас Ф.B (0.1В)
+modbus_registers[827]=(char)(byps[1]._Unet%256);
+modbus_registers[828]=(char)(byps[2]._Unet/256);			//Рег415	  Напряжение входа AC байпас Ф.C (0.1В)
+modbus_registers[829]=(char)(byps[2]._Unet%256);
+modbus_registers[830]=(char)(byps[0]._Uin/256);				//Рег416	  Напряжение входа AC инверторов байпас Ф.А (0.1В)
+modbus_registers[831]=(char)(byps[0]._Uin%256);
+modbus_registers[832]=(char)(byps[1]._Uin/256);				//Рег417	  Напряжение входа AC инверторов байпас Ф.B (0.1В)
+modbus_registers[833]=(char)(byps[1]._Uin%256);
+modbus_registers[834]=(char)(byps[2]._Uin/256);				//Рег418	  Напряжение входа AC инверторов байпас Ф.C (0.1В)
+modbus_registers[835]=(char)(byps[2]._Uin%256);
+modbus_registers[836]=(char)(byps[0]._flags/256);			//Рег419	  Флаги байпас Ф.А (0.1В)
+modbus_registers[837]=(char)(byps[0]._flags%256);
+modbus_registers[838]=(char)(byps[1]._flags/256);			//Рег420	  Флаги байпас Ф.B (0.1В)
+modbus_registers[839]=(char)(byps[1]._flags%256);
+modbus_registers[840]=(char)(byps[2]._flags/256);			//Рег421	  Флаги байпас Ф.C (0.1В)
+modbus_registers[841]=(char)(byps[2]._flags%256);			//   1000000 работа от инверторов(0 - от сети)
+															//   0100000 приоритет инверторы (0 - сеть)
+															//	 0000100 температура больше 80 Г.ц.
+															//	 0000010 температура больше 70 Г.ц.
 
 modbus_tx_buff[0]=adr;
 modbus_tx_buff[1]=func;

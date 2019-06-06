@@ -911,11 +911,11 @@ typedef struct
      //signed short _umax_av_cnt;
      //signed short _umin_av_cnt;
      signed _rotor;
-     signed  short _x_; 
+//     signed  short _x_; 
      char _adr_ee;
 	char _last_avar;
      } BPS_STAT; 
-extern BPS_STAT bps[100];
+extern BPS_STAT bps[64];
 
 //***********************************************
 //Состояние инверторов

@@ -265,6 +265,12 @@ __ee_vz_cnt=lc640_read_int(EE_VZ_CNT);
 __ee_spc_stat=lc640_read_int(EE_SPC_STAT);
 __ee_spc_bat=lc640_read_int(EE_SPC_BAT);
 __ee_spc_phase=lc640_read_int(EE_SPC_PHASE);
+
+//NUMBYPASS=-1;
+//NUMPHASE=-1;
+if((NUMBYPASS>5)||(NUMBYPASS<0)) NUMBYPASS=5;
+if((NUMPHASE!=3)&&(NUMPHASE!=1))NUMPHASE=1;
+
 }
 
 

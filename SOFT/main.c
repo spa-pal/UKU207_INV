@@ -152,6 +152,8 @@ signed short NUMAVT;
 signed short NUMMAKB;
 signed short NUMBYPASS;
 signed short NUMPHASE;
+signed short NUMINAC;
+	
 
 enum_apv_on APV_ON1,APV_ON2;
 signed short APV_ON2_TIME;
@@ -2484,7 +2486,7 @@ else if(ind==iInv_v2)
      int2lcd(inv[sub_ind1]._Iout,')',1);  
    	int2lcd_mmm(inv[sub_ind1]._T,'[',0); 
 	int2lcd_mmm(inv[sub_ind1]._Pout,']',0);
-	int2lcd(inv[sub_ind1]._Unet,'<',1);
+	int2lcd(inv[sub_ind1]._Uacin,'<',1);
 	int2lcd(inv[sub_ind1]._Uload,'>',1);
    	//int2lcd(inv[sub_ind1]._flags_tm,'[',1);		 
      //char2lcdhyx(inv[sub_ind1]._flags_tm,0,3);
@@ -2571,7 +2573,7 @@ else if(ind==iInv_v3)
      int2lcd(inv[sub_ind1]._Iout,')',1);  
    	int2lcd_mmm(inv[sub_ind1]._T,'[',0); 
 	int2lcd_mmm(inv[sub_ind1]._Pout,']',0);
-	int2lcd(inv[sub_ind1]._Unet,'<',1);
+	int2lcd(inv[sub_ind1]._Uacin,'<',1);
 	int2lcd(inv[sub_ind1]._Uload,'>',1);
 	int2lcd(inv[sub_ind1]._Udcin,'^',1);
    	//int2lcd(inv[sub_ind1]._flags_tm,'[',1);		 
@@ -2666,8 +2668,8 @@ else if(ind==iByps)
 	if(byps[sub_ind1]._Pout>65000)byps[sub_ind1]._Pout=0; 
 	long2lcd_mmm((unsigned short)byps[sub_ind1]._Pout,']',0);
 	//int2lcd_mmm(byps._Pout,']',0);
-	int2lcd(byps[sub_ind1]._Unet,'<',1);
-	int2lcd(byps[sub_ind1]._Uin,'>',1);
+	int2lcd(byps[sub_ind1]._UinACprim,'<',1);
+	int2lcd(byps[sub_ind1]._UinACinvbus,'>',1);
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
 	int2lcd(byps[sub_ind1]._adress-19,'!',0);
 	int2lcd(sub_ind1+1,'@',0);
@@ -2754,13 +2756,13 @@ else if(ind==iByps3f)
 	long2lcd_mmm((unsigned short)(byps[2]._Pout/100),']',1);
 
 	//int2lcd_mmm(byps._Pout,']',0);
-	int2lcd(byps[0]._Unet/10,'<',0);
-	int2lcd(byps[1]._Unet/10,'<',0);
-	int2lcd(byps[2]._Unet/10,'<',0);
+	int2lcd(byps[0]._UinACprim/10,'<',0);
+	int2lcd(byps[1]._UinACprim/10,'<',0);
+	int2lcd(byps[2]._UinACprim/10,'<',0);
 
-	int2lcd(byps[0]._Uin/10,'>',0);
-	int2lcd(byps[1]._Uin/10,'>',0);
-	int2lcd(byps[2]._Uin/10,'>',0);
+	int2lcd(byps[0]._UinACinvbus/10,'>',0);
+	int2lcd(byps[1]._UinACinvbus/10,'>',0);
+	int2lcd(byps[2]._UinACinvbus/10,'>',0);
 	//int2lcdyx(iByps_ind_cnt,0,2,0);
 	//int2lcd(byps[sub_ind1]._adress-19,'!',0);
 	//int2lcd(sub_ind1+1,'@',0);
@@ -4304,7 +4306,13 @@ else if(ind==iStr_INV)
 	ptrs[0]=" Инверторов        ^";	
 	ptrs[1]=" Байпасов          [";
 	if(NUMBYPASS==1) ptrs[1]=" Байпас            [";
-	ptrs[2]=" Выход              ";
+	if(NUMBYPASS!=0)ptrs[2]=" Выход              ";
+	else
+		{
+		ptrs[2]=" Выходных фаз      <";
+		ptrs[3]=" Вход AC         >  ";
+		ptrs[4]=" Выход              ";
+		}
 
 	if(sub_ind<index_set) index_set=sub_ind;
 	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
@@ -4316,6 +4324,9 @@ else if(ind==iStr_INV)
 	if(NUMBYPASS==0) int2lcd(NUMBYPASS,'[',0);
 	else if(NUMPHASE==1) sub_bgnd("1ф.",'[',-2);
 	else if(NUMPHASE==3) sub_bgnd("3ф.",'[',-2); 
+	int2lcd(NUMPHASE,'<',0);
+	if(NUMINAC==1)	sub_bgnd("есть",'>',-1);
+	else 			sub_bgnd("нет",'>',-1);
 	
 
 	}
@@ -5621,7 +5632,7 @@ else if(ind==iK_inv)
 	int2lcd(inv[sub_ind1]._Iout,'%',1);
 	int2lcd(inv[sub_ind1]._T,'^',0); 
 	int2lcd(inv[sub_ind1]._Uload,'&',1);
-	int2lcd(inv[sub_ind1]._Unet,'*',1);
+	int2lcd(inv[sub_ind1]._Uacin,'*',1);
 	int2lcd_mmm(inv[sub_ind1]._Pout,'(',0);
 	int2lcd(inv[sub_ind1]._Udcin,'[',1); 
 
@@ -5718,8 +5729,8 @@ else if(ind==iK_byps)
 	int2lcd(byps[sub_ind1]._Uout,'@',1);
 	int2lcd(byps[sub_ind1]._Iout,'%',1);
 	int2lcd(byps[sub_ind1]._T,'^',0); 
-	int2lcd(byps[sub_ind1]._Uin,'&',1);
-	int2lcd(byps[sub_ind1]._Unet,'*',1);
+	int2lcd(byps[sub_ind1]._UinACinvbus,'&',1);
+	int2lcd(byps[sub_ind1]._UinACprim,'*',1);
 	int2lcd(sub_ind1+1,'!',0);
 	//int2lcd_mmm(byps._Pout,'(',0); 
 	if(byps[sub_ind1]._Pout>65000)byps[sub_ind1]._Pout=0; 
@@ -5892,12 +5903,12 @@ else if(ind==iK_byps_3f)
 	int2lcd(byps[0]._T,'&',0);
 	int2lcd(byps[1]._T,'*',0);
 	int2lcd(byps[2]._T,'(',0);		 
-	int2lcd(byps[0]._Uin,')',1);
-	int2lcd(byps[1]._Uin,'-',1);
-	int2lcd(byps[2]._Uin,'+',1);
-	int2lcd(byps[0]._Unet,'{',1);
-	int2lcd(byps[1]._Unet,'}',1);
-	int2lcd(byps[2]._Unet,'[',1);
+	int2lcd(byps[0]._UinACinvbus,')',1);
+	int2lcd(byps[1]._UinACinvbus,'-',1);
+	int2lcd(byps[2]._UinACinvbus,'+',1);
+	int2lcd(byps[0]._UinACprim,'{',1);
+	int2lcd(byps[1]._UinACprim,'}',1);
+	int2lcd(byps[2]._UinACprim,'[',1);
 	//int2lcd(sub_ind1+1,'!',0);
 	//int2lcd_mmm(byps._Pout,'(',0); 
 	if(byps[0]._Pout>65000)byps[0]._Pout=0;
@@ -5952,7 +5963,7 @@ else if(ind==iK_bps_sel)
 
 else if(ind==iK_bps)
 	{
-	
+/*	
 	ptrs[0]=" Uист =    @В       ";
      ptrs[1]=" откалибруйте Uист  ";
      ptrs[2]="  нажатием љ или њ  "; 
@@ -6064,7 +6075,7 @@ int2lcdyx(MSG_IND2OUT_EN_SRC2,0,6,0); */
 //int2lcdyx(load_U,0,5,0); 
 //int2lcdyx(cntrl_stat,0,10,0); 
 //int2lcdyx(bps[sub_ind1]._rotor,0,19,0); 
-//int2lcdyx(u_necc,0,19,0);  
+//int2lcdyx(u_necc,0,19,0); */ 
 	 }
 
 else if(ind==iK_power_net)
@@ -10109,12 +10120,14 @@ else if(ind==iStr_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,2);
+		if(NUMBYPASS==0)gran_char(&sub_ind,0,4);
+		else gran_char(&sub_ind,0,2);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,2);
+		if(NUMBYPASS==0)gran_char(&sub_ind,0,4);
+		else gran_char(&sub_ind,0,2);
 		}
 	else if(but==butD_)
 		{
@@ -10184,12 +10197,51 @@ else if(ind==iStr_INV)
        	}	     			  
           
     else if(sub_ind==2)
-	     {
-	     if(but==butE)
-	          {
+		{
+		if(NUMBYPASS==0)
+		 	{
+			if((but==butR)||(but==butR_))
+				{
+		     	NUMPHASE=3;
+		     	lc640_write_int(EE_NUMPHASE,NUMPHASE);
+		     	}
+		     
+			else if((but==butL)||(but==butL_))
+		     	{
+		     	NUMPHASE=1;
+		     	lc640_write_int(EE_NUMPHASE,NUMPHASE);
+
+		     	}
+			}
+		else
+			{
+	     	if(but==butE)
+	          	{
+				tree_down(0,0);
+	          	}
+			}
+		}	 
+    else if(sub_ind==3)
+		{
+		if((but==butR)||(but==butR_))
+			{
+			NUMINAC=1;
+			lc640_write_int(EE_NUMINAC,NUMINAC);
+			}
+		     
+		else if((but==butL)||(but==butL_))
+			{
+			NUMINAC=0;
+			lc640_write_int(EE_NUMINAC,NUMINAC);
+	     	}
+		}
+    else if(sub_ind==4)
+		{
+     	if(but==butE)
+			{
 			tree_down(0,0);
-	          }
-          }	          
+			}
+		}	 
 	}     
 
      

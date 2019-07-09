@@ -1315,8 +1315,8 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		{
 		byps[bypass_adress-61]._T=(char)RXBUFF[2];
 		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
-		byps[bypass_adress-61]._Unet=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
-		byps[bypass_adress-61]._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+		byps[bypass_adress-61]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[bypass_adress-61]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 
 		byps[bypass_adress-61]._cnt=0;
 		byps[bypass_adress-61]._valid=1;
@@ -1325,8 +1325,8 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		{
 		byps[0]._T=(char)RXBUFF[2];
 		byps[0]._flags=(char)RXBUFF[3];
-		byps[0]._Unet=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
-		byps[0]._Uin=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+		byps[0]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[0]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
 
 		byps[0]._cnt=0;
 		byps[0]._valid=1;

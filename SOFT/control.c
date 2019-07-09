@@ -1422,7 +1422,7 @@ if (NUMINV)
      		inv[i]._Uout=bps[i+20]._buff[4]+(bps[i+20]._buff[5]*256);
      		inv[i]._T=(signed)(bps[i+20]._buff[6]);
      		inv[i]._flags_tm=bps[i+20]._buff[7];
-     		inv[i]._Unet=bps[i+20]._buff[8]+(bps[i+20]._buff[9]*256);
+     		inv[i]._Uacin=bps[i+20]._buff[8]+(bps[i+20]._buff[9]*256);
      		inv[i]._Uload=bps[i+20]._buff[10]+(bps[i+20]._buff[11]*256);
 			inv[i]._Udcin=bps[i+20]._buff[12]+(bps[i+20]._buff[13]*256);
 			inv[i]._flags_tm_dop=bps[i+20]._buff[14];
@@ -1445,7 +1445,7 @@ if (NUMINV)
      		inv[i]._T=0;
      		inv[i]._flags_tm=0; 
      		inv[i]._Uload=0;
-     		inv[i]._Unet=0;
+     		inv[i]._Uacin=0;
 			inv[i]._Udcin=0;
 			inv[i]._cnt=25;
 			inv[i]._avIsOn=0;  
@@ -1461,8 +1461,8 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[0]._Uout=0;
 	byps[0]._T=0;
 	byps[0]._flags=0;
-	byps[0]._Unet=0;
-	byps[0]._Uin=0;
+	byps[0]._UinACprim=0;
+	byps[0]._UinACinvbus=0;
 	byps[0]._valid=0;
 	}
 
@@ -1473,8 +1473,8 @@ if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[1]._Uout=0;
 	byps[1]._T=0;
 	byps[1]._flags=0;
-	byps[1]._Unet=0;
-	byps[1]._Uin=0;
+	byps[1]._UinACprim=0;
+	byps[1]._UinACinvbus=0;
 	byps[1]._valid=0;
 	}
 
@@ -1485,8 +1485,8 @@ if((NUMBYPASS>=3&&(byps[2]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[2]._Uout=0;
 	byps[2]._T=0;
 	byps[2]._flags=0;
-	byps[2]._Unet=0;
-	byps[2]._Uin=0;
+	byps[2]._UinACprim=0;
+	byps[2]._UinACinvbus=0;
 	byps[2]._valid=0;
 	}
 
@@ -2514,7 +2514,7 @@ for(ii=0;ii<NUMPHASE;ii++)
 		}
 		 
 	// Авария по входному(сетевому) напряжению байпаса
-	if((((byps[ii]._Unet/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._Unet/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	if((((byps[ii]._UinACprim/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACprim/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
 		{
 		if(byps[ii]._unet_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
 			{
@@ -2522,11 +2522,11 @@ for(ii=0;ii<NUMPHASE;ii++)
 			if((byps[ii]._unet_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._unet_av_stat))
 				{
 				byps[ii]._unet_av_stat=1;
-				avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._Unet/10);
+				avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._UinACprim/10);
 				}  
 			}
 		}  
-	else if((((byps[ii]._Unet/10)<U_IN_AC_MAX_AV) && ((byps[ii]._Unet/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	else if((((byps[ii]._UinACprim/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACprim/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
 		{
 		if(byps[ii]._unet_av_cnt)
 			{
@@ -2540,7 +2540,7 @@ for(ii=0;ii<NUMPHASE;ii++)
 		} 
 
 	// Авария по входному(инверторному) напряжению байпаса
-	if((((byps[ii]._Uin/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._Uin/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	if((((byps[ii]._UinACinvbus/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACinvbus/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
 		{
 		if(byps[ii]._uin_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
 			{
@@ -2548,11 +2548,11 @@ for(ii=0;ii<NUMPHASE;ii++)
 			if((byps[ii]._uin_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uin_av_stat))
 				{
 				byps[ii]._uin_av_stat=1;
-				avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._Uin/10);
+				avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._UinACinvbus/10);
 				}  
 			}
 		}  
-	else if((((byps[ii]._Uin/10)<U_IN_AC_MAX_AV) && ((byps[ii]._Uin/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	else if((((byps[ii]._UinACinvbus/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACinvbus/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
 		{
 		if(byps[ii]._uin_av_cnt)
 			{

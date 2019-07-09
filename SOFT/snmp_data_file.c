@@ -12,16 +12,14 @@
 char snmp_community[10];
 
 //Информация об устройстве
-signed short snmp_device_code;
-signed 	   snmp_sernum;
+unsigned snmp_device_code;
+signed snmp_sernum;
 signed short snmp_sernum_lsb;
 signed short snmp_sernum_msb;
-char 	   snmp_location[100];
-signed short snmp_numofbat;
-signed short snmp_numofbps;
+char snmp_location[100];
 signed short snmp_numofinv;
-signed short snmp_numofavt;
-signed short snmp_numofdt;
+signed short snmp_numofbypass;
+signed short snmp_numofoutputphase;
 signed short snmp_numofsk;
 signed short snmp_numofevents;
 
@@ -49,21 +47,22 @@ signed short snmp_bps_stat[8];
 
 //Состояние инверторов
 signed short snmp_inv_number[32];
-signed short snmp_inv_voltage[32];
-signed short snmp_inv_current[32];
+signed short snmp_inv_output_voltage[32];
+signed short snmp_inv_output_current[32];
+signed short snmp_inv_output_power[32];
 signed short snmp_inv_temperature[32];
 signed short snmp_inv_stat[32];
-signed short snmp_inv_u_prim[32];
-signed short snmp_inv_u_in[32];
-signed short snmp_inv_p_out[32];
+signed short snmp_inv_input_voltage_DC[32];
+signed short snmp_inv_input_voltage_AC[32];
+signed short snmp_inv_output_bus_voltage[32];
 
 //Состояние байпаса
 signed short snmpBypassULoad;
 signed short snmpBypassILoad;
 signed short snmpBypassPLoad;
 signed short snmpBypassTemper;
-signed short snmpBypassUPrim;
-signed short snmpBypassUBus;
+signed short snmpBypassUInputACPrim;
+signed short snmpBypassUInputACInvBus;
 signed short snmpBypassFlags;
 signed short snmpBypassUdcin;
 
@@ -71,24 +70,24 @@ signed short snmpBypassULoadA;
 signed short snmpBypassILoadA;
 signed short snmpBypassPLoadA;
 signed short snmpBypassTemperA;
-signed short snmpBypassUPrimA;
-signed short snmpBypassUBusA;
+signed short snmpBypassUInputACPrimA;
+signed short snmpBypassUInputACInvBusA;
 signed short snmpBypassFlagsA;
 
 signed short snmpBypassULoadB;
 signed short snmpBypassILoadB;
 signed short snmpBypassPLoadB;
 signed short snmpBypassTemperB;
-signed short snmpBypassUPrimB;
-signed short snmpBypassUBusB;
+signed short snmpBypassUInputACPrimB;
+signed short snmpBypassUInputACInvBusB;
 signed short snmpBypassFlagsB;
 
 signed short snmpBypassULoadC;
 signed short snmpBypassILoadC;
 signed short snmpBypassPLoadC;
 signed short snmpBypassTemperC;
-signed short snmpBypassUPrimC;
-signed short snmpBypassUBusC;
+signed short snmpBypassUInputACPrimC;
+signed short snmpBypassUInputACInvBusC;
 signed short snmpBypassFlagsC;
 //Состояние Батарей
 signed short snmp_bat_number[2];
@@ -173,16 +172,24 @@ char snmp_log[64][128]=
 				};
 
 //Установочные параметры
-signed short snmp_main_bps;
+//signed short snmp_main_bps;
 signed short snmp_zv_en;
 signed short snmp_alarm_auto_disable;
-signed short snmp_bat_test_time;
+signed short snmp_u_set;
 signed short snmp_u_max;
 signed short snmp_u_min;
-signed short snmp_u_0_grad;
-signed short snmp_u_20_grad;
-signed short snmp_u_sign;
-signed short snmp_u_min_power;
+signed short snmp_u_net_on;
+signed short snmp_u_net_off;
+signed short snmp_u_bat_on;
+signed short snmp_u_bat_off;
+signed short snmp_bypass_max_ac_output_voltage_alarm_level;
+signed short snmp_bypass_min_ac_output_voltage_alarm_level;
+signed short snmp_bypass_max_ac_input_voltage_alarm_level;
+signed short snmp_bypass_min_ac_input_voltage_alarm_level;
+signed short snmp_bypass_max_dc_input_voltage_alarm_level;
+signed short snmp_bypass_min_dc_input_voltage_alarm_level;
+
+/*
 signed short snmp_u_withouth_bat;
 signed short snmp_control_current;
 signed short snmp_max_charge_current;
@@ -199,7 +206,7 @@ signed short snmp_tmax_bat;
 signed short snmp_tsign_bps;
 signed short snmp_tmax_bps;
 signed short snmp_bat_part_alarm;
-signed short snmp_power_cnt_adress;
+signed short snmp_power_cnt_adress;	*/
 
 //Климат-контроль
 signed short snmp_klimat_box_temper;
@@ -259,9 +266,9 @@ snmp_log[1][0]='6';
 
 //snmp_bpsnumber[0]=1;
 //snmp_bpsnumber[1]=2;
-/*
+
 snmp_sernum=AUSW_MAIN_NUMBER;
-snmp_sernum_lsb=0x1122;
+/*snmp_sernum_lsb=0x1122;
 snmp_sernum_msb=0x3344;
 snmp_device_code=AUSW_MAIN;
 
@@ -271,18 +278,39 @@ snmp_device_code=AUSW_MAIN;
 snmp_numofbat=1;
 
 */
+snmp_device_code=10000U;
+if(AUSW_MAIN==24)		snmp_device_code=24000U;
+else if(AUSW_MAIN==4860)snmp_device_code=48000U;
+else if(AUSW_MAIN==110)	snmp_device_code=110000U;
+else if(AUSW_MAIN==220)	snmp_device_code=220000U;
+
+if(NUMBYPASS==1) 
+	{
+	snmp_device_code+=100U;
+	if(NUMPHASE==1)			snmp_device_code+=10U;
+	else if(NUMPHASE==3)	snmp_device_code+=30U;
+	}
+else 
+	{
+	if(NUMPHASE==1)			snmp_device_code+=10U;
+	else if(NUMPHASE==3)	snmp_device_code+=30U;
+	if(NUMINAC==1)snmp_device_code+=1U;
+	}
+
 
 
 snmp_load_voltage=load_U;
 snmp_load_current=load_I;
 snmp_load_power=load_P;
 
-snmp_numofbat=NUMBAT;
-snmp_numofbps=NUMIST;
+//snmp_numofbat=NUMBAT;
+//snmp_numofbps=NUMIST;
 snmp_numofinv=NUMINV;
-snmp_numofavt=NUMAVT;
-snmp_numofdt=NUMDT;
-snmp_numofsk=NUMSK;
+snmp_numofbypass=NUMBYPASS;
+snmp_numofoutputphase=NUMPHASE;
+//snmp_numofavt=NUMAVT;
+//snmp_numofdt=NUMDT;
+//snmp_numofsk=NUMSK;
 snmp_numofevents=lc640_read_int(CNT_EVENT_LOG);
 
 snmp_energy_vvod_phase_a=Uvv_eb2[0];
@@ -395,15 +423,17 @@ snmp_bps_stat[7]=bps[7]._av;
 for(i = 0; i<32 ; i++)
 	{
 	snmp_inv_number[i]=i+1;
-	snmp_inv_voltage[i]=inv[i]._Uout;
-	snmp_inv_current[i]=inv[i]._Iout;
+	snmp_inv_output_voltage[i]=inv[i]._Uout;
+	snmp_inv_output_current[i]=inv[i]._Iout;
+	snmp_inv_output_power[i]=inv[i]._Pout;
 	snmp_inv_temperature[i]=inv[i]._T;
 	snmp_inv_stat[i]=inv[i]._flags_tm;
 	if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<7);
 	else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<7);
-	snmp_inv_u_prim[i]=inv[i]._Unet;
-	snmp_inv_u_in[i]=inv[i]._Uload;
-	snmp_inv_p_out[i]=inv[i]._Pout;
+	snmp_inv_input_voltage_DC[i]=inv[i]._Udcin;
+	snmp_inv_input_voltage_AC[i]=inv[i]._Uacin;
+	snmp_inv_output_bus_voltage[i]=inv[i]._Uload;
+	
 	}
 /*
 snmp_inv_number[0]=1;
@@ -530,38 +560,38 @@ snmp_inv_temperature[19]=inv[19]._Ti;
 snmp_inv_stat[19]=inv[19]._flags_tm;
 */
 
-snmpBypassULoad = 	byps[0]._Uout;
-snmpBypassILoad = 	byps[0]._Iout;
-snmpBypassPLoad = 	byps[0]._Pout;
-snmpBypassTemper = 	byps[0]._T;
-snmpBypassUPrim = 	byps[0]._Unet;
-snmpBypassUBus = 	byps[0]._Uin;
-snmpBypassFlags = 	byps[0]._flags;
-snmpBypassUdcin = 	dcin_U;
+snmpBypassULoad = 				byps[0]._Uout;
+snmpBypassILoad = 				byps[0]._Iout;
+snmpBypassPLoad = 				byps[0]._Pout;
+snmpBypassTemper = 				byps[0]._T;
+snmpBypassUInputACPrim = 		byps[0]._UinACprim;
+snmpBypassUInputACInvBus = 		byps[0]._UinACinvbus;
+snmpBypassFlags = 				byps[0]._flags;
+snmpBypassUdcin = 				dcin_U;
 
-snmpBypassULoadA = 	byps[0]._Uout;
-snmpBypassILoadA = 	byps[0]._Iout;
-snmpBypassPLoadA = 	byps[0]._Pout;
-snmpBypassTemperA = 	byps[0]._T;
-snmpBypassUPrimA = 	byps[0]._Unet;
-snmpBypassUBusA = 	byps[0]._Uin;
-snmpBypassFlagsA = 	byps[0]._flags;
+snmpBypassULoadA = 				byps[0]._Uout;
+snmpBypassILoadA = 				byps[0]._Iout;
+snmpBypassPLoadA = 				byps[0]._Pout;
+snmpBypassTemperA = 			byps[0]._T;
+snmpBypassUInputACPrimA = 		byps[0]._UinACprim;
+snmpBypassUInputACInvBusA = 	byps[0]._UinACinvbus;
+snmpBypassFlagsA = 				byps[0]._flags;
 
-snmpBypassULoadB = 	byps[1]._Uout;
-snmpBypassILoadB = 	byps[1]._Iout;
-snmpBypassPLoadB = 	byps[1]._Pout;
-snmpBypassTemperB = 	byps[1]._T;
-snmpBypassUPrimB = 	byps[1]._Unet;
-snmpBypassUBusB = 	byps[1]._Uin;
-snmpBypassFlagsB = 	byps[1]._flags;
+snmpBypassULoadB = 				byps[1]._Uout;
+snmpBypassILoadB = 				byps[1]._Iout;
+snmpBypassPLoadB = 				byps[1]._Pout;
+snmpBypassTemperB = 			byps[1]._T;
+snmpBypassUInputACPrimB = 		byps[1]._UinACprim;
+snmpBypassUInputACInvBusB = 	byps[1]._UinACinvbus;
+snmpBypassFlagsB = 				byps[1]._flags;
 
-snmpBypassULoadC = 	byps[2]._Uout;
-snmpBypassILoadC = 	byps[2]._Iout;
-snmpBypassPLoadC = 	byps[2]._Pout;
-snmpBypassTemperC = 	byps[2]._T;
-snmpBypassUPrimC = 	byps[2]._Unet;
-snmpBypassUBusC = 	byps[2]._Uin;
-snmpBypassFlagsC = 	byps[2]._flags;
+snmpBypassULoadC = 				byps[2]._Uout;
+snmpBypassILoadC = 				byps[2]._Iout;
+snmpBypassPLoadC = 				byps[2]._Pout;
+snmpBypassTemperC = 			byps[2]._T;
+snmpBypassUInputACPrimC = 		byps[2]._UinACprim;
+snmpBypassUInputACInvBusC = 	byps[2]._UinACinvbus;
+snmpBypassFlagsC = 				byps[2]._flags;
 
 
 snmp_sk_number[0]=1;
@@ -647,28 +677,28 @@ snmp_main_bps=MAIN_IST+1;
 */
 snmp_zv_en=ZV_ON;
 snmp_alarm_auto_disable=AV_OFF_AVT;
-snmp_bat_test_time=TBAT;
-snmp_u_max=UMAX;
-snmp_u_min=UB20-DU;
-snmp_u_0_grad=UB0;
-snmp_u_20_grad=UB20;
-snmp_u_sign=USIGN;
-snmp_u_min_power=UMN;
-snmp_u_withouth_bat=U0B;
-snmp_control_current=IKB;
-snmp_max_charge_current=IZMAX;
-snmp_max_current=IMAX;
-snmp_min_current=IMIN;
-//snmp_max_current_koef=KIMAX;
-snmp_uvz=UVZ;
-snmp_powerup_psu_timeout=TZAS;
-snmp_max_temperature=TMAX;
-snmp_tsign_bat=TBATSIGN; 
-snmp_tmax_bat=TBATMAX;
-snmp_tsign_bps=TSIGN;
-snmp_tmax_bps=TMAX;
-snmp_bat_part_alarm=UBM_AV; 
-snmp_power_cnt_adress=POWER_CNT_ADRESS;
+snmp_u_set=U_OUT_SET;
+snmp_u_max=U_OUT_MAX;
+snmp_u_min=U_OUT_MIN;
+snmp_u_net_on=U_NET_MAX;
+snmp_u_net_off=U_NET_MIN;
+snmp_u_bat_on=U_BAT_MAX;
+snmp_u_bat_off=U_BAT_MIN;
+snmp_bypass_max_ac_output_voltage_alarm_level=U_OUT_AC_MAX_AV;
+snmp_bypass_min_ac_output_voltage_alarm_level=U_OUT_AC_MIN_AV;
+snmp_bypass_max_ac_input_voltage_alarm_level=U_IN_AC_MAX_AV;
+snmp_bypass_min_ac_input_voltage_alarm_level=U_IN_AC_MIN_AV;
+snmp_bypass_max_dc_input_voltage_alarm_level=U_IN_DC_MAX_AV;
+snmp_bypass_min_dc_input_voltage_alarm_level=U_IN_DC_MIN_AV;
+//snmp_uvz=UVZ;
+//snmp_powerup_psu_timeout=TZAS;
+//snmp_max_temperature=TMAX;
+//snmp_tsign_bat=TBATSIGN; 
+//snmp_tmax_bat=TBATMAX;
+//snmp_tsign_bps=TSIGN;
+//snmp_tmax_bps=TMAX;
+//snmp_bat_part_alarm=UBM_AV; 
+//snmp_power_cnt_adress=POWER_CNT_ADRESS;
 
 for(i=0;i<12;i++)
 	{
@@ -758,11 +788,12 @@ if(mode==MIB_WRITE)
 }
 
 //-----------------------------------------------
-void snmp_bat_test_time_write (int mode)
+void snmp_u_set_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_TBAT,snmp_bat_test_time);
+	gran(&snmp_u_set,220,230);
+	lc640_write_int(EE_U_OUT_SET,snmp_u_set);
 	}
 }
 
@@ -771,7 +802,8 @@ void snmp_u_max_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-     lc640_write_int(EE_UMAX,snmp_u_max);
+	gran(&snmp_u_max,240,270);
+	lc640_write_int(EE_U_OUT_MAX,snmp_u_max);
 	}
 }
 
@@ -781,42 +813,147 @@ void snmp_u_min_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-     lc640_write_int(EE_DU,UB20-snmp_u_min);
+	gran(&snmp_u_min,0,200);
+	lc640_write_int(EE_U_OUT_MIN,snmp_u_min);
 	}
 }
 
 
 //-----------------------------------------------
-void snmp_u_0_grad_write (int mode)
+void snmp_u_net_on_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_UB0,snmp_u_0_grad);
+	gran(&snmp_u_net_on,180,205);
+	gran(&snmp_u_net_on,snmp_u_net_off+5,205);
+	lc640_write_int(EE_U_NET_MAX,snmp_u_net_on);
 	}
 }
 //-----------------------------------------------
-void snmp_u_20_grad_write (int mode)
+void snmp_u_net_off_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_UB20,snmp_u_20_grad);
+	gran(&snmp_u_net_off,175,200);
+	gran(&snmp_u_net_off,175,snmp_u_net_on-5);
+	lc640_write_int(EE_U_NET_MIN,snmp_u_net_off);
 	}
 }
 
 //-----------------------------------------------
-void snmp_u_sign_write (int mode)
+void snmp_bypass_max_ac_output_voltage_alarm_level_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
- //    lc640_write_int(EE_USIGN,snmp_u_sign);
+	gran(&snmp_bypass_max_ac_output_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_OUT_AC_MAX_AV,snmp_bypass_max_ac_output_voltage_alarm_level);
+	}
+} 
+
+//-----------------------------------------------
+void snmp_bypass_min_ac_output_voltage_alarm_level_write(int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_bypass_min_ac_output_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_OUT_AC_MIN_AV,snmp_bypass_min_ac_output_voltage_alarm_level);
+	}
+} 
+
+//-----------------------------------------------
+void snmp_bypass_max_ac_input_voltage_alarm_level_write(int mode) 
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_bypass_max_ac_input_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_IN_AC_MAX_AV,snmp_bypass_max_ac_input_voltage_alarm_level);
+	}
+} 
+
+//-----------------------------------------------
+void snmp_bypass_min_ac_input_voltage_alarm_level_write(int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_bypass_max_ac_input_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_IN_AC_MIN_AV,snmp_bypass_min_ac_input_voltage_alarm_level);
+	}
+} 
+
+//-----------------------------------------------
+void snmp_bypass_max_dc_input_voltage_alarm_level_write(int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_bypass_max_dc_input_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_IN_DC_MAX_AV,snmp_bypass_max_dc_input_voltage_alarm_level);
+	}
+} 
+ 
+//-----------------------------------------------
+void snmp_bypass_min_dc_input_voltage_alarm_level_write(int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_bypass_min_dc_input_voltage_alarm_level,20,300);
+	lc640_write_int(EE_U_IN_DC_MIN_AV,snmp_bypass_min_dc_input_voltage_alarm_level);
+	}
+} 
+ 
+
+//-----------------------------------------------
+void snmp_u_bat_on_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	short temp_min=0,temp_max=300,temp_d=1;
+		 if(AUSW_MAIN==24)
+		 	{
+			temp_min=22,temp_max=26,temp_d=1;
+			}
+		 else if(AUSW_MAIN==4860)
+		 	{
+			temp_min=42,temp_max=52,temp_d=3;
+			}
+		 else if(AUSW_MAIN==110)
+		 	{
+			temp_min=83,temp_max=113,temp_d=5;
+			}
+		else if(AUSW_MAIN==220)
+		 	{
+			temp_min=175,temp_max=215,temp_d=1;
+			}
+	gran(&snmp_u_bat_on,temp_min,temp_max);
+	gran(&snmp_u_bat_on,snmp_u_bat_off+5,temp_max);
+	lc640_write_int(EE_U_BAT_MAX,snmp_u_bat_on);
 	}
 }
 //-----------------------------------------------
-void snmp_u_min_power_write (int mode)
+void snmp_u_bat_off_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-//     lc640_write_int(EE_UMN,snmp_u_min_power);
+	short temp_min=0,temp_max=300,temp_d=1;
+		 if(AUSW_MAIN==24)
+		 	{
+			temp_min=20,temp_max=24,temp_d=1;
+			}
+		 else if(AUSW_MAIN==4860)
+		 	{
+			temp_min=40,temp_max=50,temp_d=3;
+			}
+		 else if(AUSW_MAIN==110)
+		 	{
+			temp_min=80,temp_max=110,temp_d=5;
+			}
+		else if(AUSW_MAIN==220)
+		 	{
+			temp_min=170,temp_max=210,temp_d=1;
+			}
+
+	gran(&snmp_u_bat_off,temp_min,temp_max);
+	gran(&snmp_u_bat_off,175,snmp_u_bat_on-5);
+	lc640_write_int(EE_U_BAT_MIN,snmp_u_bat_off);
 	}
 }
 //-----------------------------------------------
@@ -824,7 +961,7 @@ void snmp_u_withouth_bat_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_U0B,snmp_u_withouth_bat);
+//	lc640_write_int(EE_U0B,snmp_u_withouth_bat);
 	}
 }
 
@@ -833,7 +970,7 @@ void snmp_control_current_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_IKB,snmp_control_current);
+//	lc640_write_int(EE_IKB,snmp_control_current);
 	}
 }
 
@@ -842,7 +979,7 @@ void snmp_max_charge_current_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_IZMAX,snmp_max_charge_current);
+//	lc640_write_int(EE_IZMAX,snmp_max_charge_current);
 	}
 }
 
@@ -851,7 +988,7 @@ void snmp_max_current_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-     lc640_write_int(EE_IMAX,snmp_max_current);
+//     lc640_write_int(EE_IMAX,snmp_max_current);
 	}
 }
 
@@ -860,7 +997,7 @@ void snmp_min_current_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-     lc640_write_int(EE_IMIN,snmp_min_current);
+//     lc640_write_int(EE_IMIN,snmp_min_current);
 	}
 }
 
@@ -887,7 +1024,7 @@ void snmp_powerup_psu_timeout_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-     lc640_write_int(EE_TZAS,snmp_powerup_psu_timeout);
+//     lc640_write_int(EE_TZAS,snmp_powerup_psu_timeout);
 	}
 }
 
@@ -905,7 +1042,7 @@ void snmp_tsign_bat_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
- 	lc640_write_int(EE_TBATSIGN,snmp_tsign_bat);
+// 	lc640_write_int(EE_TBATSIGN,snmp_tsign_bat);
 	}
 }
 //-----------------------------------------------
@@ -913,7 +1050,7 @@ void snmp_tmax_bat_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
- 	lc640_write_int(EE_TBATMAX,snmp_tmax_bat);
+// 	lc640_write_int(EE_TBATMAX,snmp_tmax_bat);
 	}
 }
 //-----------------------------------------------
@@ -921,7 +1058,7 @@ void snmp_tsign_bps_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_TSIGN,snmp_tsign_bps);
+//	lc640_write_int(EE_TSIGN,snmp_tsign_bps);
 	}
 }
 //-----------------------------------------------
@@ -929,7 +1066,7 @@ void snmp_tmax_bps_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_TMAX,snmp_tmax_bps);
+//	lc640_write_int(EE_TMAX,snmp_tmax_bps);
 	}
 }
 
@@ -938,7 +1075,7 @@ void snmp_uvz_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_UVZ,snmp_uvz);
+//	lc640_write_int(EE_UVZ,snmp_uvz);
 	}
 }
 //-----------------------------------------------
@@ -946,7 +1083,7 @@ void snmp_bat_part_alarm_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_UBM_AV,snmp_bat_part_alarm);
+//	lc640_write_int(EE_UBM_AV,snmp_bat_part_alarm);
 	}
 }
 //-----------------------------------------------
@@ -954,7 +1091,7 @@ void snmp_power_cnt_adress_write(int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	lc640_write_int(EE_POWER_CNT_ADRESS,snmp_power_cnt_adress);
+//	lc640_write_int(EE_POWER_CNT_ADRESS,snmp_power_cnt_adress);
 	}
 }
 

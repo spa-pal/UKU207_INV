@@ -1,7 +1,7 @@
 extern char snmp_community[10];
 
 //Информация об устройстве
-extern signed short snmp_device_code;
+extern unsigned snmp_device_code;
 extern signed 	   snmp_sernum;
 extern signed short snmp_sernum_lsb;
 extern signed short snmp_sernum_msb;
@@ -9,8 +9,8 @@ extern char 	   snmp_location[100];
 extern signed short snmp_numofbat;
 extern signed short snmp_numofbps;
 extern signed short snmp_numofinv;
-extern signed short snmp_numofavt;
-extern signed short snmp_numofdt;
+extern signed short snmp_numofbypass;
+extern signed short snmp_numofoutputphase;
 extern signed short snmp_numofsk;
 extern signed short snmp_numofevents;
 
@@ -37,21 +37,22 @@ extern signed short snmp_bps_stat[8];
 
 //Состояние инверторов
 extern signed short snmp_inv_number[32];
-extern signed short snmp_inv_voltage[32];
-extern signed short snmp_inv_current[32];
+extern signed short snmp_inv_output_voltage[32];
+extern signed short snmp_inv_output_current[32];
+extern signed short snmp_inv_output_power[32];
 extern signed short snmp_inv_temperature[32];
 extern signed short snmp_inv_stat[32];
-extern signed short snmp_inv_u_prim[32];
-extern signed short snmp_inv_u_in[32];
-extern signed short snmp_inv_p_out[32];
+extern signed short snmp_inv_input_voltage_DC[32];
+extern signed short snmp_inv_input_voltage_AC[32];
+extern signed short snmp_inv_output_bus_voltage[32];
 
 //Состояние байпаса
 extern signed short snmpBypassULoad;
 extern signed short snmpBypassILoad;
 extern signed short snmpBypassPLoad;
 extern signed short snmpBypassTemper;
-extern signed short snmpBypassUPrim;
-extern signed short snmpBypassUBus;
+extern signed short snmpBypassUInputACPrim;
+extern signed short snmpBypassUInputACInvBus;
 extern signed short snmpBypassFlags;
 extern signed short snmpBypassUdcin;
 
@@ -59,24 +60,24 @@ extern signed short snmpBypassULoadA;
 extern signed short snmpBypassILoadA;
 extern signed short snmpBypassPLoadA;
 extern signed short snmpBypassTemperA;
-extern signed short snmpBypassUPrimA;
-extern signed short snmpBypassUBusA;
+extern signed short snmpBypassUInputACPrimA;
+extern signed short snmpBypassUInputACInvBusA;
 extern signed short snmpBypassFlagsA;
 
 extern signed short snmpBypassULoadB;
 extern signed short snmpBypassILoadB;
 extern signed short snmpBypassPLoadB;
 extern signed short snmpBypassTemperB;
-extern signed short snmpBypassUPrimB;
-extern signed short snmpBypassUBusB;
+extern signed short snmpBypassUInputACPrimB;
+extern signed short snmpBypassUInputACInvBusB;
 extern signed short snmpBypassFlagsB;
 
 extern signed short snmpBypassULoadC;
 extern signed short snmpBypassILoadC;
 extern signed short snmpBypassPLoadC;
 extern signed short snmpBypassTemperC;
-extern signed short snmpBypassUPrimC;
-extern signed short snmpBypassUBusC;
+extern signed short snmpBypassUInputACPrimC;
+extern signed short snmpBypassUInputACInvBusC;
 extern signed short snmpBypassFlagsC;
 
 //Состояние Батарей
@@ -132,16 +133,23 @@ extern signed short snmp_command_parametr;
 extern char snmp_log[64][128];
 
 //Установочные параметры
-extern signed short snmp_main_bps;
+//extern signed short snmp_main_bps;
 extern signed short snmp_zv_en;
 extern signed short snmp_alarm_auto_disable;
-extern signed short snmp_bat_test_time;
+extern signed short snmp_u_set;
 extern signed short snmp_u_max;
 extern signed short snmp_u_min;
-extern signed short snmp_u_0_grad;
-extern signed short snmp_u_20_grad;
-extern signed short snmp_u_sign;
-extern signed short snmp_u_min_power;
+extern signed short snmp_u_net_on;
+extern signed short snmp_u_net_off;
+extern signed short snmp_u_bat_on;
+extern signed short snmp_u_bat_off;
+extern signed short snmp_bypass_max_ac_output_voltage_alarm_level;
+extern signed short snmp_bypass_min_ac_output_voltage_alarm_level;
+extern signed short snmp_bypass_max_ac_input_voltage_alarm_level;
+extern signed short snmp_bypass_min_ac_input_voltage_alarm_level;
+extern signed short snmp_bypass_max_dc_input_voltage_alarm_level;
+extern signed short snmp_bypass_min_dc_input_voltage_alarm_level;
+/*extern signed short snmp_u_bat_off;
 extern signed short snmp_u_withouth_bat;
 extern signed short snmp_control_current;
 extern signed short snmp_max_charge_current;
@@ -158,7 +166,8 @@ extern signed short snmp_tmax_bat;
 extern signed short snmp_tsign_bps;
 extern signed short snmp_tmax_bps;
 extern signed short snmp_bat_part_alarm;
-extern signed short snmp_power_cnt_adress;
+extern signed short snmp_power_cnt_adress; */
+
 
 //Климат-контроль
 extern signed short snmp_klimat_box_temper;
@@ -186,12 +195,13 @@ void event2snmp(char num);
 void snmp_main_bps_write (int mode);
 void snmp_zv_on_write (int mode);
 void snmp_alarm_auto_disable_write (int mode);
-void snmp_bat_test_time_write (int mode);
+void snmp_u_set_write (int mode);
 void snmp_u_max_write (int mode);
 void snmp_u_min_write (int mode);
-void snmp_u_0_grad_write (int mode);
-void snmp_u_20_grad_write (int mode);
-void snmp_u_sign_write (int mode);
+void snmp_u_net_on_write (int mode);
+void snmp_u_net_off_write (int mode);
+void snmp_u_bat_on_write (int mode);
+void snmp_u_bat_off_write (int mode);
 void snmp_u_min_power_write (int mode);
 void snmp_u_withouth_bat_write (int mode);
 void snmp_control_current_write (int mode);
@@ -223,7 +233,12 @@ void snmp_tmax_bps_write(int mode);
 void snmp_bat_part_alarm_write(int mode);
 void snmp_power_cnt_adress_write(int mode);
 void snmp_uvz_write(int mode);
-
+void snmp_bypass_max_ac_output_voltage_alarm_level_write(int mode);
+void snmp_bypass_min_ac_output_voltage_alarm_level_write(int mode);
+void snmp_bypass_max_ac_input_voltage_alarm_level_write(int mode);
+void snmp_bypass_min_ac_input_voltage_alarm_level_write(int mode);
+void snmp_bypass_max_dc_input_voltage_alarm_level_write(int mode);
+void snmp_bypass_min_dc_input_voltage_alarm_level_write(int mode);
 
 
 

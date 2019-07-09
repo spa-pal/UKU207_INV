@@ -29,19 +29,15 @@
 
 #ifndef UKU_KONTUR
 
-#define OID_DEVICE 		14
+#define OID_DEVICE 		25
 
 #define DISPLAY_DEVICE_INFO			1
 #define DISPLAY_DEVICE_INFO_CODE			1
 #define DISPLAY_DEVICE_INFO_SERIAL			2
 #define DISPLAY_DEVICE_INFO_LOCATION 		3
-#define DISPLAY_DEVICE_INFO_NUMOFBAT 		4
-#define DISPLAY_DEVICE_INFO_NUMOFBPS 		5
-#define DISPLAY_DEVICE_INFO_NUMOFINV 		6
-#define DISPLAY_DEVICE_INFO_NUMOFAVT 		7
-#define DISPLAY_DEVICE_INFO_NUMOFDT 		8
-#define DISPLAY_DEVICE_INFO_NUMOFSK 		9
-#define DISPLAY_DEVICE_INFO_NUMOFEVENTS		10
+#define DISPLAY_DEVICE_INFO_NUMOFINV 		4
+#define DISPLAY_DEVICE_INFO_NUMOFBYPASS		5
+#define DISPLAY_DEVICE_INFO_NUMOFOUTPUTPHASE	6
 
 #define DISPLAY_MAINS_POWER			2
 #define DISPLAY_MAINS_POWER_VOLTAGE		1
@@ -58,12 +54,25 @@
 #define DISPLAY_LOAD_CURRENT				2
 #define DISPLAY_LOAD_POWER					3
 
+/*
 #define DISPLAY_PSU					4
 #define DISPLAY_PSU_ENTRY_NUMBER			1,1
 #define DISPLAY_PSU_ENTRY_VOLTAGE 			1,2
 #define DISPLAY_PSU_ENTRY_CURRENT			1,3
 #define DISPLAY_PSU_ENTRY_TEMPERATURE		1,4
 #define DISPLAY_PSU_ENTRY_STATUS			1,5
+*/
+
+#define DISPLAY_INV					4
+#define DISPLAY_INV_ENTRY_NUMBER			1,1
+#define DISPLAY_INV_ENTRY_OUTPUT_VOLTAGE 	1,2
+#define DISPLAY_INV_ENTRY_OUTPUT_CURRENT	1,3
+#define DISPLAY_INV_ENTRY_OUTPUT_POWER		1,4
+#define DISPLAY_INV_ENTRY_TEMPERATURE		1,5
+#define DISPLAY_INV_ENTRY_STATUS			1,6
+#define DISPLAY_INV_ENTRY_INPUT_VOLTAGE_DC	1,7
+#define DISPLAY_INV_ENTRY_INPUT_VOLTAGE_AC	1,8
+#define DISPLAY_INV_ENTRY_OUTPUT_BUS_VOLTAGE 1,9	
 
 #define DISPLAY_BAT					5
 #define DISPLAY_BAT_NUMBER				1,1
@@ -84,15 +93,7 @@
 #define DISPLAY_SPEC_TRAP_VALUE_2			8
 
 
-#define DISPLAY_INV					14
-#define DISPLAY_INV_ENTRY_NUMBER			1,1
-#define DISPLAY_INV_ENTRY_VOLTAGE 			1,2
-#define DISPLAY_INV_ENTRY_CURRENT			1,3
-#define DISPLAY_INV_ENTRY_TEMPERATURE		1,4
-#define DISPLAY_INV_ENTRY_STATUS			1,5
-#define DISPLAY_INV_ENTRY_U_PRIM			1,6
-#define DISPLAY_INV_ENTRY_U_BUS				1,7
-#define DISPLAY_INV_ENTRY_P_OUT				1,8
+
 
 #define LCD_SIZE 200
 
@@ -103,26 +104,20 @@
 #define SYSPARAMS					10
 #define SYSPARAMSSOUNDALARMEN				1
 #define SYSPARAMSALARMAUTODISABLE			2
-#define SYSPARAMS_BAT_TEST_TIME			3
-#define SYSPARAMS_U_MAX					4
-#define SYSPARAMS_U_MIN					5
-#define SYSPARAMS_U_0_GRAD				6
-#define SYSPARAMS_U_20_GRAD				7 
-#define SYSPARAMS_U_SIGN					8
-#define SYSPARAMS_U_MIN_POWER				9
-#define SYSPARAMS_U_WITHOUT_BAT			10
-#define SYSPARAMS_IBK					11
-#define SYSPARAMS_IZMAX					12
-#define SYSPARAMS_IMAX					13
-#define SYSPARAMS_IMIN					14
-#define SYSPARAMS_UVZ					15
-#define SYSPARAMS_TZAS					16
-#define SYSPARAMS_TSIGN_BAT				17
-#define SYSPARAMS_TMAX_BAT				18
-#define SYSPARAMS_TSIGN_BPS				19
-#define SYSPARAMS_TMAX_BPS				20	
-#define SYSPARAMS_BAT_PART_ALARM			21
-#define SYSPARAMS_POWER_CNT_ADRESS			22	
+//#define SYSPARAMS_BAT_TEST_TIME			3
+#define SYSPARAMS_U_OUTPUT_SET				5
+#define SYSPARAMS_U_OUTPUT_MAX				6
+#define SYSPARAMS_U_OUTPUT_MIN				7
+#define SYSPARAMS_U_NET_ON					8 
+#define SYSPARAMS_U_NET_OFF					9
+#define SYSPARAMS_U_BAT_ON					10
+#define SYSPARAMS_U_BAT_OFF					11
+#define SYSPARAMS_BYPASS_MAX_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					12
+#define SYSPARAMS_BYPASS_MIN_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					13
+#define SYSPARAMS_BYPASS_MAX_AC_INPUT_VOLTAGE_ALARM_LEVEL					14
+#define SYSPARAMS_BYPASS_MIN_AC_INTPUT_VOLTAGE_ALARM_LEVEL					15
+#define SYSPARAMS_BYPASS_MAX_DC_INPUT_VOLTAGE_ALARM_LEVEL					16
+#define SYSPARAMS_BYPASS_MIN_DC_INPUT_VOLTAGE_ALARM_LEVEL					17
 
 #define DISPLAY_AVT					11
 #define DISPLAY_AVT_ENTRY_NUMBER			1,1
@@ -174,28 +169,28 @@
 #define DISPLAY_BYPASS_I_LOAD				2
 #define DISPLAY_BYPASS_P_LOAD				3
 #define DISPLAY_BYPASS_TEMPER				4
-#define DISPLAY_BYPASS_U_PRIM				5
-#define DISPLAY_BYPASS_U_BUS				6
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM		5
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS	6
 #define DISPLAY_BYPASS_FLAGS				7
-#define DISPLAY_BYPASS_U_DCIN				8
+#define DISPLAY_BYPASS_U_INPUT_DC			8
 #define DISPLAY_BYPASS_U_LOAD_A				9
 #define DISPLAY_BYPASS_I_LOAD_A				10	
 #define DISPLAY_BYPASS_P_LOAD_A				11	
 #define DISPLAY_BYPASS_TEMPER_A				12	
-#define DISPLAY_BYPASS_U_PRIM_A				13			
-#define DISPLAY_BYPASS_U_BUS_A				14			
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_A	13			
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_A	14			
 #define DISPLAY_BYPASS_U_LOAD_B				15		
 #define DISPLAY_BYPASS_I_LOAD_B				16	
 #define DISPLAY_BYPASS_P_LOAD_B				17
 #define DISPLAY_BYPASS_TEMPER_B				18			
-#define DISPLAY_BYPASS_U_PRIM_B				19	
-#define DISPLAY_BYPASS_U_BUS_B				20	
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_B	19	
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_B	20	
 #define DISPLAY_BYPASS_U_LOAD_C				21	
 #define DISPLAY_BYPASS_I_LOAD_C				22 		
 #define DISPLAY_BYPASS_P_LOAD_C				23
 #define DISPLAY_BYPASS_TEMPER_C				24
-#define DISPLAY_BYPASS_U_PRIM_C				25 
-#define DISPLAY_BYPASS_U_BUS_C				26  
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_C	25 
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_C	26  
 
 #define COMMAND_OK		0x5555
 #define COMAND_FAIL		0xaaaa
@@ -704,6 +699,7 @@ extern signed short NUMAVT;
 extern signed short NUMMAKB;
 extern signed short NUMBYPASS;
 extern signed short NUMPHASE;
+extern signed short NUMINAC;
 
 typedef enum {apvON=0x01,apvOFF=0x00}enum_apv_on;
 extern enum_apv_on APV_ON1,APV_ON2;
@@ -853,8 +849,8 @@ typedef struct
 	signed short 	_Iout;
 	signed short 	_Uout;
 	signed long 	_Pout;
-	signed short 	_Unet; 	
-	signed short 	_Uin;
+	signed short 	_UinACprim; 	
+	signed short 	_UinACinvbus;
 	signed char		_unet_av_cnt;
 	char 			_unet_av_stat;
 	signed char		_uout_av_cnt;
@@ -906,6 +902,7 @@ typedef struct
      int _ist_blok_host_cnt;
      short _blok_cnt; //блокирование источников 
      char _flags_tm;
+	 //char _flags_tm_dop;
 	//signed short _overload_av_cnt;     
      signed short _temp_av_cnt;
      //signed short _umax_av_cnt;
@@ -940,7 +937,7 @@ typedef struct
 	signed _Iout;
 	signed _T; 
 	signed _Uload;
-	signed _Unet;
+	signed _Uacin;
 	signed _Udcin;
 	signed short _Pout;
      char _flags_tu;

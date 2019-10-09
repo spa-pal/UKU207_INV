@@ -1,0 +1,925 @@
+
+UKU207INV DEFINITIONS ::= BEGIN
+
+IMPORTS
+	enterprises, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE
+		FROM SNMPv2-SMI
+	DisplayString, TEXTUAL-CONVENTION
+		FROM SNMPv2-TC;
+
+entSPA-SIB  MODULE-IDENTITY
+    LAST-UPDATED "201910301000Z"
+    ORGANIZATION 
+        "SPA"
+    CONTACT-INFO 
+        "Novosib etc"
+    DESCRIPTION 
+        "This MIB contains objects for SPA-MIB"
+    REVISION "201910301000Z"
+    DESCRIPTION 
+        "Initial version"
+::= { enterprises 33183 }
+
+
+-- --------------------------------------------
+-- --------------------------------------------        
+--  TEXTUAL CONVENTION
+-- --------------------------------------------
+-- --------------------------------------------
+
+Tenths ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT "d-1"
+   STATUS  current
+   DESCRIPTION
+       "These values are shown with one sign after the decimal point."
+   SYNTAX  INTEGER 
+
+Hundredths ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT "d-2"
+   STATUS  current
+   DESCRIPTION
+       "These values are shown with two sign after the decimal point."
+   SYNTAX  INTEGER 
+
+-- --------------------------------------------
+-- --------------------------------------------        
+--  TRANSMISSION OBJECTS
+-- --------------------------------------------
+-- --------------------------------------------
+
+uku207inv            OBJECT IDENTIFIER ::= { entSPA-SIB 25 }
+displayDeviceInfo    OBJECT IDENTIFIER ::= { uku207inv 1 }
+dipslayMains         OBJECT IDENTIFIER ::= { uku207inv 2 }
+displayLoad          OBJECT IDENTIFIER ::= { uku207inv 3 }
+commands             OBJECT IDENTIFIER ::= { uku207inv 8 }
+sysParams            OBJECT IDENTIFIER ::= { uku207inv 10 }
+
+displayDeviceInfoCode  OBJECT-TYPE
+	SYNTAX     INTEGER(1..1000000)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"System code
+		case 24110: 	Inverter system with bypass, input AC220V/DC24V, output AC220V;
+		case 48110: 	Inverter system with bypass, input AC220V/DC48V-60V, output AC220V;
+		case 110110: 	Inverter system with bypass, input AC220V/DC110V-150V, output AC220V;
+		case 220110: 	Inverter system with bypass, input AC220V/DC220V, output AC220V;
+		case 24130: 	Inverter system with bypass, input AC380V/DC24V, output AC380V;
+		case 48130: 	Inverter system with bypass, input AC380V/DC48V-60V, output AC380V;
+		case 110130: 	Inverter system with bypass, input AC380V/DC110V-150V, output AC380V;
+		case 220130: 	Inverter system with bypass, input AC380V/DC220V, output AC380V;
+		case 24010: 	Inverter system without bypass, input DC24V, output AC220V;
+		case 48010: 	Inverter system without bypass, input DC48V-60V, output AC220V;
+		case 110010: 	Inverter system without bypass, input DC110V-150V, output AC220V;
+		case 220010: 	Inverter system without bypass, input DC220V, output AC220V;
+		case 24030: 	Inverter system without bypass, input DC24V, output AC380V;
+		case 48030: 	Inverter system without bypass, input DC48V-60V, output AC380V;
+		case 110030: 	Inverter system without bypass, input DC110V-150V, output AC380V;
+		case 220030: 	Inverter system without bypass, input DC220V, output AC380V;
+		case 24011: 	Inverter system without bypass, input AC220V/DC24V, output AC220V;
+		case 48011: 	Inverter system without bypass, input AC220V/DC48V-60V, output AC220V;
+		case 110011: 	Inverter system without bypass, input AC220V/DC110V-150V, output AC220V;
+		case 220011: 	Inverter system without bypass, input AC220V/DC220V, output AC220V;
+		case 24031: 	Inverter system without bypass, input AC380V/DC24V, output AC380V;
+		case 48031: 	Inverter system without bypass, input AC380V/DC48V-60V, output AC380V;
+		case 110031: 	Inverter system without bypass, input AC380V/DC110V-150V, output AC380V;
+		case 220031: 	Inverter system without bypass, input AC380V/DC220V, output AC380V;
+
+		"
+	::= { displayDeviceInfo 1 }
+
+displayDeviceInfoSerial  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Serial number of the device, set at the factory"
+	::= { displayDeviceInfo 2 }
+
+displayDeviceInfoLocation  OBJECT-TYPE
+	SYNTAX     DisplayString (SIZE(69))
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Rewritable string parameter. Used to store information 
+		about the location of the device. 
+		Maximum length of 64 characters, only Latin"
+	::= { displayDeviceInfo 3 }
+
+displayDeviceInfoNumOfInvertors  OBJECT-TYPE
+	SYNTAX     INTEGER (0..100)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of invertors in the system."
+	::= { displayDeviceInfo 4 }
+
+displayDeviceInfoNumOfBypass  OBJECT-TYPE
+	SYNTAX     INTEGER(0..1)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of bypass in the system."
+	::= { displayDeviceInfo 5 }
+
+displayDeviceInfoNumOfOutputPhases  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Number of temperature sensors in the device."
+	::= { displayDeviceInfo 8 }
+
+displayDeviceInfoNumOfSk  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Number of logical inputs in the device."
+	::= { displayDeviceInfo 9 }
+
+dipslayMainsVoltage  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Value of the input voltage of the primary supply network. 1 volt resolution."
+	::= { dipslayMains 1 }
+
+dipslayMainsFrequency  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Value of the input frequency of the primary power supply. Resolution 0.1 hertz."
+	::= { dipslayMains 2 }
+
+dipslayMainsAlarm  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Byte flags of the state of the primary power network.
+b0 - power failure flag (active '1'). Voltage is less than set minimum value"
+	::= { dipslayMains 4 }
+
+dipslayMainsPhaseA  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Value of the input voltage of the primary supply network (phase A). 1 volt resolution."
+	::= { dipslayMains 5 }
+
+dipslayMainsPhaseB  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Value of the input voltage of the primary supply network (phase B). 1 volt resolution."
+	::= { dipslayMains 6 }
+
+dipslayMainsPhaseC  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Value of the input voltage of the primary supply network (phase C). 1 volt resolution."
+	::= { dipslayMains 7 }	
+
+displayLoadVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output voltage of the device. Resolution 0.1 Volt."
+	::= { displayLoad 1 }
+
+displayLoadCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output current of the device. Resolution 0.1 Amper."
+	::= { displayLoad 2 }
+
+displayINVTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplayINVEntry
+	ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Invertor's Status Table"
+	::= { uku207inv 4 }
+
+displayPSUTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplayPSUEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Power Supply Status Table"
+	::= { uku207inv 15 }	
+
+displayINVEntry  OBJECT-TYPE
+	SYNTAX 	DisplayINVEntry
+	ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Invertors listin"
+	INDEX { displayINVNumber }
+	::= { displayINVTable 1 }
+
+displayPSUEntry  OBJECT-TYPE
+	SYNTAX 	DisplayPSUEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"PSU listing"
+	INDEX { displayPSUnumber }
+	::= { displayPSUTable 1 }
+
+DisplayINVEntry ::= SEQUENCE {
+	displayINVNumber
+		INTEGER,
+	displayINVVoltage
+		INTEGER,
+	displayINVCourrent
+		INTEGER,
+	displayINVTemperature
+		INTEGER,
+	displayINVStatusWord
+		INTEGER,
+	displayINVUinDC	
+		INTEGER,
+	displayINVUinAC
+		INTEGER,
+	displayINVUbus
+		INTEGER,
+	displayINVPout
+		INTEGER		
+}
+
+displayINVNumber  OBJECT-TYPE
+	SYNTAX     INTEGER (1..64)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Invertors sequence number"
+	::= { displayINVEntry 1 }
+
+displayINVVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output voltage of the invertor.  0.1 volt resolution"
+	::= { displayINVEntry 2 }
+
+displayINVCourrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output current of the invertor. 0.1 amper resolution"
+	::= { displayINVEntry 3 }
+
+displayINVTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Radiator invertor temperature. Discretization 1 degree Celsius."
+	::= { displayINVEntry 4 }
+
+displayINVStatusWord  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bytes of invertor status flags.
+b0 - temperature failure flag (active '1'). Temperature above the set maximum value.
+b1 - overvoltage alarm flag (active '1'). The output voltage of the source exceeds the set maximum.
+b2 - low output voltage failure flag (active '1'). Output voltage below the set minimum.
+b3 - connection failure flag (active '1'). There is no connection to the power supply via the internal CAN bus.
+b4 - fan resource failure flag (active '1'). Fan operating time exceeded the set value."
+	::= { displayINVEntry 5 }
+
+
+displayINVUinDC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input DC voltage of the invertor. 0.1 volt resolution"
+	::= { displayINVEntry 6 }
+
+displayINVUinAC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input AC voltage of the invertor. Only for invertors with a ACinput. 0.1 volt resolution"
+	::= { displayINVEntry 7 }
+
+displayINVUbus  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Inverter common output bus voltage.  0.1 volt resolution"
+	::= { displayINVEntry 8 }
+
+displayINVPout  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output power of the invertor. 1 watt resolution"
+	::= { displayINVEntry 9 }
+
+
+
+
+
+DisplayPSUEntry ::= SEQUENCE {
+	displayPSUnumber
+		INTEGER,
+	displayPSUVoltage
+		Tenths,
+	displayPSUCurrent
+		Tenths,
+	displayPSUTemperature
+		INTEGER,
+	displayPSUStatus
+		INTEGER
+}
+
+displayPSUnumber  OBJECT-TYPE
+	SYNTAX     INTEGER (1..64)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Power supply sequence number"
+	::= { displayPSUEntry 1 }
+
+displayPSUVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output voltage of the power source. 0.1 volt resolution"
+	::= { displayPSUEntry 2 }
+
+displayPSUCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output current of the power source. 0.1 amper resolution"
+	::= { displayPSUEntry 3 }
+
+displayPSUTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Radiator power supply temperature. Discretization 1 degree Celsius."
+	::= { displayPSUEntry 4 }
+
+displayPSUStatus  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bytes of power supply status flags.
+b0 - temperature failure flag (active '1'). Temperature above the set maximum value.
+b1 - overvoltage alarm flag (active '1'). The output voltage of the source exceeds the set maximum.
+b2 - low output voltage failure flag (active '1'). Output voltage below the set minimum.
+b3 - connection failure flag (active '1'). There is no connection to the power supply via the internal CAN bus.
+b4 - fan resource failure flag (active '1'). Fan operating time exceeded the set value."
+	::= { displayPSUEntry 5 }
+
+displayBatTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplayBatEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Batteries Status Table"
+	::= { uku207inv 5 }
+
+displayBatEntry  OBJECT-TYPE
+	SYNTAX 	DisplayBatEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Batteries  listing"
+	INDEX { displayBatteriesMassNumber }
+	::= { displayBatTable 1 }
+
+DisplayBatEntry ::= SEQUENCE {
+	displayBatteriesMassNumber
+		INTEGER,
+	displayBatteriesMassVoltage
+		Tenths,
+	displayBatteriesMassCurrent
+		Hundredths,
+	displayBatteriesMassTemperature
+		INTEGER,
+	displayBatteriesMassCapacity
+		Tenths,
+	displayBatteriesMassCharge
+		INTEGER,
+	displayBatteriesMassStatus
+		INTEGER,
+	displayBatteriesMassRemTime
+		INTEGER
+}
+
+displayBatteriesMassNumber  OBJECT-TYPE
+	SYNTAX     INTEGER (1..16)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Batteries sequence number"
+	::= { displayBatEntry 1 }
+
+displayBatteriesMassVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Batteries voltage. 0.1 volt resolution"
+	::= { displayBatEntry 2 }
+
+displayBatteriesMassCurrent  OBJECT-TYPE
+	SYNTAX     Hundredths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Batteries current. 0.01 amper resolution"
+	::= { displayBatEntry 3 }
+
+displayBatteriesMassTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Batteries temperature. 1 degree Celsius resolution."
+	::= { displayBatEntry 4 }
+
+displayBatteriesMassCapacity  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Battery capacity. 100mAh resolution"
+	::= { displayBatEntry 5 }
+
+displayBatteriesMassCharge  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Battery charge. 1% resolution"
+	::= { displayBatEntry 6 }
+
+displayBatteriesMassStatus  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bytes of battery status flags.
+		b0 - Accident battery connections. The system has detected the absence of a connected battery."
+	::= { displayBatEntry 7 }
+
+	
+displayBatteriesMassRemTime  OBJECT-TYPE
+	SYNTAX     INTEGER 
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"estimated battery discharge time in minutes"
+	::= { displayBatEntry 9 }
+
+sendCommand  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		""
+	::= { commands 1 }
+
+commandParameter  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		""
+	::= { commands 2 }
+
+sysParamsSoundAlarmEn  OBJECT-TYPE
+    SYNTAX     INTEGER {
+    			off(0),
+                on(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting on / off alarm sounds of emergency conditions"
+	::= { sysParams 1 }
+
+sysParamsAlarmAutoDisable  OBJECT-TYPE
+	SYNTAX     INTEGER {
+                on (1),
+                off (0)
+     }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting on / off of automatic shutdown of alarm conditions"
+	::= { sysParams 2 }
+
+sysParamsBattTestTime  OBJECT-TYPE
+	SYNTAX     INTEGER (0..60)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Period of checking the availability of the battery, in minutes. Valid values are 0 (disabled), 5 - 60. Values 1 - 4 are ignored."
+	::= { sysParams 3 }
+
+sysParamsUmax  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS read-write
+	STATUS     current
+	DESCRIPTION 
+		"Maximum allowable voltage of power supplies. 0.1 volt resolution"
+	::= { sysParams 4 }
+
+sysParamsUmin  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS read-write
+	STATUS     current
+	DESCRIPTION 
+		"Minimum allowable voltage of power supplies. 0.1 volt resolution"
+	::= { sysParams 5 }
+
+sysParamsU0  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS read-write
+	STATUS     current
+	DESCRIPTION 
+		"Required battery voltage at 0 degrees Celsius. 0.1 volt resolution"
+	::= { sysParams 6 }
+
+sysParamsU20  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Required battery voltage at 20 degrees Celsius. 0.1 volt resolution"
+	::= { sysParams 7 }
+
+sysParamsUsign  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"The voltage of the battery, which turns on the sound alarm about the decrease in the voltage of the battery. Also serves to check battery availability. 1 volt resolution"
+	::= { sysParams 8 }
+
+sysParamsUminPower  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"The minimum allowable voltage input mains. 1 volt resolution"
+	::= { sysParams 9 }
+
+sysParamsUWithothBatt  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Voltage maintained by the system when the battery is not inserted or disconnected. 0.1 volt resolution"
+	::= { sysParams 10 }
+
+sysParamsControlCurrent  OBJECT-TYPE
+	SYNTAX     Hundredths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Amount of battery current below which the current is considered to be zero. Used in the battery check procedure. 0.01 amper resolution"
+	::= { sysParams 11 }
+
+sysParamsMaxChargeCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Maximum battery charge current. 0.1 amper resolution"
+	::= { sysParams 12 }
+
+sysParamsMaxCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Maximum power supply current. 0.1 amper resolution"
+	::= { sysParams 13 }
+
+sysParamsMinCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Minimum power supply current. 0.1 amper resolution"
+	::= { sysParams 14 }
+
+sysParamsUpChargeVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Equalization charge voltage. 0.1 volt resolution"
+	::= { sysParams 15 }
+
+sysParamsPowerupPSUTimeout  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Power-off delay time after input power supply appears. 1 second resolution"
+	::= { sysParams 16 }
+
+sysParamsBatSignTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Value of the battery temperature warning level. 1 degree Celsius resolution."
+	::= { sysParams 17 }
+
+sysParamsBatMaxTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Value of the battery temperature alarm level. 1 degree Celsius resolution."
+	::= { sysParams 18 }
+
+sysParamsBpsSignTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Value of the power supply temperature warning level. 1 degree Celsius resolution."
+	::= { sysParams 19 }
+
+sysParamsBpsMaxTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Value of the power supply temperature alarm level. 1 degree Celsius resolution."
+	::= { sysParams 20 }
+
+sysParamsOutputVoltageControlMaxVoltage  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Maximum allowable value of the output voltage of the system. 0.1 volt resolution"
+	::= { sysParams 24 }
+
+sysParamsOutputVoltageControlMinVoltage   OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Minimum allowable value of the output voltage of the system. 0.1 volt resolution"
+	::= { sysParams 25 }
+
+sysParamsOutputVoltageControlTimeDelay  OBJECT-TYPE
+	SYNTAX     INTEGER(1..100)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"The delay time of the procedure control the output voltage of the system. 1 second resolution"
+	::= { sysParams 26 }
+
+sysParamsLevelingChargeVoltage  		OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set leveling charge voltage. 0.1 volt resolution"
+	::= { sysParams 27 }
+
+sysParamsLevelingChargeMaxCurrent  		OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set leveling charge max current. 0.1 amper resolution"
+	::= { sysParams 28 }
+
+sysParamsLevelingChargeDuration  		OBJECT-TYPE
+	SYNTAX     INTEGER(1..24)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set the duration of the leveling charge in hours. 1 hour resolution"
+	::= { sysParams 29 }	
+
+sysParamsLevelingChargeVentBlocking		OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			off(0),
+                on(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Allow leveling charge blocking  by ventilation failure signal. Blocking is performed by opening the logical input 'SK1'"
+	::= { sysParams 30 }
+
+sysParamsSpeedChargeMaxCurrent			OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set accelerated charge max current. 0.1 amper resolution"
+	::= { sysParams 31 }
+
+sysParamsSpeedChargeVoltage				OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set accelerated charge voltage. 0.1 volt resolution"
+	::= { sysParams 32 }
+
+sysParamsSpeedChargeDuration				OBJECT-TYPE
+	SYNTAX     INTEGER(1..24)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Set the duration of the accelerated charge in hours. 1 hour resolution"
+	::= { sysParams 33 }
+
+sysParamsSpeedChargeAutoStartEnable		OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			off(0),
+                on(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Enable autorun accelerated charge"
+	::= { sysParams 34 }
+
+sysParamsSpeedChargeAutoStartDelta		OBJECT-TYPE
+	SYNTAX     INTEGER(1..10)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"The magnitude of the voltage drawdown required for the automatic start of the accelerated charge. 1 volt resolution"
+	::= { sysParams 35 }
+
+
+sysParamsSpeedChargeBlockingEnableSource		OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			off(0),
+                on(2)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Allow accelerated charge blocking  by affecting the logical input 'SK2'"
+	::= { sysParams 36 }
+
+sysParamsSpeedChargeBlockingLevel		OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			open(0),
+                closed(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Impact on logical input 'SK2' to block accelerated charge"
+	::= { sysParams 37 }
+
+sysParamsSpeedChargeVentBlockingEnable	OBJECT-TYPE
+	SYNTAX     INTEGER {
+    			off(0),
+                on(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Allow accelerated charge blocking  by ventilation failure signal. Blocking is performed by opening the logical input 'SK1'"
+	::= { sysParams 38 }
+
+
+displaySKTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplaySKEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Logical input Status Table"
+	::= { uku207inv 15 }
+
+displaySKEntry  OBJECT-TYPE
+	SYNTAX 	DisplaySKEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Logical input listing"
+	INDEX { displaySKNumber }
+	::= { displaySKTable 1 }
+
+DisplaySKEntry ::= SEQUENCE {
+	displaySKNumber
+		INTEGER,
+	displaySKAktivity
+		INTEGER,
+	displaySKAlarmAktivity
+		INTEGER,
+	displaySKAlarm
+		INTEGER
+}
+
+displaySKNumber  OBJECT-TYPE
+	SYNTAX     INTEGER (0..4)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Logical input sequence number"
+	::= { displaySKEntry 1 }
+
+displaySKAktivity  OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			open(0),
+                closed(1)
+    }
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Actual state of the Logical input"
+	::= { displaySKEntry 2 }
+
+displaySKAlarmAktivity  OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			open(0),
+                closed(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Alarm condition of the Logical input"
+	::= { displaySKEntry 3 }
+
+displaySKAlarm  OBJECT-TYPE
+	SYNTAX     INTEGER{
+    			normal(0),
+                alarm(1)
+    }
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Alarm status of the Logical input"
+	::= { displaySKEntry 4 }
+
+
+displayDTEntry  OBJECT-TYPE
+	SYNTAX 	DisplayDTEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Temperature Sensor listing"
+	INDEX { displayDTNumber }
+	::= { displayDTTable 1 }
+
+DisplayDTEntry ::= SEQUENCE {
+	displayDTNumber
+		INTEGER,
+	displayDTTemperature
+		INTEGER
+}
+
+displayDTNumber  OBJECT-TYPE
+	SYNTAX     INTEGER (0..3)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Temperature Sensor sequence number"
+	::= { displayDTEntry 1 }
+
+displayDTTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Sensor temperature. 1 degree Celsius resolution."
+	::= { displayDTEntry 2 }
+	
+END
+

@@ -1,6 +1,7 @@
 #include "stdint.h"
 #include "modbus.h"
-//#include "LPC17xx.H"
+
+#include "LPC17xx.H"
 #include "main.h"
 #include "stdio.h"
 #include "eeprom_map.h"
@@ -11,7 +12,8 @@
 #include "control.h"
 	
 #include <string.h>
-
+#include "rtl.h"
+#include "modbus_tcp.h"
 unsigned char modbus_buf[20];
 short modbus_crc16;
 char modbus_timeout_cnt;
@@ -26,6 +28,11 @@ short modbus_plazma1;				//Отладка
 short modbus_plazma2;				//Отладка
 short modbus_plazma3;				//Отладка
 char modbus_cmnd_cnt,modbus_cmnd,modbus_self_cmnd_cnt=33;
+
+short modbus_crc_plazma[2];
+short modbus_rtu_plazma[10];
+
+#define MODBUS_RTU_PROT	0
 
 //-----------------------------------------------
 unsigned short CRC16_2(char* buf, short len)
@@ -63,7 +70,7 @@ unsigned short modbus_rx_arg1;		//встроенный в посылку второй аргумент
 //unsigned short modbus_rx_arg3;		//встроенный в посылку четвертый аргумент
 unsigned char modbus_func;			//встроенный в посылку код функции
 
-//modbus_plazma++;
+
 
 memcpy(modbus_an_buffer,modbus_rx_buffer,modbus_rx_buffer_ptr);
 modbus_rx_counter=modbus_rx_buffer_ptr;
@@ -78,7 +85,7 @@ crc16_incapsulated = *((short*)&modbus_an_buffer[modbus_rx_counter-2]);
 //modbus_plazma2=crc16_calculated;
 //modbus_plazma3=crc16_incapsulated;
 
-
+modbus_plazma++;
 
 
 modbus_func=modbus_an_buffer[1];
@@ -93,83 +100,62 @@ modbus_plazma3=modbus_cmnd;
 modbus_plazma2=modbus_cmnd_cnt;
 modbus_plazma1=modbus_self_cmnd_cnt;
 
+modbus_crc_plazma[0]=crc16_calculated;
+modbus_crc_plazma[1]=crc16_incapsulated;
+
 if(crc16_calculated==crc16_incapsulated)
 	{
 	if(modbus_self_cmnd_cnt==33)modbus_self_cmnd_cnt=modbus_cmnd_cnt;
-	modbus_plazma=modbus_an_buffer[0];
+	
+	//modbus_plazma=modbus_an_buffer[0];
 
 	if(modbus_an_buffer[0]==MODBUS_ADRESS)
 		{
 		if(modbus_func==3)		//чтение произвольного кол-ва регистров
 			{
-			/*if((modbus_rx_arg0>=50)&&(modbus_rx_arg0<80))*/ modbus_hold_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1);
+			modbus_hold_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1,MODBUS_RTU_PROT);
 			}
 		else if(modbus_func==4)		//чтение произвольного кол-ва регистров	входов
 			{
-			modbus_input_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1);
+			modbus_input_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1,MODBUS_RTU_PROT);
 			}
 
 		else if(modbus_func==6) 	//запись регистра
-			{
-			if(modbus_rx_arg0==50)		
+			{/*
+			if(modbus_rx_arg0==11)		//Установка времени 
 				{
-				//I_ug=modbus_rx_arg1;
-				//lc640_write_int(EE_I_UG,I_ug);
+				LPC_RTC->YEAR=(uint16_t)modbus_rx_arg1;
 				}
-			if(modbus_rx_arg0==51)		//напряжение стабилизации для режима стабилизации напряжения
+			if(modbus_rx_arg0==12)		//Установка времени 
 				{
-				//U_up=modbus_rx_arg1;
-				//lc640_write_int(EE_U_UP,U_up);
+				LPC_RTC->MONTH=(uint16_t)modbus_rx_arg1;
 				}
-			if(modbus_rx_arg0==52)		//максимапльное напряжение для режима стабилизации тока
+			if(modbus_rx_arg0==13)		//Установка времени 
 				{
-				//U_maxg=modbus_rx_arg1;
-				//lc640_write_int(EE_U_MAX_G,U_maxg);
+				LPC_RTC->DOM=(uint16_t)modbus_rx_arg1;
 				}
-			if(modbus_rx_arg0==53)		//максимальный ток для режима стабилизации напряжения
+			if(modbus_rx_arg0==14)		//Установка времени 
 				{
-				//I_maxp=modbus_rx_arg1;
-				///lc640_write_int(EE_I_MAX_P,I_maxp);
-				}								
-			if(modbus_rx_arg0==54)		//Установка времени для ист.тока.секунды
-				{
-				
+				LPC_RTC->HOUR=(uint16_t)modbus_rx_arg1;
 				}
-			if(modbus_rx_arg0==55)		//Установка времени для ист.тока.минуты
+			if(modbus_rx_arg0==15)		//Установка времени 
 				{
-				
+				LPC_RTC->MIN=(uint16_t)modbus_rx_arg1;
 				}
-			if(modbus_rx_arg0==56)		//Установка времени для ист.тока.часы
+			if(modbus_rx_arg0==16)		//Установка времени 
 				{
-				
-				}
-			if(modbus_rx_arg0==57)		//Установка времени для ист.напр.секунды
-				{
-				
-				}
+				LPC_RTC->SEC=(uint16_t)modbus_rx_arg1;
+				} */
+			
 
-			if(modbus_rx_arg0==58)		//Установка времени для ист.напр.минуты
-				{
-				
-				}
+			//modbus_hold_register_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0);
+			
 
-			if(modbus_rx_arg0==59)		//Установка времени для ист.напр.часы
-				{
-				
-				}
+			modbus_hold_register_write(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,modbus_rx_arg1, MODBUS_RTU_PROT);
 
-			if(modbus_rx_arg0==60)		//вкл/выкл источника напр.
-				{
-				
-				}
-
-
-			modbus_hold_register_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0);
 
 
 			//modbus_hold_registers_transmit(MODBUS_ADRESS,modbus_func,modbus_rx_arg0,2);
-
-
 			}
 		} 
 	//;
@@ -179,7 +165,7 @@ if(crc16_calculated==crc16_incapsulated)
 }
 
 //-----------------------------------------------
-void modbus_input_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity)
+void modbus_input_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity, char prot)
 {
 char modbus_registers[1000];
 char modbus_tx_buff[120];
@@ -211,8 +197,8 @@ else
 	modbus_registers[7]=0;
 	}
 
-modbus_registers[8]=0;								//Рег5
-modbus_registers[9]=0;
+modbus_registers[8]=(char)(t_ext[0]/256);								//Рег5
+modbus_registers[9]=(char)(t_ext[0]%256);
 
 	
 modbus_registers[10]=(char)(NUMBYPASS/256);				//Рег6
@@ -227,6 +213,7 @@ modbus_registers[17]=(char)(dcin_U%256);
 modbus_registers[18]=(char)(byps[0]._UinACprim/256);			//Рег10
 modbus_registers[19]=(char)(byps[0]._UinACprim%256);
 
+inv[0]._Uout=1234;
 
 //Инвертор №1
 modbus_registers[20]=(char)(inv[0]._Uout/256);			//Рег11
@@ -803,7 +790,7 @@ modbus_registers[841]=(char)(byps[2]._flags%256);			//   1000000 работа от инвер
 															//   0100000 приоритет инверторы (0 - сеть)
 															//	 0000100 температура больше 80 Г.ц.
 															//	 0000010 температура больше 70 Г.ц.
-
+/*
 modbus_tx_buff[0]=adr;
 modbus_tx_buff[1]=func;
 modbus_tx_buff[2]=(char)(reg_quantity*2);
@@ -822,7 +809,36 @@ for (i=0;i<(5+(reg_quantity*2));i++)
 for (i=0;i<(5+(reg_quantity*2));i++)
 	{
 	putchar_sc16is700(modbus_tx_buff[i]);
+	} */
+
+if(prot==MODBUS_RTU_PROT)
+	{
+	modbus_tx_buff[0]=adr;
+	modbus_tx_buff[1]=func;
+	modbus_tx_buff[2]=(char)(reg_quantity*2);
+
+	mem_copy((signed char*)&modbus_tx_buff[3],(signed char*)&modbus_registers[(reg_adr-1)*2],reg_quantity*2);
+
+	crc_temp=CRC16_2(modbus_tx_buff,(reg_quantity*2)+3);
+
+	modbus_tx_buff[3+(reg_quantity*2)]=(char)crc_temp;
+	modbus_tx_buff[4+(reg_quantity*2)]=crc_temp>>8;
+
+	for (i=0;i<(5+(reg_quantity*2));i++)
+		{
+		putchar0(modbus_tx_buff[i]);
+		}
+	for (i=0;i<(5+(reg_quantity*2));i++)
+		{
+		putchar_sc16is700(modbus_tx_buff[i]);
+		}
 	}
+else if(prot==MODBUS_TCP_PROT)
+	{
+	mem_copy((signed char*)modbus_tx_buff,(signed char*)&modbus_registers[(reg_adr-1)*2],reg_quantity*2);
+	modbus_tcp_out_ptr=(signed char*)modbus_tx_buff;
+	}
+
 }
 
 
@@ -919,7 +935,7 @@ for (i=0;i<8;i++)
 
 
 //-----------------------------------------------
-void modbus_hold_register_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr)
+void modbus_hold_register_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr, char prot)
 {
 char modbus_registers[120];
 char modbus_tx_buff[100];
@@ -992,7 +1008,7 @@ modbus_tx_buff[3]=(char)(reg_adr%256);
 //modbus_tx_buff[4]=(char)(reg_quantity/256);
 //modbus_tx_buff[5]=(char)(reg_quantity%256);
 
-
+/*
 memcpy((char*)&modbus_tx_buff[4],(char*)&modbus_registers[(reg_adr-1)*2],2);
 
 crc_temp=CRC16_2(modbus_tx_buff,6);
@@ -1007,22 +1023,67 @@ for (i=0;i<8;i++)
 for (i=0;i<8;i++)
 	{
 	putchar_sc16is700(modbus_tx_buff[i]);
+	}*/
+
+if(prot==MODBUS_RTU_PROT)
+	{
+	modbus_tx_buff[0]=adr;
+	modbus_tx_buff[1]=func;
+	modbus_tx_buff[2]=(char)(2);
+
+	mem_copy((signed char*)&modbus_tx_buff[3],(signed char*)&modbus_registers[(reg_adr-1)*2],2);
+
+	crc_temp=CRC16_2(modbus_tx_buff,(2)+3);
+
+	modbus_tx_buff[3+(2)]=(char)crc_temp;
+	modbus_tx_buff[4+(2)]=crc_temp>>8;
+
+	for (i=0;i<(5+(2));i++)
+		{
+		putchar0(modbus_tx_buff[i]);
+		}
+	for (i=0;i<(5+(2));i++)
+		{
+		putchar_sc16is700(modbus_tx_buff[i]);
+		}
+	}
+else if(prot==MODBUS_TCP_PROT)
+	{
+	mem_copy((signed char*)modbus_tx_buff,(signed char*)&modbus_registers[(reg_adr-1)*2],2);
+	modbus_tcp_out_ptr=(signed char*)modbus_tx_buff;
 	}
 }	
 
 
 //-----------------------------------------------
-void modbus_hold_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity)
+void modbus_hold_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity, char prot)
 {
 char modbus_registers[110];
 char modbus_tx_buff[120];
 unsigned short crc_temp;
 char i;
 
-/*
-modbus_registers[0]=(char)(I_ug/256);					//Рег50
-modbus_registers[1]=(char)(I_ug%256);
-modbus_registers[2]=(char)(U_up/256);					//Рег51
+
+
+modbus_registers[20]=(char)((LPC_RTC->YEAR)>>8);		//Рег11  Время, год
+modbus_registers[21]=(char)((LPC_RTC->YEAR));
+modbus_registers[22]=(char)((LPC_RTC->MONTH)>>8);		//Рег12  Время, месяц
+modbus_registers[23]=(char)((LPC_RTC->MONTH));
+modbus_registers[24]=(char)((LPC_RTC->DOM)>>8);			//Рег13  Время, день месяца
+modbus_registers[25]=(char)((LPC_RTC->DOM));
+modbus_registers[26]=(char)((LPC_RTC->HOUR)>>8);		//Рег14  Время, час
+modbus_registers[27]=(char)((LPC_RTC->HOUR));
+modbus_registers[28]=(char)((LPC_RTC->MIN)>>8);			//Рег15  Время, минуты
+modbus_registers[29]=(char)((LPC_RTC->MIN));
+modbus_registers[30]=(char)((LPC_RTC->SEC)>>8);			//Рег16  Время, секунды
+modbus_registers[31]=(char)((LPC_RTC->SEC));
+
+
+
+
+modbus_registers[40]=(char)(U_OUT_SET/256);					//Рег11	Уставка выходного напряжения
+modbus_registers[41]=(char)(U_OUT_SET%256);
+/*modbus_registers[2]=(char)(U_up/256);					//Рег51
 modbus_registers[3]=(char)(U_up%256);
 modbus_registers[4]=(char)(U_maxg/256);					//Рег52
 modbus_registers[5]=(char)(U_maxg%256);
@@ -1079,7 +1140,7 @@ modbus_registers[51]=(char)((CAP_MAX_VOLT)%256);
 modbus_registers[52]=(char)((CAP_WRK_CURR)/256);			//Рег76
 modbus_registers[53]=(char)((CAP_WRK_CURR)%256);	   */
 
-
+/*
 modbus_tx_buff[0]=adr;
 modbus_tx_buff[1]=func;
 modbus_tx_buff[2]=(char)(reg_quantity*2);
@@ -1098,7 +1159,168 @@ for (i=0;i<(5+(reg_quantity*2));i++)
 for (i=0;i<(5+(reg_quantity*2));i++)
 	{
 	putchar_sc16is700(modbus_tx_buff[i]);
+	}*/
+if(prot==MODBUS_RTU_PROT)
+	{
+	modbus_tx_buff[0]=adr;
+	modbus_tx_buff[1]=func;
+	modbus_tx_buff[2]=(char)(reg_quantity*2);
+
+	mem_copy((signed char*)&modbus_tx_buff[3],(signed char*)&modbus_registers[(reg_adr-1)*2],reg_quantity*2);
+
+	crc_temp=CRC16_2(modbus_tx_buff,(reg_quantity*2)+3);
+
+	modbus_tx_buff[3+(reg_quantity*2)]=(char)crc_temp;
+	modbus_tx_buff[4+(reg_quantity*2)]=crc_temp>>8;
+
+	for (i=0;i<(5+(reg_quantity*2));i++)
+		{
+		putchar0(modbus_tx_buff[i]);
+		}
+	for (i=0;i<(5+(reg_quantity*2));i++)
+		{
+		putchar_sc16is700(modbus_tx_buff[i]);
+		}
 	}
+else if(prot==MODBUS_TCP_PROT)
+	{
+	mem_copy((signed char*)modbus_tx_buff,(signed char*)&modbus_registers[(reg_adr-1)*2],reg_quantity*2);
+	modbus_tcp_out_ptr=(signed char*)modbus_tx_buff;
+	}
+
+			modbus_rtu_plazma[0]=modbus_tx_buff[0];
+			modbus_rtu_plazma[1]=modbus_tx_buff[1];
+			modbus_rtu_plazma[2]=modbus_tx_buff[2];
+			modbus_rtu_plazma[3]=modbus_tx_buff[3];
+			modbus_rtu_plazma[4]=modbus_tx_buff[4];
+			modbus_rtu_plazma[5]=modbus_tx_buff[5];
+			modbus_rtu_plazma[6]=modbus_tx_buff[6];
+			modbus_rtu_plazma[7]=modbus_tx_buff[7];
+			modbus_rtu_plazma[8]=modbus_tx_buff[8];
+			modbus_rtu_plazma[9]=modbus_tx_buff[9];
 }
 
+//-----------------------------------------------
+void modbus_hold_register_write(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_value, char prot)
+{
+char modbus_registers[110];
+char modbus_tx_buff[120];
+unsigned short crc_temp;
+short tempS;
+/*
+if(reg_adr==11)
+	{
+	U_OUT_SET=reg_value;
+	modbus_tcp_plazma[1]=reg_value;
+	//gran(&U_OUT_SET,220,230);
+	lc640_write_int(EE_U_OUT_SET,U_OUT_SET);
+	tempS=U_OUT_SET;
+	modbus_tcp_plazma[0]++;
+	}
 
+modbus_registers[0]=(char)(tempS);
+modbus_registers[1]=(char)(tempS>>8);
+
+if(prot==MODBUS_RTU_PROT)
+	{
+	modbus_tx_buff[0]=adr;
+	modbus_tx_buff[1]=func;
+	modbus_tx_buff[2]=2;
+	mem_copy((signed char*)&modbus_tx_buff[3],(signed char*)&modbus_registers[0],2);
+
+	crc_temp=CRC16_2(modbus_tx_buff,5);
+
+	modbus_tx_buff[5]=(char)crc_temp;
+	modbus_tx_buff[6]=(char)crc_temp>>8;
+
+	for (i=0;i<7;i++)
+		{
+		putchar0(modbus_tx_buff[i]);
+		}
+	for (i=0;i<7;i++)
+		{
+		putchar_sc16is700(modbus_tx_buff[i]);
+		}
+	}
+else if(prot==MODBUS_TCP_PROT)
+	{
+	mem_copy((signed char*)modbus_tx_buff,(signed char*)&modbus_registers[0],2);
+	modbus_tcp_out_ptr=(signed char*)modbus_tx_buff;
+	}*/
+
+if(reg_adr==11)		//Установка времени 
+	{
+	tempS=(uint16_t)reg_value;
+	gran(&tempS,10,30);
+	LPC_RTC->YEAR=tempS;
+	}
+if(reg_adr==12)		//Установка времени 
+	{
+	LPC_RTC->MONTH=(uint16_t)reg_value;
+	}
+if(reg_adr==13)		//Установка времени 
+	{
+	LPC_RTC->DOM=(uint16_t)reg_value;
+	}
+if(reg_adr==14)		//Установка времени 
+	{
+	LPC_RTC->HOUR=(uint16_t)reg_value;
+	}
+if(reg_adr==15)		//Установка времени 
+	{
+	LPC_RTC->MIN=(uint16_t)reg_value;
+	}
+if(reg_adr==16)		//Установка времени 
+	{
+	LPC_RTC->SEC=(uint16_t)reg_value;
+	}
+
+//modbus_hold_register_transmit(MODBUS_ADRESS,func,reg_adr,prot);
+//modbus_hold_registers_transmit(MODBUS_ADRESS,func,reg_adr,1,prot);
+
+if(prot==MODBUS_RTU_PROT)
+	{
+
+	mem_copy(modbus_tx_buff,modbus_rx_buffer,8);
+	//mem_copy(&modbus_tx_buff[4],&tempS,2);
+	modbus_tx_buff[4]=(char)(tempS/256);
+	modbus_tx_buff[5]=(char)(tempS%256);
+
+	tempS=CRC16_2(modbus_tx_buff,6);
+
+	modbus_tx_buff[6]=(char)tempS;
+	modbus_tx_buff[7]=tempS>>8;
+
+	for (i=0;i<(8);i++)
+		{
+		putchar0(modbus_tx_buff[i]);
+		}
+
+	for (i=0;i<(8);i++)
+		{
+		putchar_sc16is700(modbus_tx_buff[i]);
+		}
+	}
+else if(prot==MODBUS_TCP_PROT)
+	{
+/*	U8 *sendbuf;
+				sendbuf = tcp_get_buf(11);
+				//sendbuf[0]=ptr[0];
+				//sendbuf[1]=ptr[1];
+				//sendbuf[2]=ptr[2];
+				//sendbuf[3]=ptr[3];
+				sendbuf[4]=0;
+				sendbuf[5]=6;
+				sendbuf[6]=modbus_tcp_unit;
+				sendbuf[7]=modbus_tcp_func;
+				sendbuf[8]=modbus_tcp_rx_arg0/256;
+				sendbuf[9]=modbus_tcp_rx_arg0%256;
+				mem_copy((char*)&sendbuf[10],modbus_tcp_out_ptr,2);
+				//sendbuf[9]=3;
+				//sendbuf[10]=4;
+	          	tcp_send (socket_tcp, sendbuf, 12);	*/
+
+	modbus_tcp_out_ptr=(char*)&modbus_registers[(reg_adr-1)*2];
+	}
+
+}

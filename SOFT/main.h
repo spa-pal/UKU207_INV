@@ -1149,6 +1149,9 @@ extern char plazma_rx;
 #define TRUE    (1)
 #endif
 
+extern U8 socket_tcp;
+extern U8 tcp_soc_avg;
+extern U8 tcp_connect_stat;
 /*----------------------------------------------------------------------------
  * end of file
  *---------------------------------------------------------------------------*/

@@ -2402,7 +2402,7 @@ if(NUMBYPASS==0)
 	temp=0;
 	for(ii=0;ii<NUMINV;ii++)
 		{
-		if((inv[ii]._flags_tm_dop&0x02))
+		if(!(inv[ii]._flags_tm_dop&0x02))
 			{
 			temp=1;
 			break;

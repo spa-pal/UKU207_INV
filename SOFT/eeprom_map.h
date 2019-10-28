@@ -393,6 +393,12 @@
 // затем 4 байта с полным временем завершения процесса
 // и в 2 байта данных записывается колличество отданных амперчасов 
 
+#define EE_SNTP_WEB_ENABLE			4472
+#define EE_SNTP_IP1					4474
+#define EE_SNTP_IP2					4476
+#define EE_SNTP_IP3					4478
+#define EE_SNTP_IP4					4480
+
 extern const unsigned short ADR_EE_BAT_ZAR_CNT[2];
 extern const unsigned short ADR_EE_BAT_ZAR_CNT_KE[2];
 extern const unsigned short ADR_EE_BAT_C_NOM[2];

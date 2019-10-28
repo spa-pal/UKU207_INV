@@ -551,6 +551,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1117,6 +1122,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1685,6 +1695,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2251,6 +2266,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2819,6 +2839,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3385,6 +3410,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3953,6 +3983,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4519,6 +4554,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5087,6 +5127,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5653,6 +5698,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6221,6 +6271,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6787,6 +6842,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7355,6 +7415,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -7921,6 +7986,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -8489,6 +8559,11 @@
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9055,6 +9130,11 @@
               <FileName>sc16is7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sc16is7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_TCP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
           </Files>
         </Group>

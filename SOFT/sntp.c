@@ -3,6 +3,7 @@
 #include "rtl.h"
 #include "sntp.h"
 #include "main.h"
+#include "eeprom_map.h"
 
 U8 socket_udp;
 U16 udp_callback_cnt,udp_callback_cnt1;
@@ -172,6 +173,30 @@ if (socket_udp != 0)
 	udp_send (socket_udp, Rem_IP, 123, sendbuf, NTP_PACKET_SIZE);
 	}
 }
+/*
+//-----------------------------------------------
+void time_sinc_hndl(void)
+{
+if(time_sinc_hndl_req_cnt)time_sinc_hndl_req_cnt--;
+
+if(SNTP_ENABLE)
+	{
+	if(time_sinc_hndl_main_cnt)
+		{
+		time_sinc_hndl_main_cnt--;
+		if(!time_sinc_hndl_main_cnt)
+			{
+			time_sinc_hndl_req_cnt=5;
+
+			sntp_requ();
+
+			if(SNTP_ENABLE==1)time_sinc_hndl_main_cnt=3600L;
+			else if(SNTP_ENABLE==2)time_sinc_hndl_main_cnt=86400L;
+			else if(SNTP_ENABLE==3)time_sinc_hndl_main_cnt=604800L;
+			}
+		}
+	}
+}*/
 
 //-----------------------------------------------
 void time_sinc_hndl(void)
@@ -187,6 +212,20 @@ if(SNTP_ENABLE)
 			{
 			time_sinc_hndl_req_cnt=5;
 
+			if(lc640_read_int(EE_SNTP_WEB_ENABLE)==1)
+				{
+				Rem_IP[0]=SNTP_IP1;
+				Rem_IP[1]=SNTP_IP2;
+				Rem_IP[2]=SNTP_IP3;
+				Rem_IP[3]=SNTP_IP4;
+				}
+			else
+				{
+				Rem_IP[0]=(char)lc640_read_int(EE_SNTP_IP1);
+				Rem_IP[1]=(char)lc640_read_int(EE_SNTP_IP2);
+				Rem_IP[2]=(char)lc640_read_int(EE_SNTP_IP3);
+				Rem_IP[3]=(char)lc640_read_int(EE_SNTP_IP4);
+				}
 			sntp_requ();
 
 			if(SNTP_ENABLE==1)time_sinc_hndl_main_cnt=3600L;

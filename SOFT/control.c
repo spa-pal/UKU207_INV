@@ -2397,7 +2397,7 @@ else
 	uOutAvIsOn=temp;
 	}
 
-if(NUMBYPASS==0)
+if((NUMBYPASS==0)&&(NUMINAC!=0))
 	{
 	temp=0;
 	for(ii=0;ii<NUMINV;ii++)

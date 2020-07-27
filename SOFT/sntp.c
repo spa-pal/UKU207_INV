@@ -203,7 +203,7 @@ void time_sinc_hndl(void)
 {
 if(time_sinc_hndl_req_cnt)time_sinc_hndl_req_cnt--;
 
-if(SNTP_ENABLE)
+if(SNTP_ENABLE&&ETH_IS_ON)
 	{
 	if(time_sinc_hndl_main_cnt)
 		{

@@ -366,6 +366,7 @@
 #define PAROL_TST 999 
 #define PAROL_DEFAULT 295
 #define PAROL_AUSW 949
+#define PAROL_LOG_RESET	691
 #endif                
 
 #ifdef PAROL_ALL_ZERO
@@ -380,6 +381,7 @@
 #define PAROL_TST 0
 #define PAROL_DEFAULT 0
 #define PAROL_AUSW 0
+#define PAROL_LOG_RESET	0
 #endif
 
 
@@ -556,7 +558,7 @@ typedef enum {
 	iExt_set,iExt_set_3U,
 	iExt_dt,
 	iExt_sk,iExt_sk_3U,
-	iExt_ddv,iExt_ddi,iExt_dud,iExt_dp,iSM,iLog,iLog_,iBatLog,iKlimat,
+	iExt_ddv,iExt_ddi,iExt_dud,iExt_dp,iSM,iLog,iLog_,iBatLog,iKlimat, iLog_reset_prl,
 	iEnerg3,iEnerg,
 	iVent,
 	iRele_set_sel,iRele_set,

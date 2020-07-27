@@ -4139,7 +4139,17 @@ else if(ind==iPrl_bat_in_out)
      int2lcdyx(parol[2],2,10,0);
      lcd_buffer[68+sub_ind]='¤';	
 	}
+
+else if(ind==iLog_reset_prl)
+	{
+	ptrs[0]="Для очистки журнала ";
+	bgnd_par(ptrs[0],"  введите  пароль   ",sm_,sm_);
 	
+     int2lcdyx(parol[0],2,8,0);
+     int2lcdyx(parol[1],2,9,0);
+     int2lcdyx(parol[2],2,10,0);
+     lcd_buffer[68+sub_ind]='¤';	
+	}	
 
 else if(ind==iSet_INV)
 	{
@@ -8849,7 +8859,7 @@ else if(ind==iEnerg3)
 
 else if((ind==iPrl_bat_in_out)||(ind==iSet_prl)||(ind==iK_prl)
 	||(ind==iSpc_prl_vz)||(ind==iSpc_prl_ke)||(ind==iAusw_prl)
-	||(ind==iPrltst))
+	||(ind==iPrltst)||(ind==iLog_reset_prl))
 	{
 	ret(50);
 	if(but==butR)
@@ -9110,6 +9120,32 @@ else if((ind==iPrl_bat_in_out)||(ind==iSet_prl)||(ind==iK_prl)
 	          			"     неверный!!!    ",
 	          			"                    ",1000);
 				}     	          
+			}
+		else if(ind==iLog_reset_prl)
+			{
+			if(tempU==PAROL_LOG_RESET) 
+				{
+				tree_down(0,0);
+				lc640_write(CNT_EVENT_LOG,0);
+				lc640_write(PTR_EVENT_LOG,0);
+				tree_down(0,0);
+				avar_ind_stat=0;
+				avar_stat=0;
+				avar_stat_old=0;
+	    	    show_mess("                    ",
+	          			"   Журнал событий   ",
+	          			"      очищен!!!     ",
+	          			"                    ",1000);
+				//ret(1000);
+				}
+	  		else 
+				{
+		          tree_down(0,0);
+	    	          show_mess("                    ",
+	          			"       Пароль       ",
+	          			"     неверный!!!    ",
+	          			"                    ",1000);
+				}  
 			}
 		}
 	}
@@ -9375,17 +9411,19 @@ else if(ind==iLog)
 		
 	else if(but==butE)
 		{  
-		if(sub_ind==av_j_si_max+1)
+		if((sub_ind==av_j_si_max+1)&&(av_j_si_max!=0))
 			{
-			lc640_write(CNT_EVENT_LOG,0);
+			tree_up(iLog_reset_prl,0,0,0);
+			parol_init();
+			/*lc640_write(CNT_EVENT_LOG,0);
 			lc640_write(PTR_EVENT_LOG,0);
 			tree_down(0,0);
 			avar_ind_stat=0;
 			avar_stat=0;
-			avar_stat_old=0;				
+			avar_stat_old=0;*/				
 			}
 					
-		else if(sub_ind==av_j_si_max)
+		else if((sub_ind==av_j_si_max)||(av_j_si_max==0))
 			{
 			tree_down(0,0);
 			ret(0);

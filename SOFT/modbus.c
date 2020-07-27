@@ -213,7 +213,7 @@ modbus_registers[17]=(char)(dcin_U%256);
 modbus_registers[18]=(char)(byps[0]._UinACprim/256);			//Рег10
 modbus_registers[19]=(char)(byps[0]._UinACprim%256);
 
-inv[0]._Uout=1234;
+//inv[0]._Uout=1234;
 
 //Инвертор №1
 modbus_registers[20]=(char)(inv[0]._Uout/256);			//Рег11
@@ -1081,64 +1081,20 @@ modbus_registers[31]=(char)((LPC_RTC->SEC));
 
 
 
-modbus_registers[40]=(char)(U_OUT_SET/256);					//Рег11	Уставка выходного напряжения
+modbus_registers[40]=(char)(U_OUT_SET/256);				//Рег21	Уставка выходного напряжения
 modbus_registers[41]=(char)(U_OUT_SET%256);
-/*modbus_registers[2]=(char)(U_up/256);					//Рег51
-modbus_registers[3]=(char)(U_up%256);
-modbus_registers[4]=(char)(U_maxg/256);					//Рег52
-modbus_registers[5]=(char)(U_maxg%256);
-modbus_registers[6]=(char)(I_maxp/256);					//Рег53
-modbus_registers[7]=(char)(I_maxp%256);
-modbus_registers[8]=(char)((T_PROC_GS%60)/256);			//Рег54
-modbus_registers[9]=(char)((T_PROC_GS%60)%256);
-modbus_registers[10]=(char)(((T_PROC_GS/60)%60)/256);		//Рег55
-modbus_registers[11]=(char)(((T_PROC_GS/60)%60)%256);
-modbus_registers[12]=(char)((T_PROC_GS/3600)/256);		//Рег56
-modbus_registers[13]=(char)((T_PROC_GS/3600)%256);
-modbus_registers[14]=(char)((T_PROC_PS%60)/256);			//Рег57
-modbus_registers[15]=(char)((T_PROC_PS%60)%256);
-modbus_registers[16]=(char)(((T_PROC_PS/60)%60)/256);		//Рег58
-modbus_registers[17]=(char)(((T_PROC_PS/60)%60)%256);
-modbus_registers[18]=(char)((T_PROC_PS/3600)/256);		//Рег59
-modbus_registers[19]=(char)((T_PROC_PS/3600)%256);
-modbus_registers[20]=0;								//Рег60
-modbus_registers[21]=0;
-if(work_stat==wsPS)modbus_registers[21]=1;
-modbus_registers[22]=0;								//Рег61
-modbus_registers[23]=0;
-if(work_stat==wsGS)modbus_registers[23]=1;
-modbus_registers[24]=0;								//Рег62
-modbus_registers[25]=0;
-if(REV_STAT==rsREW)modbus_registers[25]=1;
-modbus_registers[26]=0;								//Рег63
-modbus_registers[27]=0;
-if(AVT_REV_IS_ON)modbus_registers[27]=1;
-modbus_registers[28]=(char)((AVT_REV_TIME_FF)/256);		//Рег64
-modbus_registers[29]=(char)((AVT_REV_TIME_FF)%256);
-modbus_registers[30]=(char)((AVT_REV_TIME_REW)/256);		//Рег65
-modbus_registers[31]=(char)((AVT_REV_TIME_REW)%256);
-modbus_registers[32]=(char)((AVT_REV_TIME_PAUSE)/256);		//Рег66
-modbus_registers[33]=(char)((AVT_REV_TIME_PAUSE)%256);
-modbus_registers[34]=(char)((AVT_REV_I_NOM_FF)/256);		//Рег67
-modbus_registers[35]=(char)((AVT_REV_I_NOM_FF)%256);
-modbus_registers[36]=(char)((AVT_REV_I_NOM_REW)/256);		//Рег68
-modbus_registers[37]=(char)((AVT_REV_I_NOM_REW)%256);
-modbus_registers[38]=(char)((AVT_REV_U_NOM_FF)/256);		//Рег69
-modbus_registers[39]=(char)((AVT_REV_U_NOM_FF)%256);
-modbus_registers[40]=(char)((AVT_REV_U_NOM_REW)/256);		//Рег70
-modbus_registers[41]=(char)((AVT_REV_U_NOM_REW)%256);
-modbus_registers[42]=(char)((CAP_ZAR_TIME)/256);			//Рег71
-modbus_registers[43]=(char)((CAP_ZAR_TIME)%256);
-modbus_registers[44]=(char)((CAP_PAUSE1_TIME)/256);		//Рег72
-modbus_registers[45]=(char)((CAP_PAUSE1_TIME)%256);
-modbus_registers[46]=(char)((CAP_RAZR_TIME)/256);			//Рег73
-modbus_registers[47]=(char)((CAP_RAZR_TIME)%256);
-modbus_registers[48]=(char)((CAP_PAUSE2_TIME)/256);		//Рег74
-modbus_registers[49]=(char)((CAP_PAUSE2_TIME)%256);
-modbus_registers[50]=(char)((CAP_MAX_VOLT)/256);			//Рег75
-modbus_registers[51]=(char)((CAP_MAX_VOLT)%256);
-modbus_registers[52]=(char)((CAP_WRK_CURR)/256);			//Рег76
-modbus_registers[53]=(char)((CAP_WRK_CURR)%256);	   */
+modbus_registers[42]=(char)(U_OUT_MAX/256);				//Рег22	Уставка максимального выходного напряжения
+modbus_registers[43]=(char)(U_OUT_MAX%256);
+modbus_registers[44]=(char)(U_OUT_MIN/256);				//Рег23	Уставка минимального выходного напряжения
+modbus_registers[45]=(char)(U_OUT_MIN%256);
+modbus_registers[46]=(char)(U_NET_MAX/256);				//Рег24	Уставка выходного напряжения
+modbus_registers[47]=(char)(U_NET_MAX%256);
+modbus_registers[48]=(char)(U_NET_MIN/256);				//Рег25	Уставка максимального выходного напряжения
+modbus_registers[49]=(char)(U_NET_MIN%256);
+modbus_registers[50]=(char)(U_BAT_MAX/256);				//Рег26	Уставка минимального выходного напряжения
+modbus_registers[51]=(char)(U_BAT_MAX%256);
+modbus_registers[52]=(char)(U_BAT_MIN/256);				//Рег27	Уставка выходного напряжения
+
 
 /*
 modbus_tx_buff[0]=adr;
@@ -1248,9 +1204,10 @@ else if(prot==MODBUS_TCP_PROT)
 	modbus_tcp_out_ptr=(signed char*)modbus_tx_buff;
 	}*/
 
+tempS=(uint16_t)reg_value;
+
 if(reg_adr==11)		//Установка времени 
 	{
-	tempS=(uint16_t)reg_value;
 	gran(&tempS,10,30);
 	LPC_RTC->YEAR=tempS;
 	}
@@ -1274,6 +1231,67 @@ if(reg_adr==16)		//Установка времени
 	{
 	LPC_RTC->SEC=(uint16_t)reg_value;
 	}
+
+if(reg_adr==21)		//Установка выходного напряжения 
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+
+if(reg_adr==22)		//Установка максимального выходного напряжения 
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+
+if(reg_adr==23)		//Установка минимального выходного напряжения 
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+if(reg_adr==24)		//Установка напряжения сети включения
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+
+if(reg_adr==25)		//Установка напряжения сети отключения
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+
+if(reg_adr==26)		//Установка напряжения батареи включения 
+	{
+	gran(&tempS,220,230);
+	lc640_write_int(EE_U_OUT_SET,tempS);
+	}
+
+if(reg_adr==27)		//Установка напряжения батареи отключения
+	{
+	short temp_min=0,temp_max=300,temp_d=1;
+	if(AUSW_MAIN==24)
+		{
+		temp_min=22,temp_max=26,temp_d=1;
+		}
+	else if(AUSW_MAIN==4860)
+		{
+		temp_min=42,temp_max=52,temp_d=3;
+		}
+	else if(AUSW_MAIN==110)
+		{
+		temp_min=83,temp_max=113,temp_d=5;
+		}
+	else if(AUSW_MAIN==220)
+		{
+		temp_min=175,temp_max=215,temp_d=1;
+		}
+	gran(&tempS,temp_min,temp_max);
+	lc640_write_int(EE_U_BAT_MIN,tempS);
+	}
+
+
+
 
 //modbus_hold_register_transmit(MODBUS_ADRESS,func,reg_adr,prot);
 //modbus_hold_registers_transmit(MODBUS_ADRESS,func,reg_adr,1,prot);

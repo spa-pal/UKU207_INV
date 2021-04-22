@@ -4223,11 +4223,13 @@ else if(ind==iSet_INV)
 	int2lcd(U_NET_MIN,']',0);
 	int2lcd(U_BAT_MAX,'{',0);
 	int2lcd(U_BAT_MIN,'}',0);
-	
-	//int2lcdyx(sub_ind,0,2,0);	
-	//int2lcdyx(index_set,0,4,0);
-	
-	long2lcd_mmm(AUSW_MAIN_NUMBER,'w',0);	
+	/*
+	int2lcdyx(sub_ind,0,2,0);	
+	int2lcdyx(index_set,0,4,0);
+	int2lcdyx(sub_ind1,0,6,0);*/
+
+	//long2lcd_mmm(AUSW_MAIN_NUMBER,'w',0);
+	serial2lcd(AUSW_MAIN_NUMBER,'w',sub_ind1);	
 	}
 
 
@@ -9492,6 +9494,7 @@ else if(ind==iSet_INV)
 	ret(1000);
 	if(but==butD)
 		{
+		sub_ind1=0;
 		sub_ind++;
 		if(sub_ind==2)
 			{
@@ -9563,13 +9566,14 @@ else if(ind==iSet_INV)
         if(sub_ind==28)
             {
             sub_ind=29;
-		 //index_set=18;
+		 	sub_ind1=0;
             }
 		gran_char(&sub_ind,0,31);
 		if((sub_ind-index_set)>2)index_set=sub_ind-2;
 		}
 	else if(but==butU)
 		{
+		sub_ind1=0;
 		sub_ind--;
 		if(sub_ind==3)sub_ind=2;
 		if(sub_ind==5)sub_ind=4;
@@ -9623,6 +9627,11 @@ else if(ind==iSet_INV)
 			sub_ind=27;
 			//index_set=16;
 			}
+		if(sub_ind==29)
+			{
+			sub_ind1=0;
+			//index_set=16;
+			}
 		gran_char(&sub_ind,0,31);
 		if(sub_ind<index_set)index_set=sub_ind;
 		if((sub_ind==20)||(sub_ind==18))index_set=19;
@@ -9631,10 +9640,12 @@ else if(ind==iSet_INV)
 		}
 	else if(but==butD_)
 		{
+		sub_ind1=0;
 		sub_ind=30;
 		}
 	else if(but==butU_)
 		{
+		sub_ind1=0;
 		sub_ind=0;
 		}		
 	else if(sub_ind==0)
@@ -9972,13 +9983,49 @@ else if(ind==iSet_INV)
 		} 
  	else if(sub_ind==29)
 		{
-	    if(but==butR)AUSW_MAIN_NUMBER++;
-	    else if(but==butR_)AUSW_MAIN_NUMBER+=20;
-	    else if(but==butL)AUSW_MAIN_NUMBER--;
-	    else if(but==butL_)AUSW_MAIN_NUMBER-=20;
-		else if(but==butEL_)AUSW_MAIN_NUMBER=15000;
-		if(AUSW_MAIN_NUMBER<13000)AUSW_MAIN_NUMBER=100000;
-		if(AUSW_MAIN_NUMBER>100000)AUSW_MAIN_NUMBER=13000;
+		long t6,t7,t1,t2,t3;
+		if(sub_ind1==1)t6=1L;
+		if(sub_ind1==2)t6=10L;
+		if(sub_ind1==3)t6=100L;
+		if(sub_ind1==4)t6=1000L;
+		if(sub_ind1==5)t6=10000L;
+		if(sub_ind1==6)t6=100000L;
+		t7=t6*10L;
+		if(but==butE_)
+			{
+			if(sub_ind1==0)sub_ind1=6;
+			else 
+				{
+				sub_ind1--;
+				gran_ring_char(&sub_ind1,1,6);
+				}
+			speed=0;
+			}
+		
+		t1=AUSW_MAIN_NUMBER%t7;
+		t1/=t6;
+		t2=t1*t6;
+
+	    if((but==butR)||(but==butR_))
+			{
+			t1++;
+			speed=1;
+			}
+	    else if((but==butL)||(but==butL_))
+			{
+			t1--;
+			speed=1;
+			}
+		gran_ring_long(&t1, 0L, 9L);	    
+
+		t3=t1*t6;
+
+		AUSW_MAIN_NUMBER-=t2;
+		AUSW_MAIN_NUMBER+=t3;
+		//else if(but==butEL_)AUSW_MAIN_NUMBER=15000;
+		//if(AUSW_MAIN_NUMBER<13000)AUSW_MAIN_NUMBER=200000;
+		//if(AUSW_MAIN_NUMBER>200000)AUSW_MAIN_NUMBER=13000;
+		gran_ring_long(&AUSW_MAIN_NUMBER, 1L, 999999L);
 	    lc640_write_int(EE_AUSW_MAIN_NUMBER,(short)(AUSW_MAIN_NUMBER&0x0000ffffUL));
 		lc640_write_int(EE_AUSW_MAIN_NUMBER+2,(short)((AUSW_MAIN_NUMBER&0xffff0000UL)>>16UL));
 	    speed=1;

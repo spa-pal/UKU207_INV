@@ -60,6 +60,7 @@ switch (evt)
 	modbus_tcp_unit=ptr[6];
 
 	modbus_tcp_rx_arg0=(((unsigned short)ptr[8])*((unsigned short)256))+((unsigned short)ptr[9]);
+	modbus_tcp_rx_arg0++;
 	modbus_tcp_rx_arg1=(((unsigned short)ptr[10])*((unsigned short)256))+((unsigned short)ptr[11]);
 
 	if(modbus_tcp_unit==MODBUS_ADRESS)

@@ -39,5 +39,8 @@ void community2lcd(char* in,
 			char xy,
 			char flash_pos,
 			char flash_on);
+void serial2lcd(unsigned long in,
+			char xy,
+			char flash_pos);
 
 #endif

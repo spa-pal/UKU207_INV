@@ -10,6 +10,7 @@
 #include "uart0.h"
 #include "sc16is7xx.h"
 #include "control.h"
+#include "curr_version.h"
 	
 #include <string.h>
 #include "rtl.h"
@@ -229,6 +230,8 @@ modbus_registers[29]=(char)(inv[0]._Uacin%256);
 modbus_registers[30]=(char)(inv[0]._Uload/256);			//Рег16	  snmp_inv_input_voltage_DC[i]=inv[i]._Udcin;
 modbus_registers[31]=(char)(inv[0]._Uload%256);
 i=inv[0]._flags_tm;
+if(inv[0]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[0]._cnt>10)i|=0x80;
 modbus_registers[32]=0;								//Рег17
 modbus_registers[33]=i;
@@ -253,6 +256,8 @@ modbus_registers[49]=(char)(inv[1]._Uacin%256);
 modbus_registers[50]=(char)(inv[1]._Uload/256);			//Рег26
 modbus_registers[51]=(char)(inv[1]._Uload%256);
 i=inv[1]._flags_tm;
+if(inv[1]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[1]._cnt>10)i|=0x80;
 modbus_registers[52]=0;								//Рег27
 modbus_registers[53]=i;
@@ -277,6 +282,8 @@ modbus_registers[69]=(char)(inv[2]._Uacin%256);
 modbus_registers[70]=(char)(inv[2]._Uload/256);			//Рег36
 modbus_registers[71]=(char)(inv[2]._Uload%256);
 i=inv[2]._flags_tm;
+if(inv[2]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[2]._cnt>10)i|=0x80;
 modbus_registers[72]=0;								//Рег37
 modbus_registers[73]=i;
@@ -301,6 +308,8 @@ modbus_registers[89]=(char)(inv[3]._Uacin%256);
 modbus_registers[90]=(char)(inv[3]._Uload/256);			//Рег46
 modbus_registers[91]=(char)(inv[3]._Uload%256);
 i=inv[3]._flags_tm;
+if(inv[3]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[3]._cnt>10)i|=0x80;
 modbus_registers[92]=0;								//Рег47
 modbus_registers[93]=i;
@@ -325,6 +334,8 @@ modbus_registers[109]=(char)(inv[4]._Uacin%256);
 modbus_registers[110]=(char)(inv[4]._Uload/256);			//Рег56
 modbus_registers[111]=(char)(inv[4]._Uload%256);
 i=inv[4]._flags_tm;
+if(inv[4]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[4]._cnt>10)i|=0x80;
 modbus_registers[112]=0;								//Рег57
 modbus_registers[113]=i;
@@ -349,6 +360,8 @@ modbus_registers[129]=(char)(inv[5]._Uacin%256);
 modbus_registers[130]=(char)(inv[5]._Uload/256);			//Рег66
 modbus_registers[131]=(char)(inv[5]._Uload%256);
 i=inv[5]._flags_tm;
+if(inv[5]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[5]._cnt>10)i|=0x80;
 modbus_registers[132]=0;								//Рег67
 modbus_registers[133]=i;
@@ -373,6 +386,8 @@ modbus_registers[149]=(char)(inv[6]._Uacin%256);
 modbus_registers[150]=(char)(inv[6]._Uload/256);			//Рег76
 modbus_registers[151]=(char)(inv[6]._Uload%256);
 i=inv[6]._flags_tm;
+if(inv[6]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[6]._cnt>10)i|=0x80;
 modbus_registers[152]=0;								//Рег77
 modbus_registers[153]=i;
@@ -397,6 +412,8 @@ modbus_registers[169]=(char)(inv[7]._Uacin%256);
 modbus_registers[170]=(char)(inv[7]._Uload/256);			//Рег86
 modbus_registers[171]=(char)(inv[7]._Uload%256);
 i=inv[7]._flags_tm;
+if(inv[7]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[7]._cnt>10)i|=0x80;
 modbus_registers[172]=0;								//Рег87
 modbus_registers[173]=i;
@@ -421,6 +438,8 @@ modbus_registers[189]=(char)(inv[8]._Uacin%256);
 modbus_registers[190]=(char)(inv[8]._Uload/256);			//Рег96
 modbus_registers[191]=(char)(inv[8]._Uload%256);
 i=inv[8]._flags_tm;
+if(inv[8]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[8]._cnt>10)i|=0x80;
 modbus_registers[192]=0;								//Рег97
 modbus_registers[193]=i;
@@ -445,6 +464,8 @@ modbus_registers[209]=(char)(inv[9]._Uacin%256);
 modbus_registers[210]=(char)(inv[9]._Uload/256);			//Рег106
 modbus_registers[211]=(char)(inv[9]._Uload%256);
 i=inv[9]._flags_tm;
+if(inv[9]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[9]._cnt>10)i|=0x80;
 modbus_registers[212]=0;								//Рег107
 modbus_registers[213]=i;
@@ -469,6 +490,8 @@ modbus_registers[229]=(char)(inv[10]._Uacin%256);
 modbus_registers[230]=(char)(inv[10]._Uload/256);			//Рег116
 modbus_registers[231]=(char)(inv[10]._Uload%256);
 i=inv[10]._flags_tm;
+if(inv[10]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[10]._cnt>10)i|=0x80;
 modbus_registers[232]=0;								//Рег117
 modbus_registers[233]=i;
@@ -493,6 +516,8 @@ modbus_registers[249]=(char)(inv[11]._Uacin%256);
 modbus_registers[250]=(char)(inv[11]._Uload/256);			//Рег126
 modbus_registers[251]=(char)(inv[11]._Uload%256);
 i=inv[11]._flags_tm;
+if(inv[11]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[11]._cnt>10)i|=0x80;
 modbus_registers[252]=0;								//Рег127
 modbus_registers[253]=i;
@@ -517,6 +542,8 @@ modbus_registers[269]=(char)(inv[12]._Uacin%256);
 modbus_registers[270]=(char)(inv[12]._Uload/256);			//Рег136
 modbus_registers[271]=(char)(inv[12]._Uload%256);
 i=inv[12]._flags_tm;
+if(inv[12]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[12]._cnt>10)i|=0x80;
 modbus_registers[272]=0;								//Рег137
 modbus_registers[273]=i;
@@ -541,6 +568,8 @@ modbus_registers[289]=(char)(inv[13]._Uacin%256);
 modbus_registers[290]=(char)(inv[13]._Uload/256);			//Рег146
 modbus_registers[291]=(char)(inv[13]._Uload%256);
 i=inv[13]._flags_tm;
+if(inv[13]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[13]._cnt>10)i|=0x80;
 modbus_registers[292]=0;								//Рег147
 modbus_registers[293]=i;
@@ -565,6 +594,8 @@ modbus_registers[309]=(char)(inv[14]._Uacin%256);
 modbus_registers[310]=(char)(inv[14]._Uload/256);			//Рег156
 modbus_registers[311]=(char)(inv[14]._Uload%256);
 i=inv[14]._flags_tm;
+if(inv[14]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[14]._cnt>10)i|=0x80;
 modbus_registers[312]=0;								//Рег157
 modbus_registers[313]=i;
@@ -589,6 +620,8 @@ modbus_registers[329]=(char)(inv[15]._Uacin%256);
 modbus_registers[330]=(char)(inv[15]._Uload/256);			//Рег166
 modbus_registers[331]=(char)(inv[15]._Uload%256);
 i=inv[15]._flags_tm;
+if(inv[15]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[15]._cnt>10)i|=0x80;
 modbus_registers[332]=0;									//Рег167
 modbus_registers[333]=i;
@@ -613,6 +646,8 @@ modbus_registers[349]=(char)(inv[16]._Uacin%256);
 modbus_registers[350]=(char)(inv[16]._Uload/256);			//Рег176
 modbus_registers[351]=(char)(inv[16]._Uload%256);
 i=inv[16]._flags_tm;
+if(inv[16]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[16]._cnt>10)i|=0x80;
 modbus_registers[352]=0;									//Рег177
 modbus_registers[353]=i;
@@ -637,6 +672,8 @@ modbus_registers[369]=(char)(inv[17]._Uacin%256);
 modbus_registers[370]=(char)(inv[17]._Uload/256);			//Рег186
 modbus_registers[371]=(char)(inv[17]._Uload%256);
 i=inv[17]._flags_tm;
+if(inv[17]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[17]._cnt>10)i|=0x80;
 modbus_registers[372]=0;									//Рег187
 modbus_registers[373]=i;
@@ -661,6 +698,8 @@ modbus_registers[389]=(char)(inv[18]._Uacin%256);
 modbus_registers[390]=(char)(inv[18]._Uload/256);			//Рег206
 modbus_registers[391]=(char)(inv[18]._Uload%256);
 i=inv[18]._flags_tm;
+if(inv[18]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[18]._cnt>10)i|=0x80;
 modbus_registers[392]=0;									//Рег207
 modbus_registers[393]=i;
@@ -685,6 +724,8 @@ modbus_registers[409]=(char)(inv[19]._Uacin%256);
 modbus_registers[410]=(char)(inv[19]._Uload/256);			//Рег216
 modbus_registers[411]=(char)(inv[19]._Uload%256);
 i=inv[19]._flags_tm;
+if(inv[19]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[19]._cnt>10)i|=0x80;
 modbus_registers[412]=0;									//Рег217
 modbus_registers[413]=i;
@@ -709,6 +750,8 @@ modbus_registers[429]=(char)(inv[20]._Uacin%256);
 modbus_registers[430]=(char)(inv[20]._Uload/256);			//Рег226
 modbus_registers[431]=(char)(inv[20]._Uload%256);
 i=inv[20]._flags_tm;
+if(inv[20]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[20]._cnt>10)i|=0x80;
 modbus_registers[432]=0;									//Рег227
 modbus_registers[433]=i;
@@ -733,6 +776,8 @@ modbus_registers[449]=(char)(inv[21]._Uacin%256);
 modbus_registers[450]=(char)(inv[21]._Uload/256);			//Рег236
 modbus_registers[451]=(char)(inv[21]._Uload%256);
 i=inv[21]._flags_tm;
+if(inv[21]._conn_av_stat) 	i&=(~(1<<8));
+else 						i|=(1<<8);
 //if(inv[21]._cnt>10)i|=0x80;
 modbus_registers[452]=0;									//Рег237
 modbus_registers[453]=i;
@@ -790,6 +835,24 @@ modbus_registers[841]=(char)(byps[2]._flags%256);			//   1000000 работа от инвер
 															//   0100000 приоритет инверторы (0 - сеть)
 															//	 0000100 температура больше 80 Г.ц.
 															//	 0000010 температура больше 70 Г.ц.
+
+modbus_registers[938]=(char)(HARDVARE_VERSION>>8);	//Рег 70  	аппаратная версия
+modbus_registers[939]=(char)(HARDVARE_VERSION);
+modbus_registers[940]=(char)(SOFT_VERSION>>8);		//Рег 71  	версия ПО
+modbus_registers[941]=(char)(SOFT_VERSION);
+modbus_registers[942]=(char)(BUILD>>8);				//Рег 72  	номер компиляции ПО
+modbus_registers[943]=(char)(BUILD);
+modbus_registers[944]=(char)(BUILD_YEAR>>8);			//Рег 73  	год	компиляции ПО
+modbus_registers[945]=(char)(BUILD_YEAR);
+modbus_registers[946]=(char)(BUILD_MONTH>>8);		//Рег 74  	месяц компиляции ПО
+modbus_registers[947]=(char)(BUILD_MONTH);
+modbus_registers[948]=(char)(BUILD_DAY>>8);			//Рег 75  	день компиляции ПО
+modbus_registers[949]=(char)(BUILD_DAY);
+modbus_registers[950]=(char)(AUSW_MAIN_NUMBER>>8); 	//?aa 76 caaianeie iiia?
+modbus_registers[951]=(char)(AUSW_MAIN_NUMBER);
+modbus_registers[952]=(char)(AUSW_MAIN_NUMBER>>24);			//Рег 77  	caaianeie iiia?
+modbus_registers[953]=(char)(AUSW_MAIN_NUMBER>>16);
+
 /*
 modbus_tx_buff[0]=adr;
 modbus_tx_buff[1]=func;
@@ -1058,8 +1121,8 @@ else if(prot==MODBUS_TCP_PROT)
 //-----------------------------------------------
 void modbus_hold_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity, char prot)
 {
-char modbus_registers[110];
-char modbus_tx_buff[120];
+char modbus_registers[310];
+char modbus_tx_buff[320];
 unsigned short crc_temp;
 char i;
 

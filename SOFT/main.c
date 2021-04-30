@@ -10025,7 +10025,7 @@ else if(ind==iSet_INV)
 		//else if(but==butEL_)AUSW_MAIN_NUMBER=15000;
 		//if(AUSW_MAIN_NUMBER<13000)AUSW_MAIN_NUMBER=200000;
 		//if(AUSW_MAIN_NUMBER>200000)AUSW_MAIN_NUMBER=13000;
-		gran_ring_long(&AUSW_MAIN_NUMBER, 1L, 999999L);
+		if((but==butR)||(but==butR_)||(but==butL)||(but==butL_))gran_ring_long(&AUSW_MAIN_NUMBER, 1L, 999999L);
 	    lc640_write_int(EE_AUSW_MAIN_NUMBER,(short)(AUSW_MAIN_NUMBER&0x0000ffffUL));
 		lc640_write_int(EE_AUSW_MAIN_NUMBER+2,(short)((AUSW_MAIN_NUMBER&0xffff0000UL)>>16UL));
 	    speed=1;

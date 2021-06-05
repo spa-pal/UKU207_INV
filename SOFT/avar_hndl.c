@@ -574,7 +574,12 @@ char avar_simbol;
 avar_simbol='O'; 			
 if(v=='O')avar_simbol=v;  		//Выходное напряжение инвертора
 //else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
-else if(v=='C')avar_simbol=v;	//разрыв связи инвертора
+else if(v=='C')
+	{
+	avar_simbol=v;	//разрыв связи инвертора
+	kan_aktivity_cnt=15;
+	}
+
 else if(v=='T')avar_simbol=v;	//Температура инвертора
 
 if(in==1)

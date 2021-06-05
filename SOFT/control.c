@@ -1419,6 +1419,7 @@ if (NUMINV)
      		{
      		inv[i]._Iout=bps[i+20]._buff[0]+(bps[i+20]._buff[1]*256);
      		inv[i]._Pout=((signed short)bps[i+20]._buff[2])+((signed short)(bps[i+20]._buff[3]<<8));
+			if(inv[i]._Pout<0)inv[i]._Pout=0;
      		inv[i]._Uout=bps[i+20]._buff[4]+(bps[i+20]._buff[5]*256);
      		inv[i]._T=(signed)(bps[i+20]._buff[6]);
      		inv[i]._flags_tm=bps[i+20]._buff[7];
@@ -1435,7 +1436,8 @@ if (NUMINV)
 			else 
 				{
 				inv[i]._avIsOn=0;
-				}    
+				}
+			//inv[1]._Pout=-5;    
      		} 
 		else 
      		{

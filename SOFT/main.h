@@ -494,6 +494,7 @@ extern short t0cnt,t0cnt0,t0cnt1,t0cnt2,t0cnt3,t0cnt4,t0cnt5,t0cnt6,t0_cnt7;
 extern char bFL5,bFL2,bFL,bFL_;
 extern signed short main_10Hz_cnt;
 extern signed short main_1Hz_cnt;
+extern signed short kan_aktivity_cnt;
 
 //***********************************************
 //Структура ИБЭПа

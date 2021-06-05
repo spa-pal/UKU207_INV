@@ -50,6 +50,7 @@ short t0cnt,t0cnt0,t0cnt1,t0cnt2,t0cnt3,t0cnt4,t0cnt5,t0cnt6,t0_cnt7,t0_cnt_min;
 char bFL5,bFL2,bFL,bFL_,bTPS;
 signed short main_10Hz_cnt=0;
 signed short main_1Hz_cnt=0;
+signed short kan_aktivity_cnt;
 
  
 //***********************************************
@@ -881,13 +882,13 @@ max_net_slot=MINIM_INV_ADRESS+NUMINV+8;
 //if(NUMINV) max_net_slot=MINIM_INV_ADRESS+NUMINV;
 //gran_char(&max_net_slot,0,MAX_NET_ADRESS);
 
-if(++cnt_net_drv>50) 
+if((++cnt_net_drv>50)&&(kan_aktivity_cnt))
 	{
 	cnt_net_drv=0;
 	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_MIN,(char)U_NET_MAX,(char)U_BAT_MIN,(char)U_BAT_MAX);
 	} 
 	
-if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+NUMINV))
+if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+NUMINV)&&(main_1Hz_cnt<15))
 	{
 	if((!bCAN_OFF)/*&&(cnt_net_drv!=4)*/)mcp2515_transmit(cnt_net_drv,cnt_net_drv,GETTM,bps[cnt_net_drv]._flags_tu,*((char*)(&bps[cnt_net_drv]._vol_u)),*((char*)((&bps[cnt_net_drv]._vol_u))+1),*((char*)(&bps[cnt_net_drv]._vol_i)),*((char*)((&bps[cnt_net_drv]._vol_i))+1));
      
@@ -9492,6 +9493,7 @@ else if(ind==iLog_)
 else if(ind==iSet_INV)
 	{
 	ret(1000);
+	kan_aktivity_cnt=15;
 	if(but==butD)
 		{
 		sub_ind1=0;
@@ -16489,7 +16491,7 @@ if(++t0cnt>=10)
 	     t0cnt3=0;
 	     b1Hz=1;
 		 if(main_1Hz_cnt<10000) main_1Hz_cnt++;
-
+		 if(kan_aktivity_cnt)kan_aktivity_cnt--;
 	     }
      }
 
@@ -16806,6 +16808,7 @@ if (socket_tcp != 0)
 	{
     tcp_listen (socket_tcp, 502);
   	}
+kan_aktivity_cnt=15;
 			
 while (1)  
 	{

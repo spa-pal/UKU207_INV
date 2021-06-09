@@ -112,7 +112,7 @@ switch (evt)
 
 			//modbus_tcp_plazma[2]++;
 
-			modbus_input_registers_transmit(MODBUS_ADRESS,modbus_tcp_func,modbus_tcp_rx_arg0,modbus_tcp_rx_arg1,MODBUS_TCP_PROT);
+			modbus_input_registers_transmit(MODBUS_ADRESS,modbus_tcp_func,modbus_tcp_rx_arg0-1,modbus_tcp_rx_arg1,MODBUS_TCP_PROT);
 
 			sendbuf = tcp_get_buf((modbus_tcp_rx_arg1*2)+9);
 			sendbuf[0]=ptr[0];

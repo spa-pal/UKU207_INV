@@ -888,9 +888,9 @@ if((++cnt_net_drv>50)&&(kan_aktivity_cnt))
 	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_MIN,(char)U_NET_MAX,(char)U_BAT_MIN,(char)U_BAT_MAX);
 	} 
 	
-if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+NUMINV)&&(main_1Hz_cnt<15))
+if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+NUMINV))
 	{
-	if((!bCAN_OFF)/*&&(cnt_net_drv!=4)*/)mcp2515_transmit(cnt_net_drv,cnt_net_drv,GETTM,bps[cnt_net_drv]._flags_tu,*((char*)(&bps[cnt_net_drv]._vol_u)),*((char*)((&bps[cnt_net_drv]._vol_u))+1),*((char*)(&bps[cnt_net_drv]._vol_i)),*((char*)((&bps[cnt_net_drv]._vol_i))+1));
+	if((!bCAN_OFF)&&(kan_aktivity_cnt))mcp2515_transmit(cnt_net_drv,cnt_net_drv,GETTM,bps[cnt_net_drv]._flags_tu,*((char*)(&bps[cnt_net_drv]._vol_u)),*((char*)((&bps[cnt_net_drv]._vol_u))+1),*((char*)(&bps[cnt_net_drv]._vol_i)),*((char*)((&bps[cnt_net_drv]._vol_i))+1));
      
 	//if(cnt_net_drv<=11)
 	     {
@@ -1364,13 +1364,13 @@ if((inv[0]._flags_tm&0x01)&&(inv[0]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[0]._flags_tm&0x02)&&(inv[0]._valid))
+if((inv[0]._flags_tm&0x04)&&(inv[0]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№1 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[0]._flags_tm&0x04)&&(inv[0]._valid))
+if((inv[0]._flags_tm&0x02)&&(inv[0]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№1 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1400,13 +1400,13 @@ if((inv[1]._flags_tm&0x01)&&(inv[1]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[1]._flags_tm&0x02)&&(inv[1]._valid))
+if((inv[1]._flags_tm&0x04)&&(inv[1]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№2 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[1]._flags_tm&0x04)&&(inv[1]._valid))
+if((inv[1]._flags_tm&0x02)&&(inv[1]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№2 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1436,13 +1436,13 @@ if((inv[2]._flags_tm&0x01)&&(inv[2]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[2]._flags_tm&0x02)&&(inv[2]._valid))
+if((inv[2]._flags_tm&0x04)&&(inv[2]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№3 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[2]._flags_tm&0x04)&&(inv[2]._valid))
+if((inv[2]._flags_tm&0x02)&&(inv[2]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№3 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1472,13 +1472,13 @@ if((inv[3]._flags_tm&0x01)&&(inv[3]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[3]._flags_tm&0x02)&&(inv[3]._valid))
+if((inv[3]._flags_tm&0x04)&&(inv[3]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№4 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[3]._flags_tm&0x04)&&(inv[3]._valid))
+if((inv[3]._flags_tm&0x02)&&(inv[3]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№4 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1508,13 +1508,13 @@ if((inv[4]._flags_tm&0x01)&&(inv[4]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[4]._flags_tm&0x02)&&(inv[4]._valid))
+if((inv[4]._flags_tm&0x04)&&(inv[4]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№5 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[4]._flags_tm&0x04)&&(inv[4]._valid))
+if((inv[4]._flags_tm&0x02)&&(inv[4]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№5 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1544,13 +1544,13 @@ if((inv[5]._flags_tm&0x01)&&(inv[5]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[5]._flags_tm&0x02)&&(inv[5]._valid))
+if((inv[5]._flags_tm&0x04)&&(inv[5]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№6 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[5]._flags_tm&0x04)&&(inv[5]._valid))
+if((inv[5]._flags_tm&0x02)&&(inv[5]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№6 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1580,13 +1580,13 @@ if((inv[6]._flags_tm&0x01)&&(inv[6]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[6]._flags_tm&0x02)&&(inv[6]._valid))
+if((inv[6]._flags_tm&0x04)&&(inv[6]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№7 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[6]._flags_tm&0x04)&&(inv[6]._valid))
+if((inv[6]._flags_tm&0x02)&&(inv[6]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№7 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1616,13 +1616,13 @@ if((inv[7]._flags_tm&0x01)&&(inv[7]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[7]._flags_tm&0x02)&&(inv[7]._valid))
+if((inv[7]._flags_tm&0x04)&&(inv[7]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№8 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[7]._flags_tm&0x04)&&(inv[7]._valid))
+if((inv[7]._flags_tm&0x02)&&(inv[7]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№8 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1652,13 +1652,13 @@ if((inv[8]._flags_tm&0x01)&&(inv[8]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[8]._flags_tm&0x02)&&(inv[8]._valid))
+if((inv[8]._flags_tm&0x04)&&(inv[8]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№9 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[8]._flags_tm&0x04)&&(inv[8]._valid))
+if((inv[8]._flags_tm&0x02)&&(inv[8]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№9 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1688,13 +1688,13 @@ if((inv[9]._flags_tm&0x01)&&(inv[9]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[9]._flags_tm&0x02)&&(inv[9]._valid))
+if((inv[9]._flags_tm&0x04)&&(inv[9]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№10 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[9]._flags_tm&0x04)&&(inv[9]._valid))
+if((inv[9]._flags_tm&0x02)&&(inv[9]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№10 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1724,13 +1724,13 @@ if((inv[10]._flags_tm&0x01)&&(inv[10]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[10]._flags_tm&0x02)&&(inv[10]._valid))
+if((inv[10]._flags_tm&0x04)&&(inv[10]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№11 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[10]._flags_tm&0x04)&&(inv[10]._valid))
+if((inv[10]._flags_tm&0x02)&&(inv[10]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№11 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1760,13 +1760,13 @@ if((inv[11]._flags_tm&0x01)&&(inv[11]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[11]._flags_tm&0x02)&&(inv[11]._valid))
+if((inv[11]._flags_tm&0x04)&&(inv[11]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№12 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[11]._flags_tm&0x04)&&(inv[11]._valid))
+if((inv[11]._flags_tm&0x02)&&(inv[11]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№12 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1796,13 +1796,13 @@ if((inv[12]._flags_tm&0x01)&&(inv[12]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[12]._flags_tm&0x02)&&(inv[12]._valid))
+if((inv[12]._flags_tm&0x04)&&(inv[12]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№13 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[12]._flags_tm&0x04)&&(inv[12]._valid))
+if((inv[12]._flags_tm&0x02)&&(inv[12]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№13 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1832,13 +1832,13 @@ if((inv[13]._flags_tm&0x01)&&(inv[13]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[13]._flags_tm&0x02)&&(inv[13]._valid))
+if((inv[13]._flags_tm&0x04)&&(inv[13]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№14 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[13]._flags_tm&0x04)&&(inv[13]._valid))
+if((inv[13]._flags_tm&0x02)&&(inv[13]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№14 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1868,13 +1868,13 @@ if((inv[14]._flags_tm&0x01)&&(inv[14]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[14]._flags_tm&0x02)&&(inv[14]._valid))
+if((inv[14]._flags_tm&0x04)&&(inv[14]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№15 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[14]._flags_tm&0x04)&&(inv[14]._valid))
+if((inv[14]._flags_tm&0x02)&&(inv[14]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№15 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1904,13 +1904,13 @@ if((inv[15]._flags_tm&0x01)&&(inv[15]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[15]._flags_tm&0x02)&&(inv[15]._valid))
+if((inv[15]._flags_tm&0x04)&&(inv[15]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№16 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[15]._flags_tm&0x04)&&(inv[15]._valid))
+if((inv[15]._flags_tm&0x02)&&(inv[15]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№16 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1940,13 +1940,13 @@ if((inv[16]._flags_tm&0x01)&&(inv[16]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[16]._flags_tm&0x02)&&(inv[16]._valid))
+if((inv[16]._flags_tm&0x04)&&(inv[16]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№17 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[16]._flags_tm&0x04)&&(inv[16]._valid))
+if((inv[16]._flags_tm&0x02)&&(inv[16]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№17 перегрев,выкл";
 	sub_cnt_max++;	
@@ -1976,13 +1976,13 @@ if((inv[17]._flags_tm&0x01)&&(inv[17]._valid))
 	sub_cnt_max++;	
 	}
 
-if((inv[17]._flags_tm&0x02)&&(inv[17]._valid))
+if((inv[17]._flags_tm&0x04)&&(inv[17]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№18 сильн.нагрев ";
 	sub_cnt_max++;	
 	}
 
-if((inv[17]._flags_tm&0x04)&&(inv[17]._valid))
+if((inv[17]._flags_tm&0x02)&&(inv[17]._valid))
 	{
 	sub_ptrs[i++]=	"Инв.№18 перегрев,выкл";
 	sub_cnt_max++;	
@@ -2287,7 +2287,7 @@ if(ind==iMn_INV)
 	//int2lcdyx(dcin_av_stat,0,1,0);
 	//int2lcdyx(dcin_av_cnt,0,5,0);
 	//int2lcdyx(inv[0]._conn_av_stat,0,10,0);
-	//int2lcdyx(inv[0]._conn_av_cnt,0,15,0);	
+	//int2lcdyx(inv[0]._flags_tm,0,3,0);	
  	//int2lcdyx(NUMPHASE,0,10,0);
 /*	int2lcdyx(modbus_plazma,0,3,0);
 	int2lcdyx(U_OUT_SET,0,8,0);

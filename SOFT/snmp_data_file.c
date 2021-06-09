@@ -428,8 +428,8 @@ for(i = 0; i<32 ; i++)
 	snmp_inv_output_power[i]=inv[i]._Pout;
 	snmp_inv_temperature[i]=inv[i]._T;
 	snmp_inv_stat[i]=inv[i]._flags_tm;
-	//if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<7);
-	//else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<7);
+	if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<8);
+	else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<8);
 	snmp_inv_input_voltage_DC[i]=inv[i]._Udcin;
 	snmp_inv_input_voltage_AC[i]=inv[i]._Uacin;
 	snmp_inv_output_bus_voltage[i]=inv[i]._Uload;

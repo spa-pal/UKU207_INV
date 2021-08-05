@@ -2291,12 +2291,12 @@ if(ind==iMn_INV)
  	//int2lcdyx(NUMPHASE,0,10,0);
 /*	int2lcdyx(modbus_plazma,0,3,0);
 	int2lcdyx(U_OUT_SET,0,8,0);
-	int2lcdyx(modbus_tcp_plazma[0],0,19,0);
+
 	int2lcdyx(modbus_tcp_plazma[1],0,15,0);
 	int2lcdyx(modbus_tcp_plazma[2],0,11,0);
 	int2lcdhyx(modbus_crc_plazma[0],1,5);
 	int2lcdhyx(modbus_crc_plazma[1],2,5);*/
-
+	int2lcdyx(inv[0]._flags_tm_dop,0,19,0);
 	}
 
  else if(ind==iBps)
@@ -2564,7 +2564,10 @@ else if(ind==iInv_v3)
 		{
 		ptr[0]=		"¬ –¿¡Œ“≈.Œ“ —≈“»    ";	      
 		}
-
+	else if((inv[sub_ind1]._flags_tm_dop&0x01)==0x01)
+		{
+		ptr[0]=		"Œ“ À. Udc ÌÂ ‚ ÌÓÏÂ";	      
+		}
 
 
 	bgnd_par(			"     »Õ¬≈–“Œ– N&    ",

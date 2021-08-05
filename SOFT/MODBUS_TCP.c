@@ -30,7 +30,7 @@ if (soc != socket_tcp) {
 	return (0);
 }
 
-//modbus_tcp_plazma[0]++;
+modbus_tcp_plazma[0]++;
 
 switch (evt) 
 	{

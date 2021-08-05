@@ -430,6 +430,10 @@ for(i = 0; i<32 ; i++)
 	snmp_inv_stat[i]=inv[i]._flags_tm;
 	if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<8);
 	else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<8);
+
+	if(inv[i]._flags_tm_dop&0x0001)snmp_inv_stat[i]|=(1<<9);
+	else if(!(inv[i]._flags_tm_dop&0x0001))snmp_inv_stat[i]&=~(1<<9);
+
 	snmp_inv_input_voltage_DC[i]=inv[i]._Udcin;
 	snmp_inv_input_voltage_AC[i]=inv[i]._Uacin;
 	snmp_inv_output_bus_voltage[i]=inv[i]._Uload;

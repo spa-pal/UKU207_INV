@@ -1451,7 +1451,8 @@ if (NUMINV)
 			inv[i]._Udcin=0;
 			inv[i]._cnt=25;
 			inv[i]._avIsOn=0;  
-			inv[i]._valid=0;   
+			inv[i]._valid=0; 
+			inv[i]._flags_tm_dop=0;  
      		}
      	}
    	}

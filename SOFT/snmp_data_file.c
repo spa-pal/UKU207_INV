@@ -427,7 +427,7 @@ for(i = 0; i<32 ; i++)
 	snmp_inv_output_current[i]=inv[i]._Iout;
 	snmp_inv_output_power[i]=inv[i]._Pout;
 	snmp_inv_temperature[i]=inv[i]._T;
-	snmp_inv_stat[i]=inv[i]._flags_tm;
+	snmp_inv_stat[i]=inv[i]._flags_tm&0xf7;
 	if(inv[i]._conn_av_stat==1)snmp_inv_stat[i]|=(1<<8);
 	else if(inv[i]._conn_av_stat==0)snmp_inv_stat[i]&=~(1<<8);
 

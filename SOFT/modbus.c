@@ -172,7 +172,7 @@ char modbus_registers[1000];
 char modbus_tx_buff[120];
 unsigned short crc_temp;
 char i,ii;
-
+short tempS;
 
 
 if(NUMBYPASS)
@@ -881,6 +881,31 @@ modbus_registers[841]=(char)(byps[2]._flags%256);			//   1000000 работа от инвер
 															//   0100000 приоритет инверторы (0 - сеть)
 															//	 0000100 температура больше 80 Г.ц.
 															//	 0000010 температура больше 70 Г.ц.
+
+tempS=0;
+if(sk_stat[0]==ssON) tempS|=0x0001;
+if(sk_av_stat[0]==sasON) tempS|=0x0002;
+modbus_registers[900]=(signed char)(tempS>>8);				//Рег451	Состояние  сухого контакта №1, (нулевой бит - физическое состояние, 1 - замкнут, 0 - разомкнут, первый бит - аварийность, 1 - авария, 0 - норма)
+modbus_registers[901]=(signed char)(tempS);
+tempS=0;
+if(sk_stat[1]==ssON) tempS|=0x0001;
+if(sk_av_stat[1]==sasON) tempS|=0x0002;
+modbus_registers[902]=(signed char)(tempS>>8);				//Рег452	Состояние  сухого контакта №1, (нулевой бит - физическое состояние, 1 - замкнут, 0 - разомкнут, первый бит - аварийность, 1 - авария, 0 - норма)
+modbus_registers[903]=(signed char)(tempS);
+tempS=0;
+if(sk_stat[2]==ssON) tempS|=0x0001;
+if(sk_av_stat[2]==sasON) tempS|=0x0002;
+modbus_registers[904]=(signed char)(tempS>>8);				//Рег453	Состояние  сухого контакта №1, (нулевой бит - физическое состояние, 1 - замкнут, 0 - разомкнут, первый бит - аварийность, 1 - авария, 0 - норма)
+modbus_registers[905]=(signed char)(tempS);
+tempS=0;
+if(sk_stat[3]==ssON) tempS|=0x0001;
+if(sk_av_stat[3]==sasON) tempS|=0x0002;
+modbus_registers[906]=(signed char)(tempS>>8);				//Рег454	Состояние  сухого контакта №1, (нулевой бит - физическое состояние, 1 - замкнут, 0 - разомкнут, первый бит - аварийность, 1 - авария, 0 - норма)
+modbus_registers[907]=(signed char)(tempS);
+
+modbus_registers[908]=(signed char)(sk_spec_reg>>8);				//Рег455	Спецрегистр состояния СК
+modbus_registers[909]=(signed char)(sk_spec_reg);
+
 
 modbus_registers[938]=(char)(HARDVARE_VERSION>>8);	//Рег 70  	аппаратная версия
 modbus_registers[939]=(char)(HARDVARE_VERSION);

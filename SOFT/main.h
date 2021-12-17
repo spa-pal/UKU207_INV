@@ -1022,6 +1022,7 @@ typedef enum  {ssOFF,ssON} enum_sk_stat;
 extern enum_sk_stat sk_stat[4];
 typedef enum  {sasOFF,sasON} enum_sk_av_stat;
 extern enum_sk_av_stat sk_av_stat[4],sk_av_stat_old[4];
+extern short sk_spec_reg;
 extern signed short t_box;
 
 //***********************************************

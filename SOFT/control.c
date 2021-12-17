@@ -3257,7 +3257,7 @@ for(i=0;i<NUMSK;i++)
 			}
 		}
 
-#ifndef UKU_KONTUR
+
 	if(sk_av_stat_old[i]!=sk_av_stat[i])
 		{
 		plazma_sk++;
@@ -3276,30 +3276,14 @@ for(i=0;i<NUMSK;i++)
 			else if(i==3)snmp_trap_send("SK #4 Alarm is off",15,4,0);
 			}
 	 	}
-#endif
 
-#ifdef UKU_KONTUR
-	if(sk_av_stat_old[i]!=sk_av_stat[i])
-		{
-		plazma_sk++;
-		if(sk_av_stat[i]==sasON)
-			{
-			if(i==0)snmp_trap_send("Door is opened",15,1,1);
-			else if(i==1)snmp_trap_send("Smoke Alarm",15,2,1);
-			else if(i==2)snmp_trap_send("Shock Sensor Alarm",15,3,1);
-			else if(i==3)snmp_trap_send("SK #4 Alarm",15,4,1);
-			}
-		else 
-			{
-			if(i==0)snmp_trap_send("Door is closed",15,1,0);
-			else if(i==1)snmp_trap_send("Smoke Alarm is off",15,2,0);
-			else if(i==2)snmp_trap_send("Shock Sensor Alarm is off",15,3,0);
-			else if(i==3)snmp_trap_send("SK #4 Alarm is off",15,4,0);
-			}
-	 	}
-#endif
+
 	sk_av_stat_old[i]=sk_av_stat[i];
 	}
+sk_spec_reg=0;
+if((sk_stat[0]==ssOFF)&&(sk_stat[1]==ssON)) 	sk_spec_reg=1;
+else if((sk_stat[0]==ssON)&&(sk_stat[1]==ssON))	sk_spec_reg=2;
+else if((sk_stat[0]==ssON)&&(sk_stat[1]==ssOFF))sk_spec_reg=3;
 }
 
 

@@ -341,6 +341,7 @@ BOOL ND_EXT[3];
 signed char sk_cnt_dumm[4],sk_cnt[4],sk_av_cnt[4];
 enum_sk_stat sk_stat[4]={ssOFF,ssOFF,ssOFF,ssOFF};
 enum_sk_av_stat sk_av_stat[4]={sasOFF,sasOFF,sasOFF,sasOFF},sk_av_stat_old[4];
+short sk_spec_reg;
 signed short t_box;
 
 //***********************************************
@@ -2091,11 +2092,12 @@ if(ind==iMn_INV)
 	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
 	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
 		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
-		ptrs[10+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 
 		}
 	else if((NUMBYPASS==1)&&(NUMPHASE==1))
@@ -2145,11 +2147,12 @@ if(ind==iMn_INV)
 	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
 	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
 		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		ptrs[9+NUMBYPASS+NUMINV]=  				" Версия ПО          ";
-		ptrs[10+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 		}
 	 
  	else if((NUMBYPASS==1)&&(NUMPHASE==3))
@@ -2200,11 +2203,12 @@ if(ind==iMn_INV)
 	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
 	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
 		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-	     ptrs[6+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[7+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		 ptrs[9+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
-		ptrs[10+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 
 		}
 
@@ -2852,7 +2856,56 @@ else if(ind==iLoad)
                    	      	   	    		
      }
 
+else if(ind==iExtern)
+	{
+	signed char temp;
 
+	ptrs[0]=  		" СК1              $ ";
+	ptrs[1]= 		" СК2              % ";
+	ptrs[2]= 		" СК3              ^ ";
+	ptrs[3]= 		" СК4              & ";		
+	ptrs[NUMSK]=	" Выход              ";
+	ptrs[NUMSK+1]=	"                    ";
+	ptrs[NUMSK+2]=	"                    ";
+
+	bgnd_par(		"  ВНЕШНИЕ ДАТЧИКИ   ",
+				ptrs[index_set],
+				ptrs[index_set+1],
+				ptrs[index_set+2]);
+
+	if(sub_ind-index_set>2)index_set=sub_ind-2;
+	else if (sub_ind<index_set)index_set=sub_ind;
+	pointer_set(1);
+
+	temp=-11;
+	if(sk_stat[0]==ssON)		temp=-9;
+	if(sk_av_stat[0]==sasON) 	sub_bgnd("АВАРИЯ",'$',temp-2);
+	else                     	sub_bgnd("НОРМА",'$',temp-1);
+	if(sk_stat[0]==ssON)		sub_bgnd("ЗАМКН.",'$',-4);
+	if(sk_stat[0]==ssOFF)		sub_bgnd("РАЗОМКН.",'$',-6);
+
+	temp=-11;
+	if(sk_stat[1]==ssON)		temp=-9;
+	if(sk_av_stat[1]==sasON) 	sub_bgnd("АВАРИЯ",'%',temp-2);
+	else                     	sub_bgnd("НОРМА",'%',temp-1);
+	if(sk_stat[1]==ssON)		sub_bgnd("ЗАМКН.",'%',-4);
+	if(sk_stat[1]==ssOFF)		sub_bgnd("РАЗОМКН.",'%',-6);
+
+	temp=-11;
+	if(sk_stat[2]==ssON)		temp=-9;
+	if(sk_av_stat[2]==sasON) 	sub_bgnd("АВАРИЯ",'^',temp-2);
+	else                     	sub_bgnd("НОРМА",'^',temp-1);
+	if(sk_stat[2]==ssON)		sub_bgnd("ЗАМКН.",'^',-4);
+	if(sk_stat[2]==ssOFF)		sub_bgnd("РАЗОМКН.",'^',-6);
+
+	temp=-11;
+	if(sk_stat[3]==ssON)		temp=-9;
+	if(sk_av_stat[3]==sasON) 	sub_bgnd("АВАРИЯ",'&',temp-2);
+	else                     	sub_bgnd("НОРМА",'&',temp-1);
+ 	if(sk_stat[3]==ssON)		sub_bgnd("ЗАМКН.",'&',-4);
+	if(sk_stat[3]==ssOFF)		sub_bgnd("РАЗОМКН.",'&',-6);
+
+     }
 
 else if(ind==iExtern_3U)
 	{
@@ -4186,10 +4239,11 @@ else if(ind==iSet_INV)
 	ptrs[26]=      	" Реле               ";
 	ptrs[27]=      	" Аварийные пороги   ";
 	ptrs[28]=      	" байпас             ";
-	ptrs[29]=      	" Серийный N        w";
-    ptrs[30]=		" Выход              ";
-    ptrs[31]=		" Калибровки         "; 
-    ptrs[32]=		"                    ";        
+	ptrs[29]=		" Внешние датчики    ";
+	ptrs[30]=      	" Серийный N        w";
+    ptrs[31]=		" Выход              ";
+    ptrs[32]=		" Калибровки         "; 
+    ptrs[33]=		"                    ";        
 	
 	if((sub_ind-index_set)>2)index_set=sub_ind-2;
 	else if(sub_ind<index_set)index_set=sub_ind;
@@ -4385,12 +4439,17 @@ else if(ind==iStr_INV)
 	ptrs[0]=" Инверторов        ^";	
 	ptrs[1]=" Байпасов          [";
 	if(NUMBYPASS==1) ptrs[1]=" Байпас            [";
-	if(NUMBYPASS!=0)ptrs[2]=" Выход              ";
+	if(NUMBYPASS!=0)
+		{
+		ptrs[2]=" Сухих контактов   $";
+		ptrs[3]=" Выход              ";
+		}
 	else
 		{
 		ptrs[2]=" Выходных фаз      <";
 		ptrs[3]=" Вход AC         >  ";
-		ptrs[4]=" Выход              ";
+		ptrs[4]=" Сухих контактов   $";
+		ptrs[5]=" Выход              ";
 		}
 
 	if(sub_ind<index_set) index_set=sub_ind;
@@ -4406,8 +4465,26 @@ else if(ind==iStr_INV)
 	int2lcd(NUMPHASE,'<',0);
 	if(NUMINAC==1)	sub_bgnd("есть",'>',-1);
 	else 			sub_bgnd("нет",'>',-1);
+	int2lcd(NUMSK,'$',0);
 	
 
+	}
+
+else if (ind==iExt_set)
+	{ 
+	ptrs[0]=		" Сухой контакт N1   ";
+	ptrs[1]=		" Сухой контакт N2   ";
+	ptrs[2]=		" Сухой контакт N3   ";
+	ptrs[3]=		" Сухой контакт N4   ";
+	ptrs[NUMSK]=sm_exit;
+	ptrs[1+NUMSK]=	"                    ";
+	ptrs[2+NUMSK]=	"                    ";
+	
+	if(sub_ind<index_set) index_set=sub_ind;
+	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
+     bgnd_par("  ВНЕШНИЕ ДАТЧИКИ   ",ptrs[index_set],ptrs[index_set+1],ptrs[index_set+2]);
+	
+	pointer_set(1);
 	}
 
 else if (ind==iLan_set)
@@ -4706,11 +4783,11 @@ else if (ind==iExt_sk)
 	ptrs[0]=" состояние - @      ";
 	ptrs[1]=" аварийное          ";
 	ptrs[2]=" состояние - #      ";
-	ptrs[3]=" Реле            [  ";
+/*	ptrs[3]=" Реле            [  ";
 	ptrs[4]=" Звук            ]  ";
 	ptrs[5]=" Дисплей         (  ";
-	ptrs[6]=" RS232           )  ";
-	ptrs[7]=sm_exit;
+	ptrs[6]=" RS232           )  ";*/
+	ptrs[3]=sm_exit;
 	
 	if(sub_ind<index_set) index_set=sub_ind;
 	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
@@ -4722,7 +4799,7 @@ else if (ind==iExt_sk)
 	else sub_bgnd("разомк.",'@',0);
 	if(!SK_SIGN[sub_ind1])sub_bgnd("замкнут",'#',0);
 	else sub_bgnd("незамк.",'#',0);
-	if(!TMIN_EXT_EN[sub_ind1])int2lcd_mmm(TMIN_EXT[sub_ind1],'$',0);
+/*	if(!TMIN_EXT_EN[sub_ind1])int2lcd_mmm(TMIN_EXT[sub_ind1],'$',0);
 	else sub_bgnd("выкл.",'$',-6);
 	if(!SK_REL_EN[sub_ind1])sub_bgnd("вкл.",'[',-2);
 	else sub_bgnd("выкл.",'[',-2);
@@ -4731,7 +4808,7 @@ else if (ind==iExt_sk)
 	if(!SK_LCD_EN[sub_ind1])sub_bgnd("вкл.",'(',-2);
 	else sub_bgnd("выкл.",'(',-2);
 	if(!SK_RS_EN[sub_ind1])sub_bgnd("вкл.",')',-2);
-	else sub_bgnd("выкл.",')',-2);	
+	else sub_bgnd("выкл.",')',-2);				   */
 	
 	//int2lcdyx(sub_ind,0,1,0);	
 	//int2lcdyx(index_set,0,3,0);
@@ -8188,13 +8265,13 @@ else if(ind==iMn_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,7+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,8+NUMINV+NUMBYPASS);
 		}
 		
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,7+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,8+NUMINV+NUMBYPASS);
 		}	
 	else if(but==butD_)
 		{
@@ -8273,24 +8350,29 @@ else if(ind==iMn_INV)
 			tree_up(iInv_tabl,0,0,0);
 		     ret(0);
 		     
+			} 			
+		else if(sub_ind==(3+NUMBYPASS+NUMINV))
+			{
+			tree_up(iExtern,0,0,0);
+		    ret(1000);
 			}
 
-		else if(sub_ind==(3+NUMBYPASS+NUMINV))
+		else if(sub_ind==(4+NUMBYPASS+NUMINV))
 			{
 			tree_up(iSet_prl,0,0,0);
 		     ret(50);
 		     parol_init();
 			}
-		else if(sub_ind==(4+NUMBYPASS+NUMINV))
+		else if(sub_ind==(5+NUMBYPASS+NUMINV))
 			{
 			tree_up(iLog,0,0,0);
 		     ret(1000);
 			}
-		else if(sub_ind==(5+NUMBYPASS+NUMINV))
+		else if(sub_ind==(6+NUMBYPASS+NUMINV))
 			{
 			sub_ind=0;
 			}
-		else if(sub_ind==(6+NUMBYPASS+NUMINV))
+		else if(sub_ind==(7+NUMBYPASS+NUMINV))
 			{
 			tree_up(iFWabout,0,0,0);
 		    ret(1000);
@@ -8678,20 +8760,20 @@ else if(ind==iExtern)
 	if (but==butU)
 		{      
 		sub_ind--;
-		gran_char(&sub_ind,0,8);
+		gran_char(&sub_ind,0,NUMDT+NUMSK);
 		}
 		
 	else if (but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,8);		
+		gran_char(&sub_ind,0,NUMSK);		
 		}
 
-	else if((but==butE)&&(sub_ind==8))
+	else if((but==butE)&&(sub_ind==NUMSK))
 		{
 	     tree_down(0,0);
 	     ret(0);
-		}	
+		}
 	}
 	
 else if(ind==iExtern_3U)
@@ -9573,7 +9655,7 @@ else if(ind==iSet_INV)
             sub_ind=29;
 		 	sub_ind1=0;
             }
-		gran_char(&sub_ind,0,31);
+		gran_char(&sub_ind,0,32);
 		if((sub_ind-index_set)>2)index_set=sub_ind-2;
 		}
 	else if(but==butU)
@@ -9637,7 +9719,7 @@ else if(ind==iSet_INV)
 			sub_ind1=0;
 			//index_set=16;
 			}
-		gran_char(&sub_ind,0,31);
+		gran_char(&sub_ind,0,32);
 		if(sub_ind<index_set)index_set=sub_ind;
 		if((sub_ind==20)||(sub_ind==18))index_set=19;
 		if((sub_ind==16)||(sub_ind==14))index_set=15;
@@ -9646,7 +9728,7 @@ else if(ind==iSet_INV)
 	else if(but==butD_)
 		{
 		sub_ind1=0;
-		sub_ind=30;
+		sub_ind=31;
 		}
 	else if(but==butU_)
 		{
@@ -9985,8 +10067,16 @@ else if(ind==iSet_INV)
 		     tree_up(iByps_av_set,0,0,0);
 		     ret(1000);
 		     }
-		} 
- 	else if(sub_ind==29)
+		}
+    else if(sub_ind==29)
+		{
+		if(but==butE)
+		     {
+		     tree_up(iExt_set,0,0,0);
+		     ret(1000);
+		     }
+		}		 
+ 	else if(sub_ind==30)
 		{
 		long t6,t7,t1,t2,t3;
 		if(sub_ind1==1)t6=1L;
@@ -10039,7 +10129,7 @@ else if(ind==iSet_INV)
 			}
 	    }                       		
  
-     else if(sub_ind==30)
+     else if(sub_ind==31)
 		{
 		if(but==butE)
 		     {
@@ -10048,7 +10138,7 @@ else if(ind==iSet_INV)
 		     }
 		}
 				
-	else if(sub_ind==31)
+	else if(sub_ind==32)
 		{
 		if(but==butE)
 		     {		
@@ -10571,18 +10661,18 @@ else if(ind==iStr_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		if(NUMBYPASS==0)gran_char(&sub_ind,0,4);
-		else gran_char(&sub_ind,0,2);
+		if(NUMBYPASS==0)gran_char(&sub_ind,0,5);
+		else gran_char(&sub_ind,0,3);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
-		if(NUMBYPASS==0)gran_char(&sub_ind,0,4);
-		else gran_char(&sub_ind,0,2);
+		if(NUMBYPASS==0)gran_char(&sub_ind,0,5);
+		else gran_char(&sub_ind,0,3);
 		}
 	else if(but==butD_)
 		{
-		sub_ind=4;
+		sub_ind=3;
 		}				
      else if(sub_ind==0)
 	     {
@@ -10666,27 +10756,62 @@ else if(ind==iStr_INV)
 			}
 		else
 			{
+		     if((but==butR)||(but==butR_))
+		     	{
+		     	NUMSK++;
+		     	gran(&NUMSK,0,4);
+		     	lc640_write_int(EE_NUMSK,NUMSK);
+		     	}
+		     
+		     else if((but==butL)||(but==butL_))
+		     	{
+		     	NUMSK--;
+		     	gran(&NUMSK,0,4);
+		     	lc640_write_int(EE_NUMSK,NUMSK);
+		     	}
+			}
+		}	 
+    else if(sub_ind==3)
+		{
+		if(NUMBYPASS==0)
+		 	{
+			if((but==butR)||(but==butR_))
+				{
+				NUMINAC=1;
+				lc640_write_int(EE_NUMINAC,NUMINAC);
+				}
+			     
+			else if((but==butL)||(but==butL_))
+				{
+				NUMINAC=0;
+				lc640_write_int(EE_NUMINAC,NUMINAC);
+		     	}
+			}
+		else
+			{
 	     	if(but==butE)
 	          	{
 				tree_down(0,0);
 	          	}
 			}
-		}	 
-    else if(sub_ind==3)
-		{
-		if((but==butR)||(but==butR_))
-			{
-			NUMINAC=1;
-			lc640_write_int(EE_NUMINAC,NUMINAC);
-			}
-		     
-		else if((but==butL)||(but==butL_))
-			{
-			NUMINAC=0;
-			lc640_write_int(EE_NUMINAC,NUMINAC);
-	     	}
 		}
-    else if(sub_ind==4)
+     else if(sub_ind==4)
+	     {
+	     if((but==butR)||(but==butR_))
+	     	{
+	     	NUMSK++;
+	     	gran(&NUMSK,0,4);
+	     	lc640_write_int(EE_NUMSK,NUMSK);
+	     	}
+	     
+	     else if((but==butL)||(but==butL_))
+	     	{
+	     	NUMSK--;
+	     	gran(&NUMSK,0,4);
+	     	lc640_write_int(EE_NUMSK,NUMSK);
+	     	}
+          }	      
+    else if(sub_ind==5)
 		{
      	if(but==butE)
 			{
@@ -10695,7 +10820,44 @@ else if(ind==iStr_INV)
 		}	 
 	}     
 
-     
+else if (ind==iExt_set)
+	{
+	char si_max;
+	si_max=NUMSK;
+	ret(1000);
+	if(but==butD)
+		{
+		sub_ind++;
+		gran_char(&sub_ind,0,si_max);
+		}
+	else if(but==butU)
+		{
+		sub_ind--;
+		gran_char(&sub_ind,0,si_max);
+		}
+	else if(but==butD_)
+		{
+		sub_ind=si_max;
+		}				
+/*	else if((sub_ind==0)&&(NUMDT))
+	     {
+	     if(but==butE)
+	     	{
+	     	tree_up(iExt_dt,1,0,0);
+	     	}
+	     }*/
+	else if((sub_ind>=/*(NUMDT-1)*/0)&&(sub_ind<(si_max)))
+		{
+		tree_up(iExt_sk,1,0,sub_ind);
+		}		
+    else if(sub_ind==si_max)
+	     {
+	     if(but==butE)
+	          {
+	          tree_down(0,0);
+	          }
+          }	          	
+	}     
 
 else if (ind==iLan_set)
 	{
@@ -11788,7 +11950,7 @@ else if (ind==iExt_sk)
 		{
 		sub_ind++;
 		if(sub_ind==2)sub_ind=3;
-		gran_char(&sub_ind,1,7);
+		gran_char(&sub_ind,1,3);
 		
 		}
 	else if(but==butU)
@@ -11796,7 +11958,7 @@ else if (ind==iExt_sk)
 		if(sub_ind==1)index_set=0;
 		else sub_ind--;
 		if(sub_ind==2)sub_ind=1;
-		gran_char(&sub_ind,1,7);
+		gran_char(&sub_ind,1,3);
 		}	
 	else if(but==butD_)
 		{
@@ -11810,7 +11972,7 @@ else if (ind==iExt_sk)
 			else lc640_write_int(ADR_SK_SIGN[sub_ind1],0);
 			}
 		}
-	else if(sub_ind==3) 
+/*	else if(sub_ind==3) 
 		{
 	//	if(but==butE)
 		//	{
@@ -11841,8 +12003,8 @@ else if (ind==iExt_sk)
 			if(!SK_RS_EN[sub_ind1])lc640_write_int(ADR_SK_RS_EN[sub_ind1],0xffff);
 			else lc640_write_int(ADR_SK_RS_EN[sub_ind1],0);
 			}
-		}	
-	else if(sub_ind==7) 
+		}*/	
+	else if(sub_ind==3) 
 		{
 		if(but==butE)
 			{

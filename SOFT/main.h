@@ -208,6 +208,13 @@
 #define DISPLAY_LOG_ENTRY_EVENTS 			1,1
 //#define DISPLAY_LOG_ENTRY_EVENTS 			1,1
 
+
+#define DISPLAY_BYPASS				19
+#define DISPLAY_BYPASS_U_LOAD				1
+
+#define DISPLAY_BYPASS_MBP4529				  20
+#define DISPLAY_BYPASS_MBP4529_MANUAL_CONTROL	   1
+
 #endif
 
 
@@ -1132,6 +1139,7 @@ extern char uOutAvIsOn;			//авария по выходному напряжению
 extern char uNetAvIsOn;			//авария по входному напряжению AC
 extern char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
 
+extern signed short f_out;
 
 extern char snmp_plazma;
 extern char plazma_bypas;

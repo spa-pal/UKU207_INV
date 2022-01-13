@@ -1437,7 +1437,12 @@ if (NUMINV)
 				{
 				inv[i]._avIsOn=0;
 				}
-			//inv[1]._Pout=-5;    
+
+			if(inv[i]._flags_tm&0x40)
+				{
+				f_out=500+bps[i+20]._buff[15];
+				}
+   
      		} 
 		else 
      		{

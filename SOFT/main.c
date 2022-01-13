@@ -594,6 +594,8 @@ U8 tcp_soc_avg;
 U8 tcp_connect_stat;
 
 
+signed short f_out;
+
 //-----------------------------------------------
 void rtc_init (void) 
 {
@@ -2053,52 +2055,53 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
+		ptrs[5]="    Fвых.     zГц   ";
 
-		 ptrs[5]=  								" Байпасс            ";     
-		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
-		 ptrs[6]=  								" Байпасс  N2        ";
-		 ptrs[7]=  								" Байпасс  N3        ";
- 		ptrs[8]=  								" Байпасс  N4        ";
- 		ptrs[9]=  								" Байпасс  N5        ";
-	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
-	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
-	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
-	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
-	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
-	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
-	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
-	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
-	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
-	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
-	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
-	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
-	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
-	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
-	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
-	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
-	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
-	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
-	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
-	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
-	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
-	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
-	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
-	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
-	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
-	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
-	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
-	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
-	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
-	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
-	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
-	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
-		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
-	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		 ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
-		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[6]=  				" Байпасс  N1        ";
+		 ptrs[7]=  								" Байпасс  N2        ";
+		 ptrs[8]=  								" Байпасс  N3        ";
+ 		ptrs[9]=  								" Байпасс  N4        ";
+ 		ptrs[10]=  								" Байпасс  N5        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[37+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+		 ptrs[7+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[8+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[10+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[11+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[12+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 
 		}
 	else if((NUMBYPASS==1)&&(NUMPHASE==1))
@@ -2110,50 +2113,51 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
+	   	ptrs[5]="    Fвых.     zГц   ";
 
-		 ptrs[5]=  								" Байпасс            ";     
-		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
-		 ptrs[6]=  								" Байпасс  N2        ";
-		 ptrs[7]=  								" Байпасс  N3        ";
-	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
-	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
-	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
-	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
-	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
-	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
-	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
-	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
-	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
-	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
-	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
-	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
-	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
-	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
-	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
-	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
-	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
-	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
-	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
-	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
-	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
-	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
-	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
-	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
-	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
-	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
-	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
-	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
-	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
-	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
-	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
-	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
-		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
-	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
-		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[6]=  				" Байпасс  N1        ";
+		 ptrs[7]=  								" Байпасс  N2        ";
+		 ptrs[8]=  								" Байпасс  N3        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[37+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+		 ptrs[7+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[8+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[10+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		ptrs[11+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[12+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 		}
 	 
  	else if((NUMBYPASS==1)&&(NUMPHASE==3))
@@ -2166,50 +2170,51 @@ if(ind==iMn_INV)
      //	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
+		ptrs[5]="    Fвых.     zГц   ";
 
-		 ptrs[5]=  								" Байпасс            ";     
-		 if(NUMBYPASS>1) ptrs[5]=  				" Байпасс  N1        ";
-		 ptrs[6]=  								" Байпасс  N2        ";
-		 ptrs[7]=  								" Байпасс  N3        ";
-	     ptrs[5+NUMBYPASS]=  					" Инвертор N1        ";
-	     ptrs[6+NUMBYPASS]=  					" Инвертор N2        ";
-	     ptrs[7+NUMBYPASS]=  					" Инвертор N3        ";
-	     ptrs[8+NUMBYPASS]=  					" Инвертор N4        ";
-	     ptrs[9+NUMBYPASS]=  					" Инвертор N5        ";
-	     ptrs[10+NUMBYPASS]=  					" Инвертор N6        ";
-	     ptrs[11+NUMBYPASS]=  					" Инвертор N7        ";
-	     ptrs[12+NUMBYPASS]=  					" Инвертор N8        ";
-	     ptrs[13+NUMBYPASS]=  					" Инвертор N9        ";
-	     ptrs[14+NUMBYPASS]=  					" Инвертор N10       ";
-	     ptrs[15+NUMBYPASS]=  					" Инвертор N11       ";
-	     ptrs[16+NUMBYPASS]=  					" Инвертор N12       ";
-	     ptrs[17+NUMBYPASS]=  					" Инвертор N13       ";
-	     ptrs[18+NUMBYPASS]=  					" Инвертор N14       ";
-	     ptrs[19+NUMBYPASS]=  					" Инвертор N15       ";
-	     ptrs[20+NUMBYPASS]=  					" Инвертор N16       ";
-	     ptrs[21+NUMBYPASS]=  					" Инвертор N17       ";
-	     ptrs[22+NUMBYPASS]=  					" Инвертор N18       ";
-	     ptrs[23+NUMBYPASS]=  					" Инвертор N19       ";
-	     ptrs[24+NUMBYPASS]=  					" Инвертор N20       ";
-	     ptrs[25+NUMBYPASS]=  					" Инвертор N21       ";
-	     ptrs[26+NUMBYPASS]=  					" Инвертор N22       ";
-	     ptrs[27+NUMBYPASS]=  					" Инвертор N23       ";
-	     ptrs[28+NUMBYPASS]=  					" Инвертор N24       ";
-	     ptrs[29+NUMBYPASS]=  					" Инвертор N25       ";
-	     ptrs[30+NUMBYPASS]=  					" Инвертор N26       ";
-	     ptrs[31+NUMBYPASS]=  					" Инвертор N27       ";
-	     ptrs[32+NUMBYPASS]=  					" Инвертор N28       ";
-	     ptrs[33+NUMBYPASS]=  					" Инвертор N29       ";
-	     ptrs[34+NUMBYPASS]=  					" Инвертор N30       ";
-	     ptrs[35+NUMBYPASS]=  					" Инвертор N31       ";
-	     ptrs[36+NUMBYPASS]=  					" Инвертор N32       ";
-		 ptrs[5+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
-		 ptrs[6+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
-	     ptrs[7+NUMBYPASS+NUMINV]= 				" Установки          "; 
-	     ptrs[8+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
-	     ptrs[9+NUMBYPASS+NUMINV]=  			" Выход              "; 
-		 ptrs[10+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
-		ptrs[11+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
+		 ptrs[6]=  								" Байпасс            ";     
+		 if(NUMBYPASS>1) ptrs[6]=  				" Байпасс  N1        ";
+		 ptrs[7]=  								" Байпасс  N2        ";
+		 ptrs[8]=  								" Байпасс  N3        ";
+	     ptrs[6+NUMBYPASS]=  					" Инвертор N1        ";
+	     ptrs[7+NUMBYPASS]=  					" Инвертор N2        ";
+	     ptrs[8+NUMBYPASS]=  					" Инвертор N3        ";
+	     ptrs[9+NUMBYPASS]=  					" Инвертор N4        ";
+	     ptrs[10+NUMBYPASS]=  					" Инвертор N5        ";
+	     ptrs[11+NUMBYPASS]=  					" Инвертор N6        ";
+	     ptrs[12+NUMBYPASS]=  					" Инвертор N7        ";
+	     ptrs[13+NUMBYPASS]=  					" Инвертор N8        ";
+	     ptrs[14+NUMBYPASS]=  					" Инвертор N9        ";
+	     ptrs[15+NUMBYPASS]=  					" Инвертор N10       ";
+	     ptrs[16+NUMBYPASS]=  					" Инвертор N11       ";
+	     ptrs[17+NUMBYPASS]=  					" Инвертор N12       ";
+	     ptrs[18+NUMBYPASS]=  					" Инвертор N13       ";
+	     ptrs[19+NUMBYPASS]=  					" Инвертор N14       ";
+	     ptrs[20+NUMBYPASS]=  					" Инвертор N15       ";
+	     ptrs[21+NUMBYPASS]=  					" Инвертор N16       ";
+	     ptrs[22+NUMBYPASS]=  					" Инвертор N17       ";
+	     ptrs[23+NUMBYPASS]=  					" Инвертор N18       ";
+	     ptrs[24+NUMBYPASS]=  					" Инвертор N19       ";
+	     ptrs[25+NUMBYPASS]=  					" Инвертор N20       ";
+	     ptrs[26+NUMBYPASS]=  					" Инвертор N21       ";
+	     ptrs[27+NUMBYPASS]=  					" Инвертор N22       ";
+	     ptrs[28+NUMBYPASS]=  					" Инвертор N23       ";
+	     ptrs[29+NUMBYPASS]=  					" Инвертор N24       ";
+	     ptrs[30+NUMBYPASS]=  					" Инвертор N25       ";
+	     ptrs[31+NUMBYPASS]=  					" Инвертор N26       ";
+	     ptrs[32+NUMBYPASS]=  					" Инвертор N27       ";
+	     ptrs[33+NUMBYPASS]=  					" Инвертор N28       ";
+	     ptrs[34+NUMBYPASS]=  					" Инвертор N29       ";
+	     ptrs[35+NUMBYPASS]=  					" Инвертор N30       ";
+	     ptrs[36+NUMBYPASS]=  					" Инвертор N31       ";
+	     ptrs[37+NUMBYPASS]=  					" Инвертор N32       ";
+		 ptrs[6+NUMBYPASS+NUMINV]= 				" Таблица инверторов ";
+		 ptrs[7+NUMBYPASS+NUMINV]= 				" Внешние датчики    ";
+	     ptrs[8+NUMBYPASS+NUMINV]= 				" Установки          "; 
+	     ptrs[9+NUMBYPASS+NUMINV]=  			" Журнал событий     "; 
+	     ptrs[10+NUMBYPASS+NUMINV]=  			" Выход              "; 
+		 ptrs[11+NUMBYPASS+NUMINV]=  			" Версия ПО          ";
+		ptrs[12+NUMBYPASS+NUMINV]=  			" tшкаф.        s°С  ";;
 
 		}
 
@@ -2282,7 +2287,7 @@ if(ind==iMn_INV)
 	if(ND_EXT[0])sub_bgnd("неиспр.",'s',-3);
 	else int2lcd_mmm(t_ext[0],'s',0);
 
-
+	int2lcd(f_out,'z',1);
 	//int2lcdyx(bps[20]._cnt,0,2,0); 
 	//int2lcdyx(byps._cnt,0,6,0);
 	//int2lcdyx(plazma_can1,1,3,0);
@@ -8266,18 +8271,18 @@ else if(ind==iMn_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,8+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS);
 		}
 		
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,8+NUMINV+NUMBYPASS);
+		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS);
 		}	
 	else if(but==butD_)
 		{
 		//tree_up(iLog,0,0,0);
-		sub_ind=5+NUMBYPASS+NUMINV;
+		sub_ind=6+NUMBYPASS+NUMINV;
 		ret(1000);
 		}
 	else if(but==butE_)
@@ -8336,44 +8341,44 @@ else if(ind==iMn_INV)
 					}
 				}																							
 			}
-		else if((sub_ind>1)&&(sub_ind<=(1+NUMBYPASS)))
+		else if((sub_ind>2)&&(sub_ind<=(2+NUMBYPASS)))
 		    	{
-		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-2);
-				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-2);
+		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-3);
+				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-3);
 		    	}
-		else if((sub_ind>(1+NUMBYPASS))&&(sub_ind<=(1+NUMBYPASS+NUMINV)))
+		else if((sub_ind>(2+NUMBYPASS))&&(sub_ind<=(2+NUMBYPASS+NUMINV)))
 		    	{
-		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-2);
+		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-3);
 		    	}
 
-		else if(sub_ind==(2+NUMBYPASS+NUMINV))
+		else if(sub_ind==(3+NUMBYPASS+NUMINV))
 			{
 			tree_up(iInv_tabl,0,0,0);
 		     ret(0);
 		     
 			} 			
-		else if(sub_ind==(3+NUMBYPASS+NUMINV))
+		else if(sub_ind==(4+NUMBYPASS+NUMINV))
 			{
 			tree_up(iExtern,0,0,0);
 		    ret(1000);
 			}
 
-		else if(sub_ind==(4+NUMBYPASS+NUMINV))
+		else if(sub_ind==(5+NUMBYPASS+NUMINV))
 			{
 			tree_up(iSet_prl,0,0,0);
 		     ret(50);
 		     parol_init();
 			}
-		else if(sub_ind==(5+NUMBYPASS+NUMINV))
+		else if(sub_ind==(6+NUMBYPASS+NUMINV))
 			{
 			tree_up(iLog,0,0,0);
 		     ret(1000);
 			}
-		else if(sub_ind==(6+NUMBYPASS+NUMINV))
+		else if(sub_ind==(7+NUMBYPASS+NUMINV))
 			{
 			sub_ind=0;
 			}
-		else if(sub_ind==(7+NUMBYPASS+NUMINV))
+		else if(sub_ind==(8+NUMBYPASS+NUMINV))
 			{
 			tree_up(iFWabout,0,0,0);
 		    ret(1000);

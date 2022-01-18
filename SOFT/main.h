@@ -816,6 +816,8 @@ extern signed short RS485_QWARZ_DIGIT;
 extern signed short SNTP_ENABLE;
 extern signed short SNTP_GMT;
 
+extern signed short F_IND_EN;
+
 //***********************************************
 //Состояние батарей
 typedef struct
@@ -1140,6 +1142,8 @@ extern char uNetAvIsOn;			//авария по входному напряжению AC
 extern char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
 
 extern signed short f_out;
+extern signed short f_out_byps;
+extern signed short f_out_byps_cnt;
 
 extern char snmp_plazma;
 extern char plazma_bypas;

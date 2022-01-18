@@ -128,6 +128,7 @@ U_IN_AC_MIN_AV=lc640_read_int(EE_U_IN_AC_MIN_AV);
 U_IN_DC_MAX_AV=lc640_read_int(EE_U_IN_DC_MAX_AV);
 U_IN_DC_MIN_AV=lc640_read_int(EE_U_IN_DC_MIN_AV);
 
+F_IND_EN=lc640_read_int(EE_F_IND_EN);
 
 //BAT_IS_ON[0]=(enum_bat_is_on)lc640_read_int(EE_BAT1_IS_ON);
 //BAT_IS_ON[1]=(enum_bat_is_on)lc640_read_int(EE_BAT2_IS_ON);

@@ -1409,9 +1409,20 @@ if (NUMINV)
    	}
 #endif
 
+if(f_out_byps_cnt)
+	{
+	f_out_byps_cnt--;
+	if(!f_out_byps_cnt)
+		{
+		f_out_byps=0;
+		}
+	}
+
 
 if (NUMINV)
 	{
+	char master_inv_ison=0;
+	f_out=0;
 	//someInvAvIsOn=0; 
 	for(i=0;i<NUMINV;i++)
 		{
@@ -1442,7 +1453,11 @@ if (NUMINV)
 				{
 				f_out=500+bps[i+20]._buff[15];
 				}
-   
+
+			if(inv[i]._flags_tm&0x20)
+				{
+				master_inv_ison=1;
+				}   
      		} 
 		else 
      		{
@@ -1460,6 +1475,7 @@ if (NUMINV)
 			inv[i]._flags_tm_dop=0;  
      		}
      	}
+	if(master_inv_ison==0)f_out=0;
    	}
 
 if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 

@@ -1,19 +1,22 @@
-	#include "main.h"
-#include <LPC21xx.H>
+#include "main.h"
+#include <LPC17xx.H>
 #include "full_can.h"
 #include "cmd.h"
 #include "mess.h"
 #include "global_define.h"
-
+#include "avar_hndl.h"
+#include "eeprom_map.h"
+#include "control.h"
+#include "25lc640.h"
 
 // Counts number of filters (CAN message objects) used so far
 short volatile gCANFilter = 0;
 
-char ptr_can1_tx_wr,ptr_can1_tx_rd;
-long can1_info[8];
-long can1_id[8];
-long can1_data[8];
-long can1_datb[8];
+short ptr_can1_tx_wr,ptr_can1_tx_rd;
+long can1_info[32];
+long can1_id[32];
+long can1_data[32];
+long can1_datb[32];
 																							 
 char ptr_can2_tx_wr,ptr_can2_tx_rd;
 
@@ -24,17 +27,7 @@ long can2_datb[8];
 
 unsigned short rotor_can[6];
 
-// Type definition to hold a FullCAN message
-// Compatible to FullCAN Mode Stored Messages in LPC User Manual
-typedef struct
-{
-  unsigned int Dat1; // Bits  0..10: CAN Message ID
-                     // Bits 13..15: CAN interface number (1..4)
-                     // Bits 16..19: DLC - Data Length Counter
-                     // Bits 24..25: Semaphore bits
-  unsigned int DatA; // CAN Message Data Bytes 0-3
-  unsigned int DatB; // CAN Message Data Bytes 4-7
-} FULLCAN_MSG;
+
 
 
 // FullCAN Message List
@@ -46,7 +39,7 @@ char bIN,bIN2;
 char bd_dumm[25];
 char bd[25];
 char TX_len;
-char bOUT;
+//char bOUT;
 char RXBUFF2[40],TXBUFF2[40];
 extern char can_tx_cnt;
 extern char can_tx_cnt2;
@@ -54,6 +47,7 @@ char bOUT_FREE=1;
 char bOUT_FREE2=1;
 char rotor_rotor_rotor[2];
 char can_tx_cnt;
+char can_rotor[10];
 
 const char Table87[]={
 0x00, 0x0E, 0x1C, 0x12, 0x38, 0x36, 0x24, 0x2A, 0x70, 0x7E, 0x6C, 0x62, 0x48, 0x46, 0x54, 0x5A,
@@ -96,6 +90,18 @@ const char Table95[]={
 
 
 char can_debug_plazma[2][10];
+volatile uint32_t CANStatus;
+
+char can_reset_cnt=0;
+
+char plazma_can_pal[20];
+char cnt_can_pal;
+char plazma_can_pal_index;
+
+// char can_reset_cnt=0;
+char plazma_can;
+short plazma_can1,plazma_can2,plazma_can3,plazma_can4;
+short can2_tx_cnt;
 
 //-----------------------------------------------
 char CRC1_in(void)
@@ -234,7 +240,7 @@ else if(num<=24)
 	can1_id[ptr_can1_tx_wr]=0x0000009eUL;
 	*((char*)&can1_data[ptr_can1_tx_wr])=ptr[16];
 	*(((char*)&can1_data[ptr_can1_tx_wr])+1)=ptr[17];
-	*(((char*)&can1_data[ptr_can1_tx_wr])+2)=ptr[16];
+	*(((char*)&can1_data[ptr_can1_tx_wr])+2)=ptr[18];
 	*(((char*)&can1_data[ptr_can1_tx_wr])+3)=ptr[19];
 	*((char*)&can1_datb[ptr_can1_tx_wr])=ptr[20];
 	*(((char*)&can1_datb[ptr_can1_tx_wr])+1)=ptr[21];
@@ -302,11 +308,11 @@ else if(num<=32)
 
 if(bOUT_FREE)
 	{
-	C1TFI1=can1_info[ptr_can1_tx_rd];
-     C1TID1=can1_id[ptr_can1_tx_rd];
-     C1TDA1=can1_data[ptr_can1_tx_rd];
-     C1TDB1=can1_datb[ptr_can1_tx_rd];
-     C1CMR=0x00000021;
+	LPC_CAN1->TFI1=can1_info[ptr_can1_tx_rd];
+     LPC_CAN1->TID1=can1_id[ptr_can1_tx_rd];
+     LPC_CAN1->TDA1=can1_data[ptr_can1_tx_rd];
+     LPC_CAN1->TDB1=can1_datb[ptr_can1_tx_rd];
+     LPC_CAN1->CMR=0x00000021;
      ptr_can1_tx_rd++;
      if(ptr_can1_tx_rd>=8)ptr_can1_tx_rd=0;
      bOUT_FREE=0;	
@@ -315,37 +321,262 @@ if(bOUT_FREE)
 }	
 
 //-----------------------------------------------
-void can2_out(char data0,char data1,char data2,char data3,char data4,char data5,char data6,char data7)
+void can2_out_adr(char* ptr,char num)
 {
 
-can2_info[ptr_can2_tx_wr]=((8UL)<<16)&0x000f0000UL;
-can2_id[ptr_can2_tx_wr]=0x0000009eUL;
-*((char*)&can2_data[ptr_can2_tx_wr])=data0;
-*(((char*)&can2_data[ptr_can2_tx_wr])+1)=data1;
-*(((char*)&can2_data[ptr_can2_tx_wr])+2)=data2;
-*(((char*)&can2_data[ptr_can2_tx_wr])+3)=data3;
-*((char*)&can2_datb[ptr_can2_tx_wr])=data4;
-*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=data5;
-*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=data6;
-*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=data7;	
-ptr_can2_tx_wr++;
-if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+if(num<=8)
+	{
+	can2_info[ptr_can2_tx_wr]=(((long)num)<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[0];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[1];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[2];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[3];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[4];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[5];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[6];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[7];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+	}
+	
+else if(num<=16)
+	{
+	
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[0];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[1];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[2];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[3];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[4];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[5];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[6];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[7];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+	
+	can2_info[ptr_can2_tx_wr]=(((long)(num-8))<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[8];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[9];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[10];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[11];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[12];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[13];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[14];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[15];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+		
+	}	
 
+else if(num<=24)
+	{
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[0];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[1];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[2];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[3];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[4];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[5];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[6];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[7];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[8];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[9];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[10];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[11];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[12];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[13];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[14];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[15];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+	
+	can2_info[ptr_can2_tx_wr]=(((long)(num-16))<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[16];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[17];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[18];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[19];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[20];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[21];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[22];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[23];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;	
+	}	
+
+else if(num<=32)
+	{
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[0];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[1];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[2];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[3];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[4];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[5];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[6];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[7];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[8];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[9];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[10];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[11];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[12];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[13];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[14];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[15];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+	
+	can2_info[ptr_can2_tx_wr]=(8UL<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[16];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[17];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[18];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[19];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[20];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[21];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[22];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[23];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+	
+	can2_info[ptr_can2_tx_wr]=(((long)(num-24))<<16)&0x000f0000UL;
+	can2_id[ptr_can2_tx_wr]=0x0000009eUL;
+	*((char*)&can2_data[ptr_can2_tx_wr])=ptr[24];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+1)=ptr[25];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+2)=ptr[26];
+	*(((char*)&can2_data[ptr_can2_tx_wr])+3)=ptr[27];
+	*((char*)&can2_datb[ptr_can2_tx_wr])=ptr[28];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=ptr[29];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=ptr[30];
+	*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=ptr[31];	
+	ptr_can2_tx_wr++;
+	if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;	
+	}	
 
 
 if(bOUT_FREE2)
 	{
-	C2TFI1=can2_info[ptr_can2_tx_rd];
-     C2TID1=can2_id[ptr_can2_tx_rd];
-     C2TDA1=can2_data[ptr_can2_tx_rd];
-     C2TDB1=can2_datb[ptr_can2_tx_rd];
-     C2CMR=0x00000021;
+	LPC_CAN2->TFI1=can2_info[ptr_can2_tx_rd];
+     LPC_CAN2->TID1=can2_id[ptr_can2_tx_rd];
+     LPC_CAN2->TDA1=can2_data[ptr_can2_tx_rd];
+     LPC_CAN2->TDB1=can2_datb[ptr_can2_tx_rd];
+     LPC_CAN2->CMR=0x00000021;
      ptr_can2_tx_rd++;
      if(ptr_can2_tx_rd>=8)ptr_can2_tx_rd=0;
      bOUT_FREE2=0;	
 	}
 
+}
+
+//-----------------------------------------------
+void paking(char* data_ptr,char data_len)
+{
+char i,ii,iii;
+for(i=0;i<data_len;i++)
+	{
+	ii=data_len+(i/7);
+	iii=i-(7*(i/7)); 
+	if(iii==0) data_ptr[ii]=0;
+	data_ptr[ii]<<=1;
+	if(data_ptr[i]&0x01)
+		{
+		data_ptr[ii]|=0x01;//(1<<(6-iii));
+		}                      
+	else 
+		{
+		data_ptr[ii]&=0xfe;//~(1<<(6-iii));
+		}              
+	data_ptr[i]>>=1;	        
+	data_ptr[i]|=0x80;	
+	}                       
+for(i=data_len;i<(data_len+(data_len/7)+1);i++)
+	{
+	data_ptr[i]|=0x80;
+	}	
+}
+
+//-----------------------------------------------
+void can1_out(char dat0,char dat1,char dat2,char dat3,char dat4,char dat5,char dat6,char dat7)
+{
+//new_rotor[0]++;
+can1_info[ptr_can1_tx_wr]=((8UL)<<16)&0x000f0000UL;
+can1_id[ptr_can1_tx_wr]=0x0000009eUL;
+*((char*)&can1_data[ptr_can1_tx_wr])=dat0;
+*(((char*)&can1_data[ptr_can1_tx_wr])+1)=dat1;
+*(((char*)&can1_data[ptr_can1_tx_wr])+2)=dat2;
+*(((char*)&can1_data[ptr_can1_tx_wr])+3)=dat3;
+*((char*)&can1_datb[ptr_can1_tx_wr])=dat4;
+*(((char*)&can1_datb[ptr_can1_tx_wr])+1)=dat5;
+*(((char*)&can1_datb[ptr_can1_tx_wr])+2)=dat6;
+*(((char*)&can1_datb[ptr_can1_tx_wr])+3)=dat7;	
+ptr_can1_tx_wr++;
+if(ptr_can1_tx_wr>=32)ptr_can1_tx_wr=0;
+
+
+if(bOUT_FREE)
+	{
+	//rotor_rotor_rotor[1]++;
+//	new_rotor[1]++;
+	LPC_CAN1->TFI1=can1_info[ptr_can1_tx_rd];
+     LPC_CAN1->TID1=can1_id[ptr_can1_tx_rd];
+     LPC_CAN1->TDA1=can1_data[ptr_can1_tx_rd];
+     LPC_CAN1->TDB1=can1_datb[ptr_can1_tx_rd];
+     LPC_CAN1->CMR=0x00000021;
+     ptr_can1_tx_rd++;
+     if(ptr_can1_tx_rd>=32)ptr_can1_tx_rd=0;
+     bOUT_FREE=0;	
+	}
 }	
+
+//-----------------------------------------------
+void can2_out(char dat0,char dat1,char dat2,char dat3,char dat4,char dat5,char dat6,char dat7)
+{
+
+//new_rotor[0]++;
+can2_info[ptr_can2_tx_wr]=((8UL)<<16)&0x000f0000UL;
+can2_id[ptr_can2_tx_wr]=0x0000018eUL;
+*((char*)&can2_data[ptr_can2_tx_wr])=dat0;
+*(((char*)&can2_data[ptr_can2_tx_wr])+1)=dat1;
+*(((char*)&can2_data[ptr_can2_tx_wr])+2)=dat2;
+*(((char*)&can2_data[ptr_can2_tx_wr])+3)=dat3;
+*((char*)&can2_datb[ptr_can2_tx_wr])=dat4;
+*(((char*)&can2_datb[ptr_can2_tx_wr])+1)=dat5;
+*(((char*)&can2_datb[ptr_can2_tx_wr])+2)=dat6;
+*(((char*)&can2_datb[ptr_can2_tx_wr])+3)=dat7;	
+ptr_can2_tx_wr++;
+if(ptr_can2_tx_wr>=8)ptr_can2_tx_wr=0;
+
+
+if(bOUT_FREE2)
+	{
+	//rotor_rotor_rotor[1]++;
+//	new_rotor[1]++;
+	LPC_CAN2->TFI1=can2_info[ptr_can2_tx_rd];
+     LPC_CAN2->TID1=can2_id[ptr_can2_tx_rd];
+     LPC_CAN2->TDA1=can2_data[ptr_can2_tx_rd];
+     LPC_CAN2->TDB1=can2_datb[ptr_can2_tx_rd];
+     LPC_CAN2->CMR=0x00000021;
+     ptr_can2_tx_rd++;
+     if(ptr_can2_tx_rd>=8)ptr_can2_tx_rd=0;
+     bOUT_FREE2=0;	
+	}
+}	
+	
 
 //-----------------------------------------------
 void can_adr_hndl(void)
@@ -357,77 +588,1083 @@ void can_adr_hndl(void)
 }	
 
 //-----------------------------------------------
-void can_in_an1(void)
+void can_in_an2(void)
 {
 if(!bIN) goto CAN_IN_AN_end; 
-can_debug_plazma[0][2]++;
+can_debug_plazma[0][1]++;
+ 
+
+// Версия ПО
+if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x01))
+	{ 
+     
+
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+4;
+	can_adr_hndl();
+	TXBUFF[6]=0x01;
+	TXBUFF[7]=3;
+	TXBUFF[8]=5;
+	TXBUFF[9]=CRC1_out();
+	TXBUFF[10]=CRC2_out();
+	TX_len=11;
+
+	can2_out_adr(TXBUFF,11);  
+	}
+// Общее состояние источника 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB0))
+	{ 
+	can_debug_plazma[0][2]++;
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+13;
+	can_adr_hndl(); 
+	
+	TXBUFF[6]=0xB0;
+	
+	//net_U=231;
+	//net_F=501;
+
+	if(net_U>=254)TXBUFF[7]=0xff;
+	else TXBUFF[7]=net_U;
+	
+	if(net_F<400) TXBUFF[8]=1;
+	else if(net_F>654) TXBUFF[8]=0xff;
+	else TXBUFF[8]=(unsigned char)((net_F-400)+1);
+	
+	TXBUFF[9]=*((char*)(&load_U));
+	TXBUFF[10]=*(((char*)(&load_U))+1);
+	TXBUFF[11]=*((char*)(&load_I));
+	TXBUFF[12]=*(((char*)(&load_I))+1);
+	
+	TXBUFF[13]=0xcc;
+	TXBUFF[13]|=4;(NUMIST&0x07);
+	TXBUFF[13]|=((NUMBAT&0x03)<<4);
+	
+
+	TXBUFF[14]=0x80;
+	if(avar_stat&0x00000001)TXBUFF[14]|=0x01;
+	if(PAR)TXBUFF[14]|=0x40;
+	
+	TXBUFF[15]=25;//tbat[2];
+     
+	paking(&TXBUFF[6],10);
+	
+	TXBUFF[18]=CRC1_out();
+	TXBUFF[19]=CRC2_out();
+	TX_len=20;
+				
+	can2_out_adr(TXBUFF,20);  
+	} 
+
+// Состояние Батареи №1 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB1)&&(RXBUFF[7]==0x01))
+	{ 
+	signed short temp_S;
+
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+14;
+	can_adr_hndl();
+	TXBUFF[6]=0xB1;
+	TXBUFF[7]=1;
+	
+	if(BAT_IS_ON[0]!=bisON) TXBUFF[8]=0xFF;
+	else if(bat[0]._av)TXBUFF[8]=0xF7;
+	else TXBUFF[8]=0xF0;
+	
+	if((spc_stat==spcKE))TXBUFF[9]=0xF9;
+	else if(spc_stat==spcVZ)TXBUFF[9]=0xF8;                      
+	else TXBUFF[9]=0xF0;
+	
+	
+	temp_S=(bat[0]._Ib/10)+10000;
+			
+	TXBUFF[10]=*((char*)(&bat[0]._Ub));
+	TXBUFF[11]=*(((char*)(&bat[0]._Ub))+1);
+	TXBUFF[12]=*((char*)(&temp_S));
+	TXBUFF[13]=*(((char*)(&temp_S))+1);
+	TXBUFF[14]=bat[0]._Tb;
+	TXBUFF[15]=bat[0]._zar; 
+	
+	if(BAT_C_REAL[0]==0x5555)TXBUFF[16]=BAT_C_NOM[0];
+	else TXBUFF[16]=BAT_C_REAL[0]/10;	
+	
+    	paking(&TXBUFF[6],11);
+    
+	TXBUFF[19]=CRC1_out();
+	TXBUFF[20]=CRC2_out();
+	TX_len=21; 
+ 
+	can2_out_adr(TXBUFF,21);  
+	}	
+
+// Состояние Батареи №2 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB1)&&(RXBUFF[7]==0x02))
+	{ 
+	signed short temp_S;
+
+    TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+14;
+	can_adr_hndl();
+	TXBUFF[6]=0xB1;
+	TXBUFF[7]=2;
+	
+	if(BAT_IS_ON[1]!=bisON) TXBUFF[8]=0xFF;
+	else if(bat[1]._av)TXBUFF[8]=0xF7;
+	else TXBUFF[8]=0xF0;
+
+	if((spc_stat==spcKE))TXBUFF[9]=0xF9;
+	else if(spc_stat==spcVZ)TXBUFF[9]=0xF8;                      
+	else TXBUFF[9]=0xF0;
+	
+	
+	temp_S=(bat[1]._Ib/10)+10000;
+			
+	TXBUFF[10]=*((char*)(&bat[1]._Ub));
+	TXBUFF[11]=*(((char*)(&bat[1]._Ub))+1);
+	TXBUFF[12]=*((char*)(&temp_S));
+	TXBUFF[13]=*(((char*)(&temp_S))+1);
+	TXBUFF[14]=bat[1]._Tb;
+	TXBUFF[15]=bat[1]._zar; 
+	
+	if(BAT_C_REAL[1]==0x5555)TXBUFF[16]=BAT_C_NOM[1];
+	else TXBUFF[16]=BAT_C_REAL[1]/10;	
+	
+    	paking(&TXBUFF[6],11);
+    
+	TXBUFF[19]=CRC1_out();
+	TXBUFF[20]=CRC2_out();
+	TX_len=21; 
+ 
+	can2_out_adr(TXBUFF,21);  
+	}		
+		
+
+
+
+	// Состояние БПС1 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB2)&&(RXBUFF[7]==0x01))
+	{ 
+    //	plazma++;
+
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+11;
+	can_adr_hndl();
+	TXBUFF[6]=0xB2;
+	TXBUFF[7]=1;
+		
+	
+	if(NUMIST<1)TXBUFF[8]=0xff;	
+	else if(bps[0]._state==bsWRK)TXBUFF[8]=0xf1; 
+	else if(bps[0]._av&(1<<3))TXBUFF[8]=0xf4;
+	else if(bps[0]._av&(1<<0))TXBUFF[8]=0xf5;
+	else if(bps[0]._av&(1<<1))TXBUFF[8]=0xf5;
+	else if(bps[0]._av&(1<<2))TXBUFF[8]=0xf7;
+	else TXBUFF[8]=0xf0;
+
+	TXBUFF[9]=*((char*)(&bps[0]._Uii));
+	TXBUFF[10]=*(((char*)(&bps[0]._Uii))+1);
+	TXBUFF[11]=*((char*)(&bps[0]._Ii));
+	TXBUFF[12]=*(((char*)(&bps[0]._Ii))+1);
+	TXBUFF[13]=bps[0]._Ti;
+	
+    	paking(&TXBUFF[6],8);
+    
+    	TXBUFF[16]=CRC1_out();
+	TXBUFF[17]=CRC2_out();
+	TX_len=18;
+
+	can2_out_adr(TXBUFF,18);  
+	}	
+	// Состояние БПС2 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB2)&&(RXBUFF[7]==0x02))
+	{ 
+    //	plazma++;
+
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+11;
+	can_adr_hndl();
+	TXBUFF[6]=0xB2;
+	TXBUFF[7]=2;
+		
+	
+	if(NUMIST<3)TXBUFF[8]=0xff;	
+	else if(bps[1]._state==bsWRK)TXBUFF[8]=0xf1; 
+	else if(bps[1]._av&(1<<3))TXBUFF[8]=0xf4;
+	else if(bps[1]._av&(1<<0))TXBUFF[8]=0xf5;
+	else if(bps[1]._av&(1<<1))TXBUFF[8]=0xf5;
+	else if(bps[1]._av&(1<<2))TXBUFF[8]=0xf7;
+	else TXBUFF[8]=0xf0;
+
+	TXBUFF[9]=*((char*)(&bps[1]._Uii));
+	TXBUFF[10]=*(((char*)(&bps[1]._Uii))+1);
+	TXBUFF[11]=*((char*)(&bps[1]._Ii));
+	TXBUFF[12]=*(((char*)(&bps[1]._Ii))+1);
+	TXBUFF[13]=bps[1]._Ti;
+	
+    	paking(&TXBUFF[6],8);
+    
+    	TXBUFF[16]=CRC1_out();
+	TXBUFF[17]=CRC2_out();
+	TX_len=18;
+
+	can2_out_adr(TXBUFF,18);  
+	}	
+
+
+	// Состояние БПС3 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB2)&&(RXBUFF[7]==0x03))
+	{ 
+    //	plazma++;
+
+    	TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+11;
+	can_adr_hndl();
+	TXBUFF[6]=0xB2;
+	TXBUFF[7]=3;
+		
+	
+	if(NUMIST<3)TXBUFF[8]=0xff;	
+	else if(bps[2]._state==bsWRK)TXBUFF[8]=0xf1; 
+	else if(bps[2]._av&(1<<3))TXBUFF[8]=0xf4;
+	else if(bps[2]._av&(1<<0))TXBUFF[8]=0xf5;
+	else if(bps[2]._av&(1<<1))TXBUFF[8]=0xf5;
+	else if(bps[2]._av&(1<<2))TXBUFF[8]=0xf7;
+	else TXBUFF[8]=0xf0;
+
+	TXBUFF[9]=*((char*)(&bps[2]._Uii));
+	TXBUFF[10]=*(((char*)(&bps[2]._Uii))+1);
+	TXBUFF[11]=*((char*)(&bps[2]._Ii));
+	TXBUFF[12]=*(((char*)(&bps[2]._Ii))+1);
+	TXBUFF[13]=bps[2]._Ti;
+	
+    	paking(&TXBUFF[6],8);
+    
+    	TXBUFF[16]=CRC1_out();
+	TXBUFF[17]=CRC2_out();
+	TX_len=18;
+
+	can2_out_adr(TXBUFF,18);  
+	}	
+
+	// Состояние БПС4 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0xB2)&&(RXBUFF[7]==0x04))
+	{ 
+    //	plazma++;
+
+    TXBUFF[0]=0x30;
+	TXBUFF[1]=(RXBUFF[1]&0xa0)+11;
+	can_adr_hndl();
+	TXBUFF[6]=0xB2;
+	TXBUFF[7]=4;
+		
+	
+	if(NUMIST<4)TXBUFF[8]=0xff;	
+	else if(bps[3]._state==bsWRK)TXBUFF[8]=0xf1; 
+	else if(bps[3]._av&(1<<3))TXBUFF[8]=0xf4;
+	else if(bps[3]._av&(1<<0))TXBUFF[8]=0xf5;
+	else if(bps[3]._av&(1<<1))TXBUFF[8]=0xf5;
+	else if(bps[3]._av&(1<<2))TXBUFF[8]=0xf7;
+	else TXBUFF[8]=0xf0;
+
+	TXBUFF[9]=*((char*)(&bps[3]._Uii));
+	TXBUFF[10]=*(((char*)(&bps[3]._Uii))+1);
+	TXBUFF[11]=*((char*)(&bps[3]._Ii));
+	TXBUFF[12]=*(((char*)(&bps[3]._Ii))+1);
+	TXBUFF[13]=bps[3]._Ti;
+	
+    	paking(&TXBUFF[6],8);
+    
+    	TXBUFF[16]=CRC1_out();
+	TXBUFF[17]=CRC2_out();
+	TX_len=18;
+
+	can2_out_adr(TXBUFF,18);  
+	}
+
+// Выравнивающий заряд  часа
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x03)
+	&&((RXBUFF[7])&&(RXBUFF[7]<25)))
+ 	  
+	{ 
+     char temp;      		
+
+	//temp=vz_start(RXBUFF[7]);
+
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+	can_adr_hndl();
+	TXBUFF[6]=0x03;
+	TXBUFF[7]=0x01;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;
+	can2_out_adr(TXBUFF,10);
+	}
+
+// Выключение выравнивающего заряда
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x08))
+ 	  
+	{ 
+	if(spc_stat==spcVZ) spc_stat=spcOFF;
+
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+2;
+	can_adr_hndl();
+	TXBUFF[6]=0x08;
+	TXBUFF[7]=CRC1_out();
+	TXBUFF[8]=CRC2_out();
+	TX_len=9;
+	can2_out_adr(TXBUFF,9);
+	}
+
+
+// Контроль ёмкости батареи №1
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x04)
+	&&(RXBUFF[7]==0x01))
+	  
+	{
+	ke_start(0);
+
+	if(ke_start_stat==kssYES)TXBUFF[7]=0xff;
+	else TXBUFF[7]=0x01;
+
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+	can_adr_hndl();
+	TXBUFF[6]=0x04;
+	TXBUFF[7]=0x01;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;
+	can2_out_adr(TXBUFF,10);
+	} 
+	
+// Контроль ёмкости батареи №2
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x04)
+	&&(RXBUFF[7]==0x02))
+	  
+	{
+	ke_start(1);
+
+	if(ke_start_stat==kssYES)TXBUFF[7]=0xff;
+	else TXBUFF[7]=0x01;
+
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+	can_adr_hndl();
+	TXBUFF[6]=0x04;
+	TXBUFF[7]=0x02;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;
+	can2_out_adr(TXBUFF,10);
+	}	
+	
+	// Выключение контроля ёмкости 
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x07))
+	  
+	{
+   	
+	if(spc_stat==spcKE)spc_stat=spcOFF;
+	
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+2;
+	can_adr_hndl();
+	TXBUFF[6]=0x07;
+	TXBUFF[7]=CRC1_out();
+	TXBUFF[8]=CRC2_out();
+	TX_len=9;
+	can2_out_adr(TXBUFF,9);
+	}
+
+
+
+// БПС1 - выключить
+if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x05)
+	&&(RXBUFF[7]==0x01))
+	  
+	{
+	bps[0]._ist_blok_host_cnt=3000;
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+	can_adr_hndl();
+	TXBUFF[6]=0x05;
+	TXBUFF[7]=0x01;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;
+	can2_out_adr(TXBUFF,10);
+
+	}
+
+// БПС2 - выключить
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x05)
+	&&(RXBUFF[7]==0x02))
+	  
+	{                  
+	bps[1]._ist_blok_host_cnt=3000;
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x05;
+	TXBUFF[7]=0x02;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;     
+
+	can2_out_adr(TXBUFF,10);
+
+	}
+
+// БПС3 - выключить
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x05)
+	&&(RXBUFF[7]==0x03))
+	  
+	{                  
+	bps[2]._ist_blok_host_cnt=3000;
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x05;
+	TXBUFF[7]=0x03;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;     
+
+	can2_out_adr(TXBUFF,10);
+
+	}
+
+
+// БПС4 - выключить
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x05)
+	&&(RXBUFF[7]==0x04))
+	  
+	{                  
+	bps[3]._ist_blok_host_cnt=3000;
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+3;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x05;
+	TXBUFF[7]=0x03;
+	TXBUFF[8]=CRC1_out();
+	TXBUFF[9]=CRC2_out();
+	TX_len=10;     
+
+	can2_out_adr(TXBUFF,10);
+
+	}
+
+
+//Разблокировать все источники
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x06))
+	  
+	{                  
+	bps[0]._ist_blok_host_cnt=0;
+	bps[1]._ist_blok_host_cnt=0;
+	bps[2]._ist_blok_host_cnt=0;
+	bps[3]._ist_blok_host_cnt=0;
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+2;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x05;
+
+	TXBUFF[7]=CRC1_out();
+	TXBUFF[8]=CRC2_out();
+	TX_len=9;     
+
+	can2_out_adr(TXBUFF,9);
+
+	}
+
+// Включить параллельную работу источников
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x0a))
+	  
+	{                  
+	PAR=1;
+	lc640_write_int(EE_PAR,PAR);
+	
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+2;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x0a;
+	TXBUFF[7]=CRC1_out();
+	TXBUFF[8]=CRC2_out();
+
+	can2_out_adr(TXBUFF,9);    
+
+	}
+
+// Выключить параллельную работу источников
+else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
+	((RXBUFF[4]&0xf0)==0xe0)&&((RXBUFF[5]&0xf0)==0x20)&&(RXBUFF[6]==0x0b))
+	  
+	{                  
+	PAR=0;
+	lc640_write_int(EE_PAR,PAR);
+	
+     TXBUFF[0]=0x30;
+	TXBUFF[1]=0x20+2;
+ 	can_adr_hndl();
+	TXBUFF[6]=0x0b;
+	TXBUFF[7]=CRC1_out();
+	TXBUFF[8]=CRC2_out();
+	TX_len=9;     
+
+	can2_out_adr(TXBUFF,9);
+
+	}
 
 CAN_IN_AN_end:
 bIN=0;
 }
-
 //-----------------------------------------------
-void can_in_an2(void)
+void can_in_an1(void)
 {
 //char i;
 //signed short temp_SS;
 char slave_num;
 
-if(!bIN2) goto CAN_IN_AN2_end; 
+//if(!bIN2) goto CAN_IN_AN1_end; 
 
-can_debug_plazma[1][2]++;
+//can_debug_plazma[1][2]++;
+can_rotor[1]++;
 
-if((RXBUFF2[0]==sub_ind1)&&(RXBUFF2[1]==PUTID)&&(RXBUFF2[2]==0xdd)&&(RXBUFF2[3]==0xdd)&&(sub_ind==6))
+if((RXBUFF[0]==sub_ind1)&&(RXBUFF[1]==PUTID)&&(RXBUFF[2]==0xdd)&&(RXBUFF[3]==0xdd)&&(sub_ind==6))
 	{
 	mess_send(MESS2IND_HNDL,PARAM_U_AVT_GOOD,0,10);
+	can_reset_cnt=0;
 	}
 
 
-if((RXBUFF2[1]==PUTTM1)&&((RXBUFF2[0]&0x1f)>=0)&&((RXBUFF2[0]&0x1f)<20))
+/*if((RXBUFF[1]==PUTTM1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
      {
-     slave_num=RXBUFF2[0]&0x1f;
+	//can_debug_plazma[1][2]++;
+     slave_num=RXBUFF[0]&0x1f;
      
-     if((RXBUFF2[0]&0xe0)==0)bps[slave_num]._device=dSRC;
-     else if((RXBUFF2[0]&0xe0)==0x40)bps[slave_num]._device=dINV;
+    if((RXBUFF[0]&0xe0)==0)bps[slave_num]._device=dSRC;
+    else if((RXBUFF[0]&0xe0)==0x40)bps[slave_num]._device=dINV;
      	
-	bps[slave_num]._buff[0]=RXBUFF2[2]; 
-	bps[slave_num]._buff[1]=RXBUFF2[3];
-	bps[slave_num]._buff[2]=RXBUFF2[4];
-	bps[slave_num]._buff[3]=RXBUFF2[5];
-	bps[slave_num]._buff[4]=RXBUFF2[6];
-	bps[slave_num]._buff[5]=RXBUFF2[7];
-	
+	bps[slave_num]._buff[0]=RXBUFF[2]; 
+	bps[slave_num]._buff[1]=RXBUFF[3];
+	bps[slave_num]._buff[2]=RXBUFF[4];
+	bps[slave_num]._buff[3]=RXBUFF[5];
+	bps[slave_num]._buff[4]=RXBUFF[6];
+	bps[slave_num]._buff[5]=RXBUFF[7];
+
+
+
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
 	
  	if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
-     }
 
-if((RXBUFF2[1]==PUTTM2)&&((RXBUFF2[0]&0x1f)>=0)&&((RXBUFF2[0]&0x1f)<9))
-     {
-     slave_num=RXBUFF2[0]&0x1f;  
+	can_reset_cnt=0;
+     } *///может конфликтовать с 3 посылкой нового инвертора
 
-     if((RXBUFF2[0]&0xe0)==0)bps[slave_num]._device=dSRC;
-     else if((RXBUFF2[0]&0xe0)==0x40)bps[slave_num]._device=dINV;
+if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
+ 	{
+     slave_num=RXBUFF[0]&0x1f;  
+
+    if((RXBUFF[0]&0xe0)==0)bps[slave_num]._device=dSRC;
+    else if((RXBUFF[0]&0xe0)==0x40)bps[slave_num]._device=dINV;
      
-	bps[slave_num]._buff[6]=RXBUFF2[2]; 
-	bps[slave_num]._buff[7]=RXBUFF2[3];
-	bps[slave_num]._buff[8]=RXBUFF2[4];
-	bps[slave_num]._buff[9]=RXBUFF2[5];
-	bps[slave_num]._buff[10]=RXBUFF2[6];
-	bps[slave_num]._buff[11]=RXBUFF2[7];
+	bps[slave_num]._buff[6]=RXBUFF[2]; 
+	bps[slave_num]._buff[7]=RXBUFF[3];
+	bps[slave_num]._buff[8]=RXBUFF[4];
+	bps[slave_num]._buff[9]=RXBUFF[5];
+	bps[slave_num]._buff[10]=RXBUFF[6];
+	bps[slave_num]._buff[11]=RXBUFF[7];	
+
+
+/*	can_slot[slave_num,8]=RXBUFF[0];
+	can_slot[slave_num,9]=RXBUFF[1];
+	can_slot[slave_num,10]=RXBUFF[2];
+	can_slot[slave_num,11]=RXBUFF[3];
+	can_slot[slave_num,12]=RXBUFF[4];
+	can_slot[slave_num,13]=RXBUFF[5];
+	can_slot[slave_num,14]=RXBUFF[6];
+	can_slot[slave_num,15]=RXBUFF[7]; */
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10; 
 
    	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
+	can_reset_cnt=0;
+   	}
+
+if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
+    {
+    slave_num=RXBUFF[0]&0x3f;
+	bps[slave_num]._device=dINV;
+     	
+	bps[slave_num]._buff[0]=RXBUFF[2]; 
+	bps[slave_num]._buff[1]=RXBUFF[3];
+	bps[slave_num]._buff[2]=RXBUFF[4];
+	bps[slave_num]._buff[3]=RXBUFF[5];
+	bps[slave_num]._buff[4]=RXBUFF[6];
+	bps[slave_num]._buff[5]=RXBUFF[7];
+	
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1;
+	
+ 	//if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
+
+	can_reset_cnt=0;
+    }
+
+if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
+ 	{
+    slave_num=RXBUFF[0]&0x3f;  
+	bps[slave_num]._device=dINV;
+     
+	bps[slave_num]._buff[6]=RXBUFF[2]; 
+	bps[slave_num]._buff[7]=RXBUFF[3];
+	bps[slave_num]._buff[8]=RXBUFF[4];
+	bps[slave_num]._buff[9]=RXBUFF[5];
+	bps[slave_num]._buff[10]=RXBUFF[6];
+	bps[slave_num]._buff[11]=RXBUFF[7];	
+
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1; 
+
+	can_reset_cnt=0;
+   	}
+
+if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
+ 	{
+    slave_num=RXBUFF[0]&0x3f;  
+	bps[slave_num]._device=dINV;
+
+	bps[slave_num]._buff[12]=RXBUFF[2]; 
+	bps[slave_num]._buff[13]=RXBUFF[3];
+	bps[slave_num]._buff[14]=RXBUFF[4];
+	bps[slave_num]._buff[15]=RXBUFF[5];
+	bps[slave_num]._buff[16]=RXBUFF[6];
+	bps[slave_num]._buff[17]=RXBUFF[7];	
+	
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10;
+	inv[slave_num-first_inv_slot]._valid=1; 
+
+	can_reset_cnt=0;
+   	}
+
+if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)==0x3d))
+ 	{
+	if((RXBUFF[4]&0x40)==0)f_out_byps=500+(signed char)RXBUFF[5];
+	else RXBUFF[5]=0;
+	f_out_byps_cnt=20;
+   	}
+
+if((RXBUFF[1]==PUTTM1BYPS))
+	{
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
+    
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._adress=bypass_adress;
+		 
+     	byps[bypass_adress-61]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
+		byps[bypass_adress-61]._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
+		byps[bypass_adress-61]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+	
+		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
+
+		if(byps[bypass_adress-61]._Pout<0) byps[bypass_adress-61]._Pout=0;
+		}
+	else
+		{
+		byps[0]._adress=bypass_adress;
+		 
+     	byps[0]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
+		byps[0]._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
+		byps[0]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+	
+		byps[0]._cnt=0;
+		byps[0]._valid=1;
+
+		if(byps[0]._Pout<0) byps[0]._Pout=0;
+		}
+    }
+
+if((RXBUFF[1]==PUTTM2BYPS))
+ 	{
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
+
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._T=(char)RXBUFF[2];
+		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
+		byps[bypass_adress-61]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[bypass_adress-61]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
+		}
+	else 
+		{
+		byps[0]._T=(char)RXBUFF[2];
+		byps[0]._flags=(char)RXBUFF[3];
+		byps[0]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[0]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[0]._cnt=0;
+		byps[0]._valid=1;
+		}
+   	}
+
+
+if((RXBUFF[1]==PUTTM2BYPS))
+ 	{
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
+
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._T=(char)RXBUFF[2];
+		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
+		byps[bypass_adress-61]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[bypass_adress-61]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
+		}
+	else 
+		{
+		byps[0]._T=(char)RXBUFF[2];
+		byps[0]._flags=(char)RXBUFF[3];
+		byps[0]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[0]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[0]._cnt=0;
+		byps[0]._valid=1;
+		}
+   	}
+
+
+if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
+ 	{
+    slave_num=RXBUFF[0]&0x1f;  
+
+    bps[slave_num]._device=dIBAT_METR;
+         
+	bps[slave_num]._buff[0]=RXBUFF[2]; 
+	bps[slave_num]._buff[1]=RXBUFF[3];
+	bps[slave_num]._buff[2]=RXBUFF[4];
+	bps[slave_num]._buff[3]=RXBUFF[5];
+	bps[slave_num]._buff[4]=RXBUFF[6];
+	bps[slave_num]._buff[5]=RXBUFF[7];	
+
+
+/*	can_slot[slave_num,8]=RXBUFF[0];
+	can_slot[slave_num,9]=RXBUFF[1];
+	can_slot[slave_num,10]=RXBUFF[2];
+	can_slot[slave_num,11]=RXBUFF[3];
+	can_slot[slave_num,12]=RXBUFF[4];
+	can_slot[slave_num,13]=RXBUFF[5];
+	can_slot[slave_num,14]=RXBUFF[6];
+	can_slot[slave_num,15]=RXBUFF[7]; */
+	
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10; 
+
+   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
+	can_reset_cnt=0;
+   	}
+
+if((RXBUFF[1]==PUTTM_NET)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
+ 	{
+    slave_num=RXBUFF[0]&0x1f;  
+
+    bps[slave_num]._device=dNET_METR;
+         
+	bps[slave_num]._buff[0]=RXBUFF[2]; 
+	bps[slave_num]._buff[1]=RXBUFF[3];
+	bps[slave_num]._buff[2]=RXBUFF[4];
+	bps[slave_num]._buff[3]=RXBUFF[5];
+	bps[slave_num]._buff[4]=RXBUFF[6];
+	bps[slave_num]._buff[5]=RXBUFF[7];	
+
+
+/*	can_slot[slave_num,8]=RXBUFF[0];
+	can_slot[slave_num,9]=RXBUFF[1];
+	can_slot[slave_num,10]=RXBUFF[2];
+	can_slot[slave_num,11]=RXBUFF[3];
+	can_slot[slave_num,12]=RXBUFF[4];
+	can_slot[slave_num,13]=RXBUFF[5];
+	can_slot[slave_num,14]=RXBUFF[6];
+	can_slot[slave_num,15]=RXBUFF[7]; */
+	
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10; 
+
+   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
+	can_reset_cnt=0;
+   	}
+
+
+if((RXBUFF[1]==PUTTM_NET1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
+ 	{
+    slave_num=RXBUFF[0]&0x1f;  
+
+    bps[slave_num]._device=dNET_METR;
+         
+	bps[slave_num]._buff[6]=RXBUFF[2]; 
+	bps[slave_num]._buff[7]=RXBUFF[3];
+	
+	//net_F= RXBUFF[2]+ (RXBUFF[3]*256);
+
+	bps[slave_num]._cnt=0;
+	bps[slave_num]._is_on_cnt=10; 
+
+   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
+	can_reset_cnt=0;
+   	}
+
+
+if( ((RXBUFF[0]&0x1f)==8)&&((RXBUFF[1])==PUTTM) )
+     {
+     adc_buff_ext_[0]=*((short*)&RXBUFF[2]);
+     adc_buff_ext_[1]=*((short*)&RXBUFF[4]);
+     adc_buff_ext_[2]=*((short*)&RXBUFF[6]);
+	if((adc_buff_ext_[2]>=-50) && (adc_buff_ext_[2]<=100))
+		{
+		t_ext_can=adc_buff_ext_[2];
+		t_ext_can_nd=0;
+		}
+		t_ext_can=adc_buff_ext_[2];
+	//ext_can_cnt++;
+	can_reset_cnt=0;
+     }
+
+if( ((RXBUFF[0]&0x1f)==9)&&((RXBUFF[1])==PUTTM) )
+     {
+     vvod_pos=RXBUFF[2];
+	ext_can_cnt=RXBUFF[3];
+	if(ext_can_cnt<10)bRESET_EXT=0;
+	can_reset_cnt=0;
+     }
+
+if( ((RXBUFF[0]&0x1f)==10)&&((RXBUFF[1])==PUTTM) )
+     {
+     power_current=*((signed short*)&RXBUFF[2]);
+     power_summary=*((signed long*)&RXBUFF[4]);
+	//ext_can_cnt++;
+	can_reset_cnt=0;
      }
 
 
+if( ((RXBUFF[0]&0x1f)==20)&&((RXBUFF[1])==PUTTM) )
+     {
+     eb2_data[0]=RXBUFF[2];
+	eb2_data[1]=RXBUFF[3];
+     eb2_data[2]=RXBUFF[4];
+	eb2_data[3]=RXBUFF[5];
+	eb2_data[4]=RXBUFF[6];
+	eb2_data[5]=RXBUFF[7];
+     power_current=*((signed short*)&RXBUFF[2]);
+     power_summary=*((signed long*)&RXBUFF[4]);
 
-CAN_IN_AN2_end:
+	 can_reset_cnt=0;
+     }
+
+if( ((RXBUFF[0]&0x1f)==21)&&((RXBUFF[1])==PUTTM) )
+     {
+     eb2_data[6]=RXBUFF[2];
+	eb2_data[7]=RXBUFF[3];
+     eb2_data[8]=RXBUFF[4];
+	eb2_data[9]=RXBUFF[5];
+	eb2_data[10]=RXBUFF[6];
+	eb2_data[11]=RXBUFF[7];
+	eb2_data_short[6]=*((short*)&eb2_data[6]);
+
+	can_reset_cnt=0;
+     }
+
+if( ((RXBUFF[0]&0x1f)==22)&&((RXBUFF[1])==PUTTM) )
+     {
+     eb2_data[12]=RXBUFF[2];
+	eb2_data[13]=RXBUFF[3];
+     eb2_data[14]=RXBUFF[4];
+	eb2_data[15]=RXBUFF[5];
+	eb2_data[16]=RXBUFF[6];
+	eb2_data[17]=RXBUFF[7];
+	eb2_data_short[0]=*((short*)&eb2_data[12]);
+	eb2_data_short[1]=*((short*)&eb2_data[14]);
+	eb2_data_short[2]=*((short*)&eb2_data[16]);
+
+	can_reset_cnt=0;
+     }
+
+if( ((RXBUFF[0]&0x1f)==23)&&((RXBUFF[1])==PUTTM) )
+     {
+     eb2_data[18]=RXBUFF[2];
+	eb2_data[19]=RXBUFF[3];
+     eb2_data[20]=RXBUFF[4];
+	eb2_data[21]=RXBUFF[5];
+	eb2_data[22]=RXBUFF[6];
+	eb2_data[23]=RXBUFF[7];
+	eb2_data_short[3]=*((short*)&eb2_data[18]);
+	eb2_data_short[4]=*((short*)&eb2_data[20]);
+	eb2_data_short[5]=*((short*)&eb2_data[22]);
+
+	can_reset_cnt=0;
+     }
+/*
+if( (RXBUFF[1]==PUTTM_MAKB1)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
+     {
+	makb[RXBUFF[0]]._U[0]=*((short*)&RXBUFF[2]);
+	makb[RXBUFF[0]]._U[1]=*((short*)&RXBUFF[4]);
+	makb[RXBUFF[0]]._U[2]=*((short*)&RXBUFF[6]);
+
+	makb[RXBUFF[0]]._Ub[0]=makb[RXBUFF[0]]._U[0];
+	if(makb[RXBUFF[0]]._Ub[0]<0)makb[RXBUFF[0]]._Ub[0]=0;
+	makb[RXBUFF[0]]._Ub[1]=makb[RXBUFF[0]]._U[1]-makb[RXBUFF[0]]._U[0];
+	if(makb[RXBUFF[0]]._Ub[1]<0)makb[RXBUFF[0]]._Ub[1]=0;
+	makb[RXBUFF[0]]._Ub[2]=makb[RXBUFF[0]]._U[2]-makb[RXBUFF[0]]._U[1];
+	if(makb[RXBUFF[0]]._Ub[2]<0)makb[RXBUFF[0]]._Ub[2]=0;
+
+	makb[RXBUFF[0]]._cnt=0;
+     }
+
+if( (RXBUFF[1]==PUTTM_MAKB2)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
+     {
+	makb[RXBUFF[0]]._U[3]=*((short*)&RXBUFF[2]);
+	makb[RXBUFF[0]]._U[4]=*((short*)&RXBUFF[4]);
+	makb[RXBUFF[0]]._T[0]=(signed short)(*((signed char*)&RXBUFF[6]));
+	makb[RXBUFF[0]]._T[1]=(signed short)(*((signed char*)&RXBUFF[7]));
+
+	makb[RXBUFF[0]]._Ub[3]=makb[RXBUFF[0]]._U[3]-makb[RXBUFF[0]]._U[2];
+	if(makb[RXBUFF[0]]._Ub[3]<0)makb[RXBUFF[0]]._Ub[3]=0;
+	makb[RXBUFF[0]]._Ub[4]=makb[RXBUFF[0]]._U[4]-makb[RXBUFF[0]]._U[3];
+	if(makb[RXBUFF[0]]._Ub[4]<0)makb[RXBUFF[0]]._Ub[4]=0;
+
+	makb[RXBUFF[0]]._cnt=0;
+     }
+
+if( (RXBUFF[1]==PUTTM_MAKB3)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
+     {
+	makb[RXBUFF[0]]._T[2]=(signed short)(*((signed char*)&RXBUFF[2]));
+	makb[RXBUFF[0]]._T[3]=(signed short)(*((signed char*)&RXBUFF[3]));
+	makb[RXBUFF[0]]._T[4]=(signed short)(*((signed char*)&RXBUFF[4]));
+
+	if(RXBUFF[5]&0x01)makb[RXBUFF[0]]._T_nd[0]=1;
+	else makb[RXBUFF[0]]._T_nd[0]=0;
+	if(RXBUFF[5]&0x02)makb[RXBUFF[0]]._T_nd[1]=1;
+	else makb[RXBUFF[0]]._T_nd[1]=0;
+	if(RXBUFF[5]&0x04)makb[RXBUFF[0]]._T_nd[2]=1;
+	else makb[RXBUFF[0]]._T_nd[2]=0;
+	if(RXBUFF[5]&0x08)makb[RXBUFF[0]]._T_nd[3]=1;
+	else makb[RXBUFF[0]]._T_nd[3]=0;
+	if(RXBUFF[5]&0x10)makb[RXBUFF[0]]._T_nd[4]=1;
+	else makb[RXBUFF[0]]._T_nd[4]=0;
+
+	makb[RXBUFF[0]]._cnt=0;
+     }
+*/
+CAN_IN_AN1_end:
 bIN2=0;
 }
+
+
+
+
+
+  
+/**************************************************************************
+DOES:    Interrupt Service Routine for CAN receive on CAN interface 1
+GLOBALS: Copies the received message into the gFullCANList[] array
+         Handles semaphore bits as described in LPC user manual
+RETURNS: nothing
+***************************************************************************/ 
+void CAN_ISR_Rx1( void )
+{
+unsigned int buf;
+unsigned int *pDest;
+char temp;
+char *ptr,j;
+//can_cnt++;
+
+//__disable_irq();
+
+rotor_can[0]++;
+
+  if (!(LPC_CAN1->RFS & 0xC0000400L))
+  { // 11-bit ID, no RTR, matched a filter
+
+	rotor_can[1]++;
+    // initialize destination pointer
+    // filter number is in lower 10 bits of C1RFS
+    pDest = (unsigned int *) &(gFullCANList[(LPC_CAN1->RFS & 0x000003FFL)].Dat1);
+    
+    // calculate contents for first entry into FullCAN list
+    buf = LPC_CAN1->RFS & 0xC00F0000L; // mask FF, RTR and DLC
+    buf |= 0x01002000L; // set semaphore to 01b and CAN port to 1
+    buf |= LPC_CAN1->RID & 0x000007FFL; // get CAN message ID
+
+    // now copy entire message to FullCAN list
+    *pDest = buf; 
+    pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatA
+    *pDest = LPC_CAN1->RDA; 
+    pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatB
+    *pDest = LPC_CAN1->RDB; 
+
+    // now set the sempahore to complete
+    buf |= 0x03000000L; // set semaphore to 11b
+    pDest -= 2; // set to gFullCANList[(C1RFS & 0x000003FFL)].Dat1
+    *pDest = buf; 
+    
+	temp=(char)gFullCANList[0].DatA;
+	if(temp==0x30) bR=0;
+	else bR++;
+	
+	temp=(char)(((gFullCANList[0].Dat1)>>16)&0x0f); 
+     
+     ptr=(char*)(&gFullCANList[0].DatA);
+	
+	for(j=0;j<temp;j++)
+		{
+		RXBUFF[j]=*ptr;
+		ptr++;
+		}
+	can_in_an1();
+	    
+    
+  }
+
+  LPC_CAN1->CMR = 0x04; // release receive buffer
+
+//__enable_irq();
+}
+
 
 
 /**************************************************************************
@@ -436,7 +1673,7 @@ GLOBALS: Copies the received message into the gFullCANList[] array
          Handles semaphore bits as described in LPC user manual
 RETURNS: nothing
 ***************************************************************************/ 
-__irq void can_isr_rx1 (void) 
+void CAN_ISR_Rx2( void ) 
 {
 unsigned int buf;
 unsigned int *pDest;
@@ -444,61 +1681,94 @@ char temp;
 char *ptr,j;
 //can_cnt++;
 
-can_debug_plazma[0][0]++;
-
 //rotor_can[0]++;
- if(C1ICR & 0x00000001L)
-	{
-	can_debug_plazma[0][1]++;
-	if (!(C1RFS & 0xC0000400L))
+//can_debug_plazma[0][0]++;
+//if(C1ICR & 0x00000001L)
+//	{
+//	can_debug_plazma[0][0]++;
+	if (!(LPC_CAN2->RFS & 0xC0000400L))
     		{ // 11-bit ID, no RTR, matched a filter
-
+			
     		//rotor_can[1]++;
     		// initialize destination pointer
     		// filter number is in lower 10 bits of C1RFS
-    		pDest = (unsigned int *) &(gFullCANList[(C1RFS & 0x000003FFL)].Dat1);
+			//plazma_can4=(char)((LPC_CAN2->RFS>>16) & 0x000000FFL);
+    		pDest = (unsigned int *) &(gFullCANList[(LPC_CAN2->RFS & 0x000003FFL)].Dat1);
     
+			plazma_can_pal[plazma_can_pal_index]=(char)(LPC_CAN2->RDA);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDA)>>8);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDA)>>16);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDA)>>24);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)(LPC_CAN2->RDB);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDB)>>8);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDB)>>16);
+			plazma_can_pal_index++;
+			plazma_can_pal[plazma_can_pal_index]=(char)((LPC_CAN2->RDB)>>24);
+			plazma_can_pal_index++;
+
     		// calculate contents for first entry into FullCAN list
-    		buf = C1RFS & 0xC00F0000L; // mask FF, RTR and DLC
+    		buf = LPC_CAN2->RFS & 0xC00F0000L; // mask FF, RTR and DLC
     		buf |= 0x01002000L; // set semaphore to 01b and CAN port to 1
-    		buf |= C1RID & 0x000007FFL; // get CAN message ID
+    		buf |= LPC_CAN2->RID & 0x000007FFL; // get CAN message ID
 
     		// now copy entire message to FullCAN list
     		*pDest = buf; 
     		pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatA
-    		*pDest = C1RDA; 
+    		*pDest = LPC_CAN2->RDA;
+			//plazma_can4=(char)LPC_CAN2->RDA; 
     		pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatB
-    		*pDest = C1RDB; 
+    		*pDest = LPC_CAN2->RDB; 
 
     		// now set the sempahore to complete
     		buf |= 0x03000000L; // set semaphore to 11b
     		pDest -= 2; // set to gFullCANList[(C1RFS & 0x000003FFL)].Dat1
     		*pDest = buf; 
     
-		temp=(char)gFullCANList[0].DatA;
-		if(temp==0x30) bR=0;
+		//temp=(char)gFullCANList[0].DatA;
+		temp=(char)(LPC_CAN2->RDA);
+		if(temp==0x30)
+			{
+			 bR=0;
+			 }
 		else bR++;
 	
-		temp=(char)(((gFullCANList[0].Dat1)>>16)&0x0f); 
+		//temp=(char)(((gFullCANList[0].Dat1)>>16)&0x0f); 
      
-     	ptr=(char*)(&gFullCANList[0].DatA);
+     	//ptr=(char*)(&gFullCANList[0].DatA);
 	
 		if(!bR)
 			{
-			for(j=0;j<temp;j++)
+			/*for(j=0;j<temp;j++)
 				{
 				RXBUFF[j]=*ptr;
 				ptr++;
-				}
+				}*/
+			RXBUFF[0]=(char)(LPC_CAN2->RDA);
+			RXBUFF[1]=(char)((LPC_CAN2->RDA)>>8);
+			RXBUFF[2]=(char)((LPC_CAN2->RDA)>>16);
+			RXBUFF[3]=(char)((LPC_CAN2->RDA)>>24);
+			RXBUFF[4]=(char)(LPC_CAN2->RDB);
+			RXBUFF[5]=(char)((LPC_CAN2->RDB)>>8);
+			RXBUFF[6]=(char)((LPC_CAN2->RDB)>>16);
+			RXBUFF[7]=(char)((LPC_CAN2->RDB)>>24);
+			
 			}
 		else if(bR==1)
 			{
-			for(j=8;j<(temp+8);j++)
-				{
-				RXBUFF[j]=*ptr;
-				ptr++;
-				}                      
-			
+			RXBUFF[8]=(char)(LPC_CAN2->RDA);
+			RXBUFF[9]=(char)((LPC_CAN2->RDA)>>8);
+			RXBUFF[10]=(char)((LPC_CAN2->RDA)>>16);
+			RXBUFF[11]=(char)((LPC_CAN2->RDA)>>24);
+			RXBUFF[12]=(char)(LPC_CAN2->RDB);
+			RXBUFF[13]=(char)((LPC_CAN2->RDB)>>8);
+			RXBUFF[14]=(char)((LPC_CAN2->RDB)>>16);
+			RXBUFF[15]=(char)((LPC_CAN2->RDB)>>24);
 			} 		
 	
 	
@@ -511,367 +1781,140 @@ can_debug_plazma[0][0]++;
   
 			bIN=1;
   			//rotor_can[3]++;
-  			can_in_an1();
+  			can_in_an2();
+			
 			}    
     
   		}
 
-	C1CMR = 0x04; // release receive buffer
-	}
-
-
-VICVectAddr = 0xFFFFFFFFL; // acknowledge Interrupt
-
+LPC_CAN2->CMR = 0x04; // release receive buffer
 }
-
-  
 /**************************************************************************
 DOES:    Interrupt Service Routine for CAN receive on CAN interface 1
 GLOBALS: Copies the received message into the gFullCANList[] array
          Handles semaphore bits as described in LPC user manual
 RETURNS: nothing
 ***************************************************************************/ 
-__irq void can_isr_rx2 (void) 
+
+void can_isr_tx1 (void) 
 {
-unsigned int buf;
-unsigned int *pDest;
+//unsigned int buf;
+//unsigned int *pDest;
 char temp;
-char *ptr,j;
-//can_cnt++;
-
-can_debug_plazma[1][0]++;
-
-
-	
-if(C2ICR & 0x00000001L)
-	{
-	can_debug_plazma[1][1]++;	
-	if (!(C2RFS & 0xC0000400L))
-  		{ // 11-bit ID, no RTR, matched a filter
-
-		//rotor_can[3]++;
-    		// initialize destination pointer
-    		// filter number is in lower 10 bits of C1RFS
-    		pDest = (unsigned int *) &(gFullCANList[(C2RFS & 0x000003FFL)].Dat1);
-    
-    		// calculate contents for first entry into FullCAN list
-    		buf = C2RFS & 0xC00F0000L; // mask FF, RTR and DLC
-    		buf |= 0x01002000L; // set semaphore to 01b and CAN port to 1
-    		buf |= C2RID & 0x000007FFL; // get CAN message ID
-
-    		// now copy entire message to FullCAN list
-    		*pDest = buf; 
-    		pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatA
-    		*pDest = C2RDA; 
-    		pDest++; // set to gFullCANList[(C1RFS & 0x000003FFL)].DatB
-    		*pDest = C2RDB; 
-
-    		// now set the sempahore to complete
-    		buf |= 0x03000000L; // set semaphore to 11b
-    		pDest -= 2; // set to gFullCANList[(C1RFS & 0x000003FFL)].Dat1
-    		*pDest = buf; 
-    
-		temp=(char)gFullCANList[0].DatA;
-		/*if(temp==0x30) bR=0;
-		else bR++;*/
-	
-		temp=(char)(((gFullCANList[0].Dat1)>>16)&0x0f); 
-     
-     	ptr=(char*)(&gFullCANList[0].DatA);
-	
-		for(j=0;j<temp;j++)
-			{
-			RXBUFF2[j]=*ptr;
-			ptr++;
-			}
-		}
-			
-	bIN2=1;
-	can_in_an2();
-
-
-	C2CMR = 0x04; // release receive buffer
-	}
-
-VICVectAddr = 0xFFFFFFFFL; // acknowledge Interrupt
-
-}
-
-/**************************************************************************
-DOES:    Interrupt Service Routine for CAN receive on CAN interface 1
-GLOBALS: Copies the received message into the gFullCANList[] array
-         Handles semaphore bits as described in LPC user manual
-RETURNS: nothing
-***************************************************************************/ 
-
-__irq void can_isr_tx1 (void) 
-{
-//unsigned int buf;
-//unsigned int *pDest;
-//char temp;
 //char *ptr,j;
-/*
-can_tx_cnt++;
 
-rotor_can[2]++;
+//plazma_can2++;
 
-if(C1ICR & 0x00000002L)
-	{
-	if(ptr_can1_tx_wr!=ptr_can1_tx_rd)
-		{
-		C1TFI1=can1_info[ptr_can1_tx_rd];
-     	C1TID1=can1_id[ptr_can1_tx_rd];
-     	C1TDA1=can1_data[ptr_can1_tx_rd];
-     	C1TDB1=can1_datb[ptr_can1_tx_rd];
-     	C1CMR=0x00000021;
-     	ptr_can1_tx_rd++;
-     	if(ptr_can1_tx_rd>=8)ptr_can1_tx_rd=0;
-		}
-	else bOUT_FREE=1;
-	}
-	
-else if(C2ICR & 0x00000002L)
-	{
-	if(ptr_can2_tx_wr!=ptr_can2_tx_rd)
-		{
-		C2TFI1=can1_info[ptr_can2_tx_rd];
-     	C2TID1=can1_id[ptr_can2_tx_rd];
-     	C2TDA1=can1_data[ptr_can2_tx_rd];
-     	C2TDB1=can1_datb[ptr_can2_tx_rd];
-     	C2CMR=0x00000021;
-     	ptr_can2_tx_rd++;
-     	if(ptr_can2_tx_rd>=8)ptr_can2_tx_rd=0;
-		}
-	else bOUT_FREE2=1;
-	} */
-VICVectAddr = 0xFFFFFFFFL; // acknowledge Interrupt
-}
-
-
-/**************************************************************************
-DOES:    Interrupt Service Routine for CAN receive on CAN interface 1
-GLOBALS: Copies the received message into the gFullCANList[] array
-         Handles semaphore bits as described in LPC user manual
-RETURNS: nothing
-***************************************************************************/ 
-
-__irq void can_isr_tx2 (void) 
-{
-//unsigned int buf;
-//unsigned int *pDest;
-//char temp;
-//char *ptr,j;
+//__disable_irq();
 
 can_tx_cnt++;
 
-rotor_can[2]++;
+rotor_can[5]++;
 
-/*if(C1ICR & 0x00000002L)
+if(ptr_can1_tx_wr!=ptr_can1_tx_rd)
 	{
-	if(ptr_can1_tx_wr!=ptr_can1_tx_rd)
-		{
-		C1TFI1=can1_info[ptr_can1_tx_rd];
-     	C1TID1=can1_id[ptr_can1_tx_rd];
-     	C1TDA1=can1_data[ptr_can1_tx_rd];
-     	C1TDB1=can1_datb[ptr_can1_tx_rd];
-     	C1CMR=0x00000021;
-     	ptr_can1_tx_rd++;
-     	if(ptr_can1_tx_rd>=8)ptr_can1_tx_rd=0;
-		}
-	else bOUT_FREE=1;
+	LPC_CAN1->TFI1=can1_info[ptr_can1_tx_rd];
+     LPC_CAN1->TID1=can1_id[ptr_can1_tx_rd];
+     LPC_CAN1->TDA1=can1_data[ptr_can1_tx_rd];
+     LPC_CAN1->TDB1=can1_datb[ptr_can1_tx_rd];
+     LPC_CAN1->CMR=0x00000021;
+     ptr_can1_tx_rd++;
+     if(ptr_can1_tx_rd>=8)ptr_can1_tx_rd=0;
 	}
-	
-else*/ if(C2ICR & 0x00000002L)
-	{
-	if(ptr_can2_tx_wr!=ptr_can2_tx_rd)
-		{
-		C2TFI1=can1_info[ptr_can2_tx_rd];
-     	C2TID1=can1_id[ptr_can2_tx_rd];
-     	C2TDA1=can1_data[ptr_can2_tx_rd];
-     	C2TDB1=can1_datb[ptr_can2_tx_rd];
-     	C2CMR=0x00000021;
-     	ptr_can2_tx_rd++;
-     	if(ptr_can2_tx_rd>=8)ptr_can2_tx_rd=0;
-		}
-	else bOUT_FREE2=1;
-	}
-VICVectAddr = 0xFFFFFFFFL; // acknowledge Interrupt
+else bOUT_FREE=1;
+temp=LPC_CAN1->ICR;
+
+//__enable_irq();
+
 }
 
 /***************************************************************************/
-__irq void can_isr_err (void) 
+void can_isr_tx2 (void) 
 {
-//unsigned int buf;
-//unsigned int *pDest;
-//char temp;
-//char *ptr,j;
+char temp;
+can2_tx_cnt++;
 
+//=ptr_can2_tx_wr;
 
-//rotor_can[2]++;
-
-if(C2ICR & 0x00000080L)
+if(ptr_can2_tx_wr!=ptr_can2_tx_rd)
 	{
-	SET_REG(C2GSR,3,24,8);
-	C2MOD=0;
-	bOUT_FREE2=1;
+	LPC_CAN2->TFI1=can2_info[ptr_can2_tx_rd];
+     LPC_CAN2->TID1=can2_id[ptr_can2_tx_rd];
+     LPC_CAN2->TDA1=can2_data[ptr_can2_tx_rd];
+     LPC_CAN2->TDB1=can2_datb[ptr_can2_tx_rd];
+     LPC_CAN2->CMR=0x00000021;
+     ptr_can2_tx_rd++;
+     if(ptr_can2_tx_rd>=8)ptr_can2_tx_rd=0;
 	}
-VICVectAddr = 0xFFFFFFFFL; // acknowledge Interrupt
-}
-
-
-/**************************************************************************
-Initialization of a CAN interface
-as described in LPC_FullCAN_SW.h
-***************************************************************************/ 
-short can1_init (unsigned short can_rx_vector, unsigned short can_tx_vector, unsigned int can_btr)
-{
-unsigned int *pSFR; // pointer into SFR space
-unsigned int *pSFR2; // pointer into SFR space
-unsigned int offset; // offset added to pSFR
-                                               
-PINSEL1 |= 0x00040000L; // Set bit 18
-offset = 0x00000000L; // Use 1st set of CAN registers
-
-// Reset and disable all message filters
-gCANFilter = 0;
-
-// Acceptance Filter Mode Register = off !
-AFMR = 0x00000001L;
-
-pSFR = (unsigned int *) &C1MOD + offset; // Select Mode register
-*pSFR = 1; // Go into Reset mode
-
-pSFR = (unsigned int *) &C1IER + offset; // Select Interrupt Enable Register
-*pSFR = 0;// Disable All Interrupts
-
-pSFR = (unsigned int *) &C1GSR + offset; // Select Status Register
-*pSFR = 0; // Clear Status register
-
-pSFR = (unsigned int *) &C1BTR + offset; // Select BTR Register
-*pSFR = can_btr; // Set bit timing
-
-  // Set and enable receive interrupt
-pSFR = (unsigned int *) &VICVectAddr0;
-pSFR += can_rx_vector; // Set to desired interrupt vector
-  
-pSFR2 = (unsigned int *) &VICVectCntl0;
-pSFR2 += can_rx_vector; // Set to desired interrupt control
-
-// Set interrupt vector
-*pSFR = (unsigned long) can_isr_rx1; 
-// Use this Interrupt for CAN Rx1 Interrupt
-*pSFR2 = 0x20 | 26;
-// Enable CAN Rx1 Interrupt
-//VICIntEnable |= 0x04000000L;  
-
-  // Set and enable transmit interrupt
-pSFR = (unsigned int *) &VICVectAddr0;
-pSFR += can_tx_vector; // Set to desired interrupt vector
-  
-pSFR2 = (unsigned int *) &VICVectCntl0;
-pSFR2 += can_tx_vector; // Set to desired interrupt control
-
-// Set interrupt vector
-*pSFR = (unsigned long) can_isr_tx1; 
-// Use this Interrupt for CAN Rx1 Interrupt
-*pSFR2 = 0x20 | 20;
-// Enable CAN Rx1 Interrupt
-VICIntEnable = 0x00100000L;
-
-pSFR = (unsigned int *) &C1IER + offset; // Select Interrupt register
-*pSFR = 3; // Enable Receive & Transmit Interrupt
-
-// Enter Normal Operating Mode
-pSFR = (unsigned int *) &C1MOD + offset; // Select Mode register
-*pSFR = 0; // Operating Mode 
-
-return 1;	
+else bOUT_FREE2=1;
+temp=LPC_CAN2->ICR;
 }
 
 /**************************************************************************
 Initialization of a CAN interface
 as described in LPC_FullCAN_SW.h
 ***************************************************************************/ 
-short can2_init (unsigned short can_rx_vector, unsigned short can_tx_vector, unsigned int can_btr)
+short can1_init (unsigned int can_btr)
 {
-unsigned int *pSFR; // pointer into SFR space
-unsigned int *pSFR2; // pointer into SFR space
-unsigned int offset; // offset added to pSFR
-                                               
-PINSEL1 |= 0x00014000L; // Set bit 18
-offset = 0x00001000L; // Use 1st set of CAN registers
+LPC_SC->PCONP |= (1<<13);  /* Enable CAN1 and CAN2 clock */
 
-// Reset and disable all message filters
-gCANFilter = 0;
+LPC_PINCON->PINSEL0 &= ~0x0000000F;  /* CAN1 is p0.0 and p0.1	*/
+LPC_PINCON->PINSEL0 |= 0x00000005;
 
-// Acceptance Filter Mode Register = off !
-AFMR = 0x00000001L;
+gCANFilter = 0; // Reset and disable all message filters
 
-pSFR = (unsigned int *) &C1MOD + offset; // Select Mode register
-*pSFR = 1; // Go into Reset mode
+LPC_CANAF->AFMR = 0x00000001L; // Acceptance Filter Mode Register = off !
 
-pSFR = (unsigned int *) &C1IER + offset; // Select Interrupt Enable Register
-*pSFR = 0;// Disable All Interrupts
+LPC_CAN1->MOD = 1; // Go into Reset mode
 
-pSFR = (unsigned int *) &C1GSR + offset; // Select Status Register
-*pSFR = 0; // Clear Status register
+LPC_CAN1->IER = 0;// Disable All Interrupts
 
-pSFR = (unsigned int *) &C1BTR + offset; // Select BTR Register
-*pSFR = can_btr; // Set bit timing
+LPC_CAN1->GSR = 0; // Clear Status register
+
+LPC_CAN1->BTR = can_btr; // Set bit timing
+
+//LPC_CAN1->IER |=(1<<0)|(1<<1)|(1<<9)|(1<<10); // Enable Receive & Transmit Interrupt
+
+LPC_CAN1->MOD = 0; // Enter Normal Operating Mode
 
 
 
-  // Set and enable error interrupt
-pSFR = (unsigned int *) &VICVectAddr0;
-pSFR += 12; // Set to desired interrupt vector
-  
-pSFR2 = (unsigned int *) &VICVectCntl0;
-pSFR2 += 12; // Set to desired interrupt control
+NVIC_EnableIRQ(CAN_IRQn);
+LPC_CAN1->IER =0x00003;
+return 1;
+}
 
-// Set interrupt vector
-*pSFR = (unsigned long) can_isr_err; 
-// Use this Interrupt for CAN Rx1 Interrupt
-*pSFR2 = 0x20 | 19;
-// Enable CAN Rx1 Interrupt
-VICIntEnable = 1<<19; 
+/**************************************************************************
+Initialization of a CAN interface
+as described in LPC_FullCAN_SW.h
+***************************************************************************/ 
+short can2_init (unsigned int can_btr)
+{
+LPC_SC->PCONP |= (1<<14);  /* Enable CAN1 and CAN2 clock */
+
+LPC_PINCON->PINSEL2 &= ~0x0003c000;  /* CAN1 is p0.0 and p0.1	*/
+LPC_PINCON->PINSEL4 |= 0x00014000;
+
+gCANFilter = 0; // Reset and disable all message filters
+
+LPC_CANAF->AFMR = 0x00000001L; // Acceptance Filter Mode Register = off !
+
+LPC_CAN2->MOD = 1; // Go into Reset mode
+
+LPC_CAN2->IER = 0;// Disable All Interrupts
+
+LPC_CAN2->GSR = 0; // Clear Status register
+
+LPC_CAN2->BTR = can_btr; // Set bit timing
+
+//LPC_CAN1->IER |=(1<<0)|(1<<1)|(1<<9)|(1<<10); // Enable Receive & Transmit Interrupt
+
+LPC_CAN2->MOD = 0; // Enter Normal Operating Mode
 
 
 
-  // Set and enable receive interrupt
-pSFR = (unsigned int *) &VICVectAddr0;
-pSFR += can_rx_vector; // Set to desired interrupt vector
-  
-pSFR2 = (unsigned int *) &VICVectCntl0;
-pSFR2 += can_rx_vector; // Set to desired interrupt control
-
-// Set interrupt vector
-*pSFR = (unsigned long) can_isr_rx2; 
-// Use this Interrupt for CAN Rx1 Interrupt
-*pSFR2 = 0x20 | 27;
-// Enable CAN Rx1 Interrupt
-VICIntEnable = 0x08000000L;  
-
-  // Set and enable transmit interrupt
-pSFR = (unsigned int *) &VICVectAddr0;
-pSFR += can_tx_vector; // Set to desired interrupt vector
-  
-pSFR2 = (unsigned int *) &VICVectCntl0;
-pSFR2 += can_tx_vector; // Set to desired interrupt control
-
-// Set interrupt vector
-*pSFR = (unsigned long) can_isr_tx2; 
-// Use this Interrupt for CAN Rx1 Interrupt
-*pSFR2 = 0x20 | 21;
-// Enable CAN Rx1 Interrupt
-VICIntEnable = 0x00200000L;
-
-pSFR = (unsigned int *) &C1IER + offset; // Select Interrupt register
-*pSFR = 128+3; // Enable Receive & Transmit Interrupt
-
-// Enter Normal Operating Mode
-pSFR = (unsigned int *) &C1MOD + offset; // Select Mode register
-*pSFR = 0; // Operating Mode 
-
+NVIC_EnableIRQ(CAN_IRQn);
+LPC_CAN2->IER =0x0003;
 return 1;
 }
 
@@ -879,10 +1922,10 @@ return 1;
 Setting a CAN receive filter
 as described in LPC_FullCAN_SW.h
 ***************************************************************************/ 
-short FullCAN_SetFilter (
-  unsigned short can_port, // CAN interface number
-  unsigned int CANID // 11-bit CAN ID
-  )
+short FullCAN_SetFilter  (
+                         unsigned short can_port, // CAN interface number
+                         unsigned int CANID // 11-bit CAN ID
+                         )
 {
 unsigned int p, n;
 unsigned int buf0, buf1;
@@ -890,22 +1933,95 @@ unsigned int ID_lower, ID_upper;
 unsigned int candata;
 unsigned int *pAddr;
 
-#ifdef REVISION_C
-  if ((can_port < 0) || (can_port > (MAX_CANPORTS-1))) 
-#endif
+ 
 
-#ifndef REVISION_C
-  if ((can_port < 1) || (can_port > (MAX_CANPORTS))) 
-#endif
+// Acceptance Filter Mode Register = off !
+LPC_CANAF->AFMR = 0x00000001L;
 
+if (gCANFilter == 0)
+     {    
+     // First call, init entry zero
+     gFullCANList[0].Dat1 = 0x000037FFL; // CAN 1, disabled and unused
+     }
+if (gCANFilter >= MAX_FILTERS)
+     {
+     return 0;
+     }
 
+CANID &= 0x000007FFL; // Mask out 11-bit ID
+CANID |= (can_port << 13); // Put can_port info in bits 13-15
 
- { // Illegal value for can_port
-    return 0;
-  }
+// Filters must be sorted by interface, then by priority
+// new filter is sorted into array
+p = 0;
+while (p < gCANFilter) // loop through all existing filters 
+     {
+     if ((gFullCANList[p].Dat1 & 0x0000FFFFL) > CANID)
+          {
+          break;
+          }
+     p++;
+     }
 
+// insert new filter here
+buf0 = gFullCANList[p].Dat1; // save current entry
+gFullCANList[p].Dat1 = CANID; // insert the new entry
+
+// move all remaining entries one row up
+gCANFilter++;
+while (p < gCANFilter)
+     {
+     p++;
+     buf1 = gFullCANList[p].Dat1;
+     gFullCANList[p].Dat1 = buf0;
+     buf0 = buf1;
+     }
+
+// Now work on Acceptance Filter Configuration     
+// Set CAN filter for 11-bit standard identifiers
+p = 0;
+
+// Set pointer for Standard Frame Individual
+// Standard Frame Explicit
+LPC_CANAF->SFF_sa = p;
+
+pAddr = (unsigned int *) LPC_CANAF_RAM_BASE;
+for (n = 0; n < ((gCANFilter+1)/2); n++)
+     {
+     ID_lower = gFullCANList[n * 2].Dat1 & 0x0000FFFFL;
+     ID_upper = gFullCANList[n * 2 + 1].Dat1 & 0x0000FFFFL;
+     candata = (ID_lower << 16) + ID_upper;
+     *pAddr = candata;
+     p += 4;
+     pAddr++;
+     }
+
+// p is still pointing to ENDofTable;
+  
+// Set pointer for Standard Frame Groups
+// Standard Frame Group Start Address Register
+LPC_CANAF->SFF_GRP_sa = p;
+
+// Set pointer for Extended Frame Individual
+// Extended Frame Start Address Register
+LPC_CANAF->EFF_sa = p;
+
+// Set pointer for Extended Frame Groups
+// Extended Frame Group Start Address Register
+LPC_CANAF->EFF_GRP_sa = p;
+
+// Set ENDofTable 
+// End of AF Tables Register
+LPC_CANAF->ENDofTable = p;
+
+// Acceptance Filter Mode Register, start using filter
+LPC_CANAF->AFMR = 0;
+  
+return 1;
+
+/*
   // Acceptance Filter Mode Register = off !
-  AFMR = 0x00000001L;
+LPC_CANAF->AFMR = 0x00000001L;
 
   if (gCANFilter == 0)
   { // First call, init entry zero
@@ -951,7 +2067,7 @@ unsigned int *pAddr;
 
   // Set pointer for Standard Frame Individual
   // Standard Frame Explicit
-  SFF_sa = p;
+LPC_CANAF->SFF_sa = p;
 
   pAddr = (unsigned int *) ACCEPTANCE_FILTER_RAM_BASE;
   for (n = 0; n < ((gCANFilter+1)/2); n++)
@@ -968,25 +2084,77 @@ unsigned int *pAddr;
   
   // Set pointer for Standard Frame Groups
   // Standard Frame Group Start Address Register
-  SFF_GRP_sa = p;
+LPC_CANAF->SFF_GRP_sa = p;
 
   // Set pointer for Extended Frame Individual
   // Extended Frame Start Address Register
-  EFF_sa = p;
+LPC_CANAF->EFF_sa = p;
 
   // Set pointer for Extended Frame Groups
   // Extended Frame Group Start Address Register
-  EFF_GRP_sa = p;
+LPC_CANAF->EFF_GRP_sa = p;
 
   // Set ENDofTable 
   // End of AF Tables Register
-  ENDofTable = p;
+LPC_CANAF->ENDofTable = p;
 
   // Acceptance Filter Mode Register, start using filter
-  AFMR = 0;
+LPC_CANAF->AFMR = 0;
   
-  return 1;
+  return 1;	 */
 }
+
+//-----------------------------------------------
+void CAN_IRQHandler(void)  
+{
+//can_rotor[0]++;
+CANStatus = LPC_CAN1->ICR;
+//new_rotor[3]=CANStatus;
+//new_rotor[4]=CANStatus>>16;
+//
+//rotor_rotor_rotor[0]++;
+		
+if ( CANStatus & (1 << 0) )
+     {
+	CAN_ISR_Rx1();
+	plazma_can1++;
+
+     }
+
+if ( CANStatus & (1 << 1) )
+     {
+	can_isr_tx1();
+	plazma_can2++;
+	
+     }
+
+CANStatus = LPC_CAN2->ICR;
+//new_rotor[3]=CANStatus;
+//new_rotor[4]=CANStatus>>16;
+//
+//rotor_rotor_rotor[0]++;
+plazma_can++;		
+if ( CANStatus & (1 << 0) )
+     {
+	CAN_ISR_Rx2();
+	plazma_can3++;
+	cnt_can_pal=0;
+
+     }
+
+if ( CANStatus & (1 << 1) )
+     {
+	can_isr_tx2();
+	 plazma_can4++;
+	
+     }
+
+return;
+}
+
+
+
+
 
 
 

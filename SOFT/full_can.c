@@ -1271,6 +1271,12 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	can_reset_cnt=0;
    	}
 
+if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)==0x3d))
+ 	{
+	f_out_byps=500+(signed char)RXBUFF[5];
+	f_out_byps_cnt=20;
+   	}
+
 if((RXBUFF[1]==PUTTM1BYPS))
 	{
 	char bypass_adress;
@@ -1332,6 +1338,36 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		byps[0]._valid=1;
 		}
    	}
+
+
+if((RXBUFF[1]==PUTTM2BYPS))
+ 	{
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
+
+	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
+		{
+		byps[bypass_adress-61]._T=(char)RXBUFF[2];
+		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
+		byps[bypass_adress-61]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[bypass_adress-61]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[bypass_adress-61]._cnt=0;
+		byps[bypass_adress-61]._valid=1;
+		}
+	else 
+		{
+		byps[0]._T=(char)RXBUFF[2];
+		byps[0]._flags=(char)RXBUFF[3];
+		byps[0]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
+		byps[0]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+
+		byps[0]._cnt=0;
+		byps[0]._valid=1;
+		}
+   	}
+
 
 if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{

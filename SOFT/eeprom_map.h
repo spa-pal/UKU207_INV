@@ -33,7 +33,7 @@
 
 #define SECTOR_SETS 	SECTOR_KOEF+100
 
-#define EE_MAIN_IST 	SECTOR_SETS+2
+#define EE_F_IND_EN 	SECTOR_SETS+2
 #define EE_UMAX    		SECTOR_SETS+4
 #define EE_UB0    		SECTOR_SETS+6
 #define EE_UB20    		SECTOR_SETS+8

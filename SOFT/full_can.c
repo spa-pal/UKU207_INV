@@ -1273,8 +1273,10 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 
 if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)==0x3d))
  	{
-	f_out_byps=500+(signed char)RXBUFF[5];
+	if(!(RXBUFF[4]&0x04))f_out_byps=500+(signed char)RXBUFF[5];
+	else f_out_byps=0;
 	f_out_byps_cnt=20;
+	
    	}
 
 if((RXBUFF[1]==PUTTM1BYPS))

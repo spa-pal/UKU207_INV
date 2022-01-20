@@ -8357,7 +8357,7 @@ else if(ind==iMn_INV)
 		    	}
 		else if((sub_ind>(1+NUMBYPASS+(F_IND_EN==1)))&&(sub_ind<=(1+NUMBYPASS+NUMINV+(F_IND_EN==1))))
 		    	{
-		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-(F_IND_EN==1)-2);
+		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-3);
 		    	}
 
 		else if(sub_ind==(2+NUMBYPASS+NUMINV+(F_IND_EN==1)))

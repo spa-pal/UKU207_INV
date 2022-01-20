@@ -2277,7 +2277,7 @@ if(ind==iMn_INV)
  	     lcd_buffer[find(':')]=' ';
  	     }
 
-	if((index_set)&&(sub_ind>1))
+	if((index_set)&&(sub_ind>(1+(F_IND_EN==1))))
 	     {
 	     if(index_set==sub_ind)lcd_buffer[60]=1;
 	     else if((index_set-sub_ind)==1)lcd_buffer[40]=1;
@@ -2312,6 +2312,7 @@ if(ind==iMn_INV)
 	int2lcdyx(f_out,0,19,0);
 	int2lcdyx(f_out_byps,0,4,0);
 	int2lcdyx(f_out_byps_cnt,0,10,0);
+
 	}
 
  else if(ind==iBps)
@@ -8352,12 +8353,12 @@ else if(ind==iMn_INV)
 			}
 		else if((sub_ind>(1+(F_IND_EN==1)))&&(sub_ind<=(1+NUMBYPASS+(F_IND_EN==1))))
 		    	{
-		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-3);
-				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-3);
+		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-2-(F_IND_EN==1));
+				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-2-(F_IND_EN==1));
 		    	}
 		else if((sub_ind>(1+NUMBYPASS+(F_IND_EN==1)))&&(sub_ind<=(1+NUMBYPASS+NUMINV+(F_IND_EN==1))))
 		    	{
-		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-3);
+		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-2-(F_IND_EN==1));
 		    	}
 
 		else if(sub_ind==(2+NUMBYPASS+NUMINV+(F_IND_EN==1)))

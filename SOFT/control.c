@@ -1422,7 +1422,7 @@ if(f_out_byps_cnt)
 if (NUMINV)
 	{
 	char master_inv_ison=0;
-	f_out=0;
+	f_out_inv=0;
 	//someInvAvIsOn=0; 
 	for(i=0;i<NUMINV;i++)
 		{
@@ -1451,7 +1451,7 @@ if (NUMINV)
 
 			if(inv[i]._flags_tm&0x40)
 				{
-				f_out=500+bps[i+20]._buff[15];
+				f_out_inv=500+(signed char)(bps[i+20]._buff[15]);
 				}
 
 			if(inv[i]._flags_tm&0x20)
@@ -1475,10 +1475,10 @@ if (NUMINV)
 			inv[i]._flags_tm_dop=0;  
      		}
      	}
-	if(master_inv_ison==0)f_out=0;
+	if(master_inv_ison==0)f_out_inv=0;
    	}
 
-if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS)) 
 	{
 	byps[0]._Iout=0;
 	byps[0]._Pout=0;
@@ -1488,9 +1488,10 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[0]._UinACprim=0;
 	byps[0]._UinACinvbus=0;
 	byps[0]._valid=0;
+	f_out_byps=0;
 	}
 
-if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+if((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) 
 	{
 	byps[1]._Iout=0;
 	byps[1]._Pout=0;
@@ -1502,7 +1503,7 @@ if((NUMBYPASS>=2&&(byps[1]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS))
 	byps[1]._valid=0;
 	}
 
-if((NUMBYPASS>=3&&(byps[2]._cnt>=CNT_SRC_MAX))||(!NUMBYPASS)) 
+if((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) 
 	{
 	byps[2]._Iout=0;
 	byps[2]._Pout=0;
@@ -1552,6 +1553,13 @@ inv[1]._Uin=bps[21]._buff[8]+(bps[21]._buff[9]*256);
 inv[1]._Uil=bps[21]._buff[10]+(bps[21]._buff[11]*256);
 inv[1]._cnt=0;    
 #endif
+
+if(NUMBYPASS)
+	{
+	if(f_out_byps_cnt)	f_out=f_out_byps;
+	else 				f_out=0;
+	}
+else 				f_out=f_out_inv;
 }
 
 //-----------------------------------------------

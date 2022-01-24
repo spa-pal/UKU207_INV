@@ -594,8 +594,8 @@ U8 socket_tcp;
 U8 tcp_soc_avg;
 U8 tcp_connect_stat;
 
-
 signed short f_out;
+signed short f_out_inv;
 signed short f_out_byps;
 signed short f_out_byps_cnt;
 
@@ -2058,7 +2058,7 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
-		ptrs[5]="   1Fвых.     yГц   ";
+		ptrs[5]="    Fвых.     yГц   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Байпасс            ";     
 		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Байпасс  N1        ";
@@ -2116,7 +2116,7 @@ if(ind==iMn_INV)
      	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
-	   	ptrs[5]="   2Fвых.     yГц   ";
+	   	ptrs[5]="    Fвых.     yГц   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Байпасс            ";     
 		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Байпасс  N1        ";
@@ -2173,7 +2173,7 @@ if(ind==iMn_INV)
      //	ptrs[2]="    Pвых=     @Вт   ";
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
-		ptrs[5]="   3Fвых.     yГц   ";
+		ptrs[5]="    Fвых.     yГц   ";
 
 		ptrs[5+(F_IND_EN==1)]=						" Байпасс            ";     
 		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Байпасс  N1        ";
@@ -2289,8 +2289,8 @@ if(ind==iMn_INV)
 	
 	if(ND_EXT[0])sub_bgnd("неиспр.",'s',-3);
 	else int2lcd_mmm(t_ext[0],'s',0);
-	if(f_out_byps_cnt)int2lcd(f_out_byps,'y',1);
-	else int2lcd(f_out,'y',1);
+	/*if(f_out_byps_cnt)int2lcd(f_out_byps,'y',1);
+	else*/ int2lcd(f_out,'y',1);
 	//int2lcdyx(bps[20]._cnt,0,2,0); 
 	//int2lcdyx(byps._cnt,0,6,0);
 	//int2lcdyx(plazma_can1,1,3,0);
@@ -2309,9 +2309,9 @@ if(ind==iMn_INV)
 	int2lcdyx(modbus_tcp_plazma[2],0,11,0);
 	int2lcdhyx(modbus_crc_plazma[0],1,5);
 	int2lcdhyx(modbus_crc_plazma[1],2,5);*/
-	int2lcdyx(f_out,0,19,0);
-	int2lcdyx(f_out_byps,0,4,0);
-	int2lcdyx(f_out_byps_cnt,0,10,0);
+	//int2lcdyx(f_out_inv,0,19,0);
+	//int2lcdyx(f_out_byps,0,4,0);
+	//int2lcdyx(f_out_byps_cnt,0,10,0);
 
 	}
 
@@ -2701,7 +2701,7 @@ else if(ind==iByps)
 	//int2lcd_mmm(byps._Pout,']',0);
 	int2lcd(byps[sub_ind1]._UinACprim,'<',1);
 	int2lcd(byps[sub_ind1]._UinACinvbus,'>',1);
-	//int2lcdyx(iByps_ind_cnt,0,2,0);
+	//int2lcdyx(byps[sub_ind1]._cnt,0,2,0);
 	int2lcd(byps[sub_ind1]._adress-19,'!',0);
 	int2lcd(sub_ind1+1,'@',0);
     }

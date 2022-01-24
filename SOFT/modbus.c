@@ -836,7 +836,9 @@ modbus_registers[459]=0;
 
 
 //Байпас
-modbus_registers[800]=(char)(byps[0]._Uout/256);			//Рег401	  Напряжение выхода байпас Ф.А (0.1В)
+modbus_registers[798]=(char)(f_out/256);					//Рег400	  Напряжение выхода байпас Ф.А (0.1В)
+modbus_registers[799]=(char)(f_out%256);
+modbus_registers[800]=(char)(byps[0]._Uout/256);			//Рег400	  Напряжение выхода байпас Ф.А (0.1В)
 modbus_registers[801]=(char)(byps[0]._Uout%256);
 modbus_registers[802]=(char)(byps[1]._Uout/256);			//Рег402	  Напряжение выхода байпас Ф.B (0.1В)
 modbus_registers[803]=(char)(byps[1]._Uout%256);

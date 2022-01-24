@@ -37,6 +37,7 @@ signed short snmp_mains_power_voltage_phaseC;
 signed short snmp_load_voltage;
 signed short snmp_load_current;
 signed short snmp_load_power;
+signed short snmp_load_frequency;
 
 //Состояние БПСов
 signed short snmp_bps_number[8];
@@ -302,6 +303,7 @@ else
 snmp_load_voltage=load_U;
 snmp_load_current=load_I;
 snmp_load_power=load_P;
+snmp_load_frequency=f_out;
 
 //snmp_numofbat=NUMBAT;
 //snmp_numofbps=NUMIST;

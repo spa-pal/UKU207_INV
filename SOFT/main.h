@@ -53,6 +53,7 @@
 #define DISPLAY_LOAD_VOLTAGE				1
 #define DISPLAY_LOAD_CURRENT				2
 #define DISPLAY_LOAD_POWER					3
+#define DISPLAY_LOAD_FREQUENCY				4
 
 /*
 #define DISPLAY_PSU					4
@@ -190,7 +191,8 @@
 #define DISPLAY_BYPASS_P_LOAD_C				23
 #define DISPLAY_BYPASS_TEMPER_C				24
 #define DISPLAY_BYPASS_U_INPUT_AC_PRIM_C	25 
-#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_C	26  
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_C	26 
+#define DISPLAY_BYPASS_F_LOAD				27 
 
 #define COMMAND_OK		0x5555
 #define COMAND_FAIL		0xaaaa
@@ -1142,6 +1144,7 @@ extern char uNetAvIsOn;			//авария по входному напряжению AC
 extern char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
 
 extern signed short f_out;
+extern signed short f_out_inv;
 extern signed short f_out_byps;
 extern signed short f_out_byps_cnt;
 

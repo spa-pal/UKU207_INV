@@ -1451,7 +1451,9 @@ if (NUMINV)
 
 			if(inv[i]._flags_tm&0x40)
 				{
-				f_out_inv=500+(signed char)(bps[i+20]._buff[15]);
+				if((unsigned char)(bps[i+20]._buff[15])==0x7f) 		f_out_inv=750;
+				else if((unsigned char)(bps[i+20]._buff[15])==0x80) f_out_inv=250;
+				else 												f_out_inv=500+(signed char)(bps[i+20]._buff[15]);
 				}
 
 			if(inv[i]._flags_tm&0x20)

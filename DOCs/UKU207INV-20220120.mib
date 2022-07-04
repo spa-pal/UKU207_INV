@@ -1,0 +1,655 @@
+
+UKU207INV DEFINITIONS ::= BEGIN
+
+IMPORTS
+	enterprises, OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE
+		FROM SNMPv2-SMI
+	DisplayString, TEXTUAL-CONVENTION
+		FROM SNMPv2-TC;
+
+entSPA-SIB  MODULE-IDENTITY
+    LAST-UPDATED "202112061000Z"
+    ORGANIZATION 
+        "SPA"
+    CONTACT-INFO 
+        "Novosib etc"
+    DESCRIPTION 
+        "This MIB contains objects for SPA-MIB"
+    REVISION "202112061000Z"
+    DESCRIPTION 
+        "Initial version"
+::= { enterprises 33183 }
+
+
+-- --------------------------------------------
+-- --------------------------------------------        
+--  TEXTUAL CONVENTION
+-- --------------------------------------------
+-- --------------------------------------------
+
+Tenths ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT "d-1"
+   STATUS  current
+   DESCRIPTION
+       "These values are shown with one sign after the decimal point."
+   SYNTAX  INTEGER 
+
+Hundredths ::= TEXTUAL-CONVENTION
+   DISPLAY-HINT "d-2"
+   STATUS  current
+   DESCRIPTION
+       "These values are shown with two sign after the decimal point."
+   SYNTAX  INTEGER 
+
+-- --------------------------------------------
+-- --------------------------------------------        
+--  TRANSMISSION OBJECTS
+-- --------------------------------------------
+-- --------------------------------------------
+
+uku207inv            OBJECT IDENTIFIER ::= { entSPA-SIB 25 }
+displayDeviceInfo    OBJECT IDENTIFIER ::= { uku207inv 1 }
+sysParams            OBJECT IDENTIFIER ::= { uku207inv 10 }
+displayBYPASS        OBJECT IDENTIFIER ::= { uku207inv 19 }
+displayBYPASS-MBP4529        OBJECT IDENTIFIER ::= { uku207inv 20 }
+
+displayDeviceInfoCode  OBJECT-TYPE
+	SYNTAX     INTEGER(1..1000000)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"System code
+		case 24110: 	Inverter system with bypass, input AC220V/DC24V, output AC220V;
+		case 48110: 	Inverter system with bypass, input AC220V/DC48V-60V, output AC220V;
+		case 110110: 	Inverter system with bypass, input AC220V/DC110V-150V, output AC220V;
+		case 220110: 	Inverter system with bypass, input AC220V/DC220V, output AC220V;
+		case 24130: 	Inverter system with bypass, input AC380V/DC24V, output AC380V;
+		case 48130: 	Inverter system with bypass, input AC380V/DC48V-60V, output AC380V;
+		case 110130: 	Inverter system with bypass, input AC380V/DC110V-150V, output AC380V;
+		case 220130: 	Inverter system with bypass, input AC380V/DC220V, output AC380V;
+		case 24010: 	Inverter system without bypass, input DC24V, output AC220V;
+		case 48010: 	Inverter system without bypass, input DC48V-60V, output AC220V;
+		case 110010: 	Inverter system without bypass, input DC110V-150V, output AC220V;
+		case 220010: 	Inverter system without bypass, input DC220V, output AC220V;
+		case 24030: 	Inverter system without bypass, input DC24V, output AC380V;
+		case 48030: 	Inverter system without bypass, input DC48V-60V, output AC380V;
+		case 110030: 	Inverter system without bypass, input DC110V-150V, output AC380V;
+		case 220030: 	Inverter system without bypass, input DC220V, output AC380V;
+		case 24011: 	Inverter system without bypass, input AC220V/DC24V, output AC220V;
+		case 48011: 	Inverter system without bypass, input AC220V/DC48V-60V, output AC220V;
+		case 110011: 	Inverter system without bypass, input AC220V/DC110V-150V, output AC220V;
+		case 220011: 	Inverter system without bypass, input AC220V/DC220V, output AC220V;
+		case 24031: 	Inverter system without bypass, input AC380V/DC24V, output AC380V;
+		case 48031: 	Inverter system without bypass, input AC380V/DC48V-60V, output AC380V;
+		case 110031: 	Inverter system without bypass, input AC380V/DC110V-150V, output AC380V;
+		case 220031: 	Inverter system without bypass, input AC380V/DC220V, output AC380V;
+
+		"
+	::= { displayDeviceInfo 1 }
+
+displayDeviceInfoSerial  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Serial number of the device, set at the factory"
+	::= { displayDeviceInfo 2 }
+
+displayDeviceInfoLocation  OBJECT-TYPE
+	SYNTAX     DisplayString (SIZE(69))
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Rewritable string parameter. Used to store information 
+		about the location of the device. 
+		Maximum length of 64 characters, only Latin"
+	::= { displayDeviceInfo 3 }
+
+displayDeviceInfoNumOfInvertors  OBJECT-TYPE
+	SYNTAX     INTEGER (0..100)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of invertors in the system."
+	::= { displayDeviceInfo 4 }
+
+displayDeviceInfoNumOfBypass  OBJECT-TYPE
+	SYNTAX     INTEGER(0..1)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"The number of bypass in the system."
+	::= { displayDeviceInfo 5 }
+
+displayDeviceInfoNumOfOutputPhases  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Number of temperature sensors in the device."
+	::= { displayDeviceInfo 6 }
+
+sysParamsSoundAlarmEn  OBJECT-TYPE
+	SYNTAX     INTEGER {
+    			off(0),
+                on(1)
+    }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting on / off alarm sounds of emergency conditions"
+	::= { sysParams 1 }
+
+sysParamsAlarmAutoDisable  OBJECT-TYPE
+	SYNTAX     INTEGER {
+                on (1),
+                off (0)
+     }
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting on / off of automatic shutdown of alarm conditions"
+	::= { sysParams 2 }
+
+sysParamsOutputVoltageSetting  OBJECT-TYPE
+	SYNTAX     INTEGER (220..230)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting the output voltage of the inverter system. 1 volt resolution"
+	::= { sysParams 5 }
+
+sysParamsOutputMaxVoltageSetting  OBJECT-TYPE
+	SYNTAX     INTEGER (240..270)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting the maximum output voltage of the inverter system. 1 volt resolution"
+	::= { sysParams 6 }	
+	
+sysParamsOutputMinVoltageSetting  OBJECT-TYPE
+	SYNTAX     INTEGER (0..200)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Setting the minimum output voltage of the inverter system. 1 volt resolution"
+	::= { sysParams 7 }	
+	
+sysParamsPrimaryVoltageTurningOn  OBJECT-TYPE
+	SYNTAX     INTEGER (240..270)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Primary mains voltage turning on. 1 volt resolution"
+	::= { sysParams 8 }	
+	
+sysParamsPrimaryVoltageTurningOff  OBJECT-TYPE
+	SYNTAX     INTEGER (0..200)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Primary mains voltage turning off. 1 volt resolution"
+	::= { sysParams 9 }	
+	
+sysParamsBatteriesVoltageTurningOn  OBJECT-TYPE
+	SYNTAX     INTEGER (240..270)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Batteries voltage turning on. 1 volt resolution"
+	::= { sysParams 10 }	
+	
+sysParamsBatteriesVoltageTurningOff  OBJECT-TYPE
+	SYNTAX     INTEGER (0..200)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Batteries voltage turning off. 1 volt resolution"
+	::= { sysParams 11 }	
+
+sysParamsBypassMaxOutputACVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass maximum output AC voltage alarm level. 1 volt resolution"
+	::= { sysParams 12 }	
+
+sysParamsBypassMinOutputACVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass minimum output AC voltage alarm level. 1 volt resolution"
+	::= { sysParams 13 }
+
+sysParamsBypassMaxInputACVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass maximum input AC voltage alarm level. 1 volt resolution"
+	::= { sysParams 14 }	
+
+sysParamsBypassMinInputACVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass minimum input AC voltage alarm level. 1 volt resolution"
+	::= { sysParams 15 }
+
+sysParamsBypassMaxInputDCVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass maximum input DC voltage alarm level. 1 volt resolution"
+	::= { sysParams 16 }	
+
+sysParamsBypassMinInputDCVoltageAlarmLevel  OBJECT-TYPE
+	SYNTAX     INTEGER (20..300)
+	MAX-ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Bypass minimum input DC voltage alarm level. 1 volt resolution"
+	::= { sysParams 17 }
+	
+displayINVTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplayINVEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Invertors Status Table"
+	::= { uku207inv 4 }
+
+displayINVEntry  OBJECT-TYPE
+	SYNTAX 	DisplayINVEntry
+	MAX-ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Invertors listin"
+	INDEX { displayINVNumber }
+	::= { displayINVTable 1 }
+
+DisplayINVEntry ::= SEQUENCE {
+	displayINVNumber
+		INTEGER,
+	displayINVOutputVoltage
+		Tenths,
+	displayINVOutputCourrent
+		Tenths,
+	displayINVOutputPower
+		INTEGER,
+	displayINVTemperature
+		INTEGER,
+	displayINVStatusWord
+		INTEGER,
+	displayINVInputVoltageDC
+		Tenths,
+	displayINVInputVoltageAC
+		Tenths,
+	displayINVOutputBusVoltage
+		Tenths	
+}
+
+displayINVNumber  OBJECT-TYPE
+	SYNTAX     INTEGER(1..64)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Invertors sequence number"
+	::= { displayINVEntry 1 }
+
+displayINVOutputVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output voltage of the invertor. 0.1 volt resolution"
+	::= { displayINVEntry 2 }
+
+displayINVOutputCourrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output current of the invertor. 0.1 amper resolution"
+	::= { displayINVEntry 3 }
+
+displayINVOutputPower  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output power of the invertor. 1 watt resolution"
+	::= { displayINVEntry 4 }	
+
+displayINVTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Radiator invertor temperature. Discretization 1 degree Celsius."
+	::= { displayINVEntry 5 }
+
+displayINVStatusWord  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bytes of invertor status flags.
+b0 - temperature failure flag (active '1'). Temperature above the set maximum value.
+b1 - overvoltage alarm flag (active '1'). The output voltage of the source exceeds the set maximum.
+b2 - low output voltage failure flag (active '1'). Output voltage below the set minimum.
+b3 - connection failure flag (active '1'). There is no connection to the power supply via the internal CAN bus.
+b4 - fan resource failure flag (active '1'). Fan operating time exceeded the set value."
+	::= { displayINVEntry 6 }
+
+displayINVInputVoltageDC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input DC voltage of the invertor. 0.1 volt resolution"
+	::= { displayINVEntry 7 }
+	
+displayINVInputVoltageAC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input AC voltage of the invertor. Only for invertors with a ACinput. 0.1 volt resolution"
+	::= { displayINVEntry 8 }
+	
+displayINVOutputBusVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Inverters common output bus voltage.  0.1 volt resolution"
+	::= { displayINVEntry 9 }
+
+
+	
+displayBypassLoadVoltage  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output voltage of the inverter system in the case of configuration with a single-phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 1 }
+
+displayBypassLoadCurrent  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output current of the inverter system in the case of configuration with a single-phase bypass. 0.1 amper resolution"
+	::= { displayBYPASS 2 }
+
+displayBypassLoadPower  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Output power of the inverter system in the case of configuration with a single-phase bypass. 1 watt resolution"
+	::= { displayBYPASS 3 }
+	
+displayBypassTemperature  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Temperature of the bypass. Discretization 1 degree Celsius"
+	::= { displayBYPASS 4 }
+
+displayBypassInputVoltageACPrimary  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input AC voltage of the inverter system in the case of configuration with a single-phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 5 }
+
+displayBypassInputVoltageInvBus  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bypass input voltage on the common inverter bus in the case of configuration with a single-phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 6 }	
+
+displayBypassFlags  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Bytes of bypass status flags.
+b1 - temperature failure flag (active '1'). Temperature  above the 80 degree Celsius.
+b2 - temperature warning flag (active '1'). Temperature  above the 70 degree Celsius.
+b6 - Input Power Priority. 1 - Invertor Bus, 0 - Primary Power Bus.
+b7 - Input Power Switch Status. 1 - Invertor Bus, 0 - Primary Power Bus.
+"
+	::= { displayBYPASS 7 }	
+
+displayBypassUdcin  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Input DC voltage of the inverter system. 0.1 volt resolution"
+	::= { displayBYPASS 8 }
+
+displayBypassLoadVoltageA  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase A output voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 9 }
+
+displayBypassLoadCurrentA  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase A output current of the inverter system in the case of configuration with a three phase bypass. 0.1 amper resolution"
+	::= { displayBYPASS 10 }
+
+displayBypassLoadPowerA  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase A output power of the inverter system in the case of configuration with a three phase bypass. 1 watt resolution"
+	::= { displayBYPASS 11 }
+	
+displayBypassInputVoltageACPrimaryA  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase A input AC voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 13 }
+
+displayBypassInputVoltageInvBusA  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase A bypass input voltage on the common inverter bus in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 14 }	
+
+displayBypassLoadVoltageB  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase B output voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 15 }
+
+displayBypassLoadCurrentB  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase B output current of the inverter system in the case of configuration with a three phase bypass. 0.1 amper resolution"
+	::= { displayBYPASS 16 }
+
+displayBypassLoadPowerB  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase B output power of the inverter system in the case of configuration with a three phase bypass. 1 watt resolution"
+	::= { displayBYPASS 17 }
+	
+displayBypassInputVoltageACPrimaryB  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase B input AC voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 19 }
+
+displayBypassInputVoltageInvBusB  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase B bypass input voltage on the common inverter bus in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 20 }		
+	
+displayBypassLoadVoltageC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase C output voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 21 }
+
+displayBypassLoadCurrentC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase C output current of the inverter system in the case of configuration with a three phase bypass. 0.1 amper resolution"
+	::= { displayBYPASS 22 }
+
+displayBypassLoadPowerC  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase C output power of the inverter system in the case of configuration with a three phase bypass. 1 watt resolution"
+	::= { displayBYPASS 23 }
+	
+displayBypassInputVoltageACPrimaryC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase C input AC voltage of the inverter system in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 25 }
+
+displayBypassInputVoltageInvBusC  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Phase C bypass input voltage on the common inverter bus in the case of configuration with a three phase bypass. 0.1 volt resolution"
+	::= { displayBYPASS 26 }		
+
+displayBypassOutputVoltageFrequency  OBJECT-TYPE
+	SYNTAX     Tenths
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Inverter system output voltage frequency 0.1 Hz resolution"
+	::= { displayBYPASS 27 }
+
+displayDITable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF DisplayDIEntry
+	ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Discrete inputs table."
+	::= { uku207inv 15 }
+
+DisplayDIEntry  OBJECT-TYPE
+	SYNTAX 	DisplayDIEntry
+	ACCESS     not-accessible
+	STATUS     current
+	DESCRIPTION 
+		"Discrete inputs listing."
+	INDEX { displayDINumber }
+	::= { displayDITable 1 }
+
+DisplayDIEntry ::= SEQUENCE {
+	displayDINumber
+		INTEGER,
+	displayDIAktivity
+		INTEGER,
+	displayDIAlarmAktivity
+		INTEGER,
+	displayDIAlarm
+		INTEGER
+}
+
+displayDINumber  OBJECT-TYPE
+	SYNTAX     INTEGER (0..65535)
+	ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Discrete input sequence number."
+	::= { DisplayDIEntry 1 }
+
+displayDIAktivity  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Discrete input current state:
+		0 - open;
+		1 - closed."
+	::= { DisplayDIEntry 2 }
+
+displayDIAlarmAktivity  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-write
+	STATUS     current
+	DESCRIPTION 
+		"Alarm state of discrete input:
+		0 - open;
+		1 - closed."
+	::= { DisplayDIEntry 3 }
+
+displayDIAlarm  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"The presence of an alarm at the discrete input:
+		0 - no alarm signal;
+		1 - alarm signal."
+	::= { DisplayDIEntry 4 }
+
+displayBypassMBP4529ManualControl  OBJECT-TYPE
+	SYNTAX     INTEGER
+	MAX-ACCESS     read-only
+	STATUS     current
+	DESCRIPTION 
+		"Manual bypass control. For bypass MBP4529 only. 
+		0 - manual bypass control disabled;
+		1 - manual control of the bypass in the <Mains> position;
+		2 - manual control of the bypass in the <Uninterruptible Power Supply> position;
+		3 - manual control of the bypass in the <Inverter> position."
+	::= { displayBYPASS-MBP4529 1 }
+
+
+END
+
+
+-- This MIB was created using NuDesign Team's Visual MIBuilder (Ver 4.7).
+

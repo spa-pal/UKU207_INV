@@ -17036,8 +17036,8 @@ while (1)
 	if(bMODBUS_TIMEOUT)
 		{
 		bMODBUS_TIMEOUT=0;
-		//modbus_plazma++;;
-		modbus_in();
+		//modbus_in(); //o_1
+		modbus_puts(); //o_1
 		}
 	if(bRXIN0) 
 		{
@@ -17081,7 +17081,7 @@ while (1)
 	    	can_mcp2515_hndl();
 
 		#ifdef SC16IS740_UART
-		sc16is700_uart_hndl();
+		sc16is700_hndl(); //o_1
 		#endif
 		}
 	

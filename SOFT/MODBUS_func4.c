@@ -14,14 +14,14 @@ void wr_reg_func4(void){ //Заполнение регистров для функции 4 перед их отправкой
 	{
 		I_reg1=byps[0]._Iout;			//Рег1
 		U_reg2=byps[0]._Uout;			//Рег2
-		P_reg3=(char)(byps[0]._Pout/256);			//Рег3
-		T_reg4=byps[0]._T;			//Рег4	 
+		P_reg3=byps[0]._Pout;			//Рег3
+		T_reg4=byps[0]._T;				//Рег4	 
 	}
 	else 
 	{
 		I_reg1=load_I;				//Рег1
 		U_reg2=load_U;				//Рег2
-		P_reg3=(char)(load_P/256);	//Рег3
+		P_reg3=load_P;				//Рег3
 		T_reg4=0;					//Рег4
 	}
 	//----------

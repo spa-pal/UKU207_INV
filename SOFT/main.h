@@ -926,7 +926,7 @@ typedef struct
      char _adr_ee;
 	char _last_avar;
      } BPS_STAT; 
-extern BPS_STAT bps[64];
+extern BPS_STAT bps[1];
 
 //***********************************************
 //Состояние инверторов

@@ -18,7 +18,7 @@ extern short modbus_rtu_plazma[10];
 
 //-----------------------------------------------
 unsigned short CRC16_2(char* buf, short len);
-//-----------------------------------------------
+/* //o_1
 void modbus_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity);
 //-----------------------------------------------
 void modbus_hold_registers_transmit(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_quantity, char prot);
@@ -32,6 +32,4 @@ void modbus_input_registers_transmit(unsigned char adr,unsigned char func,unsign
 void modbus_in(void);
 //-----------------------------------------------
 void modbus_hold_register_write(unsigned char adr,unsigned char func,unsigned short reg_adr,unsigned short reg_value, char prot);
-
-
-
+*/ //o_1

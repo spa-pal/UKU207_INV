@@ -1,4 +1,5 @@
 
+#define EE_LC640_WDT	0x02
 #define EE_CAN_RESET_CNT	0x06
 #define RESET_CNT	0x08
 

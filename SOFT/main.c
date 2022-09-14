@@ -577,6 +577,10 @@ short reset_plazma;
 char plazma_rx;
 
 //-----------------------------------------------
+// Однократные процедуры после сброса
+short ftarh_main_cnt;
+short ftarh_memo[10];
+//-----------------------------------------------
 //Управление реле
 signed short RELE_SET_MASK[2]={1,2};
 char avar_stat_temp[2];
@@ -797,6 +801,18 @@ lc640_write_int(ADR_EE_BAT_C_NOM[1],0);
 lc640_write_int(ADR_EE_BAT_RESURS[1],0);
 }
 
+
+
+//-----------------------------------------------
+void first_time_after_reset_hndl(void)//1Гц
+{
+if(ftarh_main_cnt<100)ftarh_main_cnt++;
+if(ftarh_main_cnt==2)
+	{
+	lc640_write_int(RESET_CNT,lc640_read_int(RESET_CNT)+1);
+	}
+}
+
 //-----------------------------------------------
 void can_reset_hndl(void)
 {
@@ -804,7 +820,7 @@ if((lc640_read_int(EE_CAN_RESET_CNT)<0)||(lc640_read_int(EE_CAN_RESET_CNT)>2))	l
 
 can_reset_cnt++;
 
-if((can_reset_cnt>=10)&&(!(avar_stat&0x0001))&&(!bRESET))
+if(((can_reset_cnt>=10)&&(!(avar_stat&0x0001))&&(!bRESET))||((ftarh_memo[0]!=0)&&(ftarh_memo[0]!=1)))
 	{
 	if(lc640_read_int(EE_CAN_RESET_CNT)<2)
 		{
@@ -2311,7 +2327,9 @@ if(ind==iMn_INV)
 	int2lcdhyx(modbus_crc_plazma[1],2,5);*/
 	//int2lcdyx(f_out_inv,0,19,0);
 	//int2lcdyx(f_out_byps,0,4,0);
-	//int2lcdyx(f_out_byps_cnt,0,10,0);
+	//int2lcdyx(lc640_read_int(EE_LC640_WDT),0,19,0);
+	//int2lcdyx(lc640_wdt_cnt,0,2,0);
+	//int2lcdyx(lc640_wdt_memo,0,8,0);
 
 	}
 
@@ -7951,9 +7969,19 @@ else if(ind==iNpn_set)
 	}
 else if(ind==iFWabout)
 	{
-	bgnd_par(	" Версия             ",
+/*	bgnd_par(	" Версия             ",
 				" Сборка  0000.00.00 ",
 				"                    ",
+				"                    ");*/
+
+	bgnd_par(	" Версия             ",
+				" Сборка  0000.00.00 ",
+				#ifdef WG12232A
+				" WG12232A           ",
+				#endif
+				#ifdef WG12232L3
+				" WG12232L3          ",
+				#endif
 				"                    ");
 	int2lcdyx(BUILD_YEAR,1,12,0);
 	int2lcdyx(BUILD_MONTH,1,15,0);
@@ -10214,7 +10242,7 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,30);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,20);
 			}
-
+		
 		else if(sub_ind==1)
 			{
 			lc640_write_int(EE_U_OUT_SET,220);
@@ -10232,7 +10260,7 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,70);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,40);
-			}
+			} 
 
 		else if(sub_ind==2)
 			{
@@ -10251,7 +10279,7 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,90);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,150);
-			}
+			} 
 		else if(sub_ind==3)
 			{
 			lc640_write_int(EE_U_OUT_SET,220);
@@ -10269,10 +10297,10 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,260);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,170);
-			}
+			} /*
 
 
-		else if(sub_ind==SIMAXIDEF)
+		else */ if(sub_ind==SIMAXIDEF)
 			{
 			tree_down(0,0);
 			}
@@ -16743,12 +16771,16 @@ char ind_reset_cnt=0;
 //long i;
 char mac_adr[6] = { 0x00,0x73,0x04,50,60,70 };
 
+ftarh_memo[0]=1234;
+
 reset_plazma=(short)LPC_SC->RSID;
 //LPC_SC->RSID=0xFF;
 //i=200000;
 //while(--i){};
 
 SystemInit();
+
+
 
 bTPS=1;
 
@@ -16931,6 +16963,8 @@ FullCAN_SetFilter(0,0x18e);
 
 UARTInit(0, 9600);	/* baud rate setting */
 
+lc640_wdt_init();
+
 memo_read();
 
 mac_adr[5]=*((char*)&AUSW_MAIN_NUMBER);
@@ -16958,6 +16992,8 @@ snmp_Community[8]=(char)lc640_read_int(EE_COMMUNITY+16);
 if((snmp_Community[8]==0)||(snmp_Community[8]==' '))snmp_Community[8]=0;
 snmp_Community[9]=0; /**/
 
+ftarh_memo[0]=lc640_read_int(EE_ETH_IS_ON);
+ftarh_memo[1]=ETH_IS_ON;
 if(lc640_read_int(EE_ETH_IS_ON)==1)
 	{
 	bgnd_par(		"                    ",
@@ -17036,8 +17072,8 @@ while (1)
 	if(bMODBUS_TIMEOUT)
 		{
 		bMODBUS_TIMEOUT=0;
-		//modbus_plazma++;;
-		modbus_in();
+		//modbus_in(); //o_1
+		modbus_puts(); //o_1
 		}
 	if(bRXIN0) 
 		{
@@ -17081,7 +17117,7 @@ while (1)
 	    	can_mcp2515_hndl();
 
 		#ifdef SC16IS740_UART
-		sc16is700_uart_hndl();
+		sc16is700_hndl(); //o_1
 		#endif
 		}
 	
@@ -17234,6 +17270,8 @@ while (1)
 		//byps._cnt++;
 		time_sinc_hndl();
 		system_status_hndl();
+		first_time_after_reset_hndl();
+		lc640_wdt_hndl();
 		}
 	if(b1min)
 		{

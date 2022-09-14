@@ -1,10 +1,13 @@
 #include "25lc640.h"
 #include "LPC17xx.H"
 #include "main.h"
+#include "eeprom_map.h"
 
 #ifndef SPI1_DEFINED
 #define SPI1_DEFINED
 
+short lc640_wdt_cnt;
+short lc640_wdt_memo;
 
 
 char spi1(char in)
@@ -22,6 +25,34 @@ return LPC_SPI->SPDR;
 
 #endif
 
+//-----------------------------------------------
+void lc640_wdt_hndl(void)//1Гц	Программа от неработающей в первый момент 
+//микросхемы памяти. Если в первый момент по адресу 0x02 не прочиталась 0x55AA
+//то записывает ее туда и перегружает УКУ
+{
+if(lc640_wdt_cnt<10)lc640_wdt_cnt++;
+
+if(lc640_wdt_memo!=0x55AA)
+	{
+	if(lc640_wdt_cnt==3)
+		{
+		lc640_write_int(EE_LC640_WDT,0x55AA);
+		}
+	if(lc640_wdt_cnt==4)
+		{
+		bRESET=1;
+		}
+	}
+
+}
+
+//-----------------------------------------------
+void lc640_wdt_init(void)
+{
+lc640_wdt_memo = lc640_read_int(EE_LC640_WDT);
+lc640_wdt_cnt=0;
+}
+
 //----------------------------------------------- 
 //настройка SPI1
 void spi1_config(void)
@@ -35,7 +66,7 @@ SET_REG( LPC_PINCON->PINSEL1, 3, (18-16)*2, 2);
 S1SPCCR=100;
 S1SPCR=0x3f; */
 
-LPC_SPI->SPCCR=8;
+LPC_SPI->SPCCR=32;
 LPC_SPI->SPCR=0x20;
 }
 

@@ -133,7 +133,7 @@ if (soc == socket_udp)
 	udp_callback_plazma[10]=day_of_year;
 		//udp_callback_plazma[9]=year_cnt;
 
-	if(time_sinc_hndl_req_cnt)
+	if(rport==123/*time_sinc_hndl_req_cnt*/)
 		{
 		LPC_RTC->HOUR=hour_in_this_day;
 		LPC_RTC->MIN=min_in_this_hour;

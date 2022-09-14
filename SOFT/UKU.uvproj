@@ -556,6 +556,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1127,6 +1137,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1700,6 +1720,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2271,6 +2301,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2844,6 +2884,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3415,6 +3465,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3988,6 +4048,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4559,6 +4629,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5132,6 +5212,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -5703,6 +5793,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -6276,6 +6376,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -6847,6 +6957,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -7420,6 +7540,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -7991,6 +8121,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -8564,6 +8704,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9136,6 +9286,16 @@
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
             </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -9707,6 +9867,16 @@
               <FileName>MODBUS_TCP.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MODBUS_TCP.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_RTU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_RTU.c</FilePath>
+            </File>
+            <File>
+              <FileName>MODBUS_func4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MODBUS_func4.c</FilePath>
             </File>
           </Files>
         </Group>

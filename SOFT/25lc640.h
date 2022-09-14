@@ -3,6 +3,8 @@
 #define CS_ON       LPC_GPIO0->FIODIR|=(1UL<<LC640_CS);LPC_GPIO0->FIOCLR|=(1UL<<LC640_CS);
 #define CS_OFF      LPC_GPIO0->FIODIR|=(1UL<<LC640_CS);LPC_GPIO0->FIOSET|=(1UL<<LC640_CS);
 
+extern short lc640_wdt_cnt;
+extern short lc640_wdt_memo;
 
 
 char spi1(char in);

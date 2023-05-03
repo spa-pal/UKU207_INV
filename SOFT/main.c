@@ -44,6 +44,10 @@ extern LOCALM localm[];
 #define MY_IP localm[NETIF_ETH].IpAdr
 #define DHCP_TOUT   50
 
+#ifdef WG12232L3
+//char lcd_bitmap2[512];
+#endif
+
 //***********************************************
 //Таймер
 char b10000Hz,b1000Hz,b2000Hz,b100Hz,b50Hz,b10Hz,b5Hz,b2Hz,b1Hz,b1min;
@@ -602,6 +606,8 @@ signed short f_out;
 signed short f_out_inv;
 signed short f_out_byps;
 signed short f_out_byps_cnt;
+
+
 
 //-----------------------------------------------
 void rtc_init (void) 
@@ -2328,8 +2334,8 @@ if(ind==iMn_INV)
 	//int2lcdyx(f_out_inv,0,19,0);
 	//int2lcdyx(f_out_byps,0,4,0);
 	//int2lcdyx(lc640_read_int(EE_LC640_WDT),0,19,0);
-	//int2lcdyx(lc640_wdt_cnt,0,2,0);
-	//int2lcdyx(lc640_wdt_memo,0,8,0);
+	//int2lcdyx(NUMBYPASS,0,2,0);
+	//int2lcdyx(uOutAvIsOn,0,19,0);
 
 	}
 
@@ -7878,6 +7884,10 @@ else if(ind==iInv_tabl)
 	int2lcd_mmm(inv[sub_ind1+1]._T,'$',0); 
    	int2lcd_mmm(inv[sub_ind1+2]._T,'$',0);
 
+	//int2lcd_mmm(inv[sub_ind1]._uout_av_stat,'$',0);
+	//int2lcd_mmm(inv[sub_ind1+1]._uout_av_stat,'$',0); 
+   	//int2lcd_mmm(inv[sub_ind1+2]._uout_av_stat,'$',0);
+
 	}	 
 else if(ind==iKlimat)
 	{
@@ -7977,7 +7987,7 @@ else if(ind==iFWabout)
 	bgnd_par(	" Версия             ",
 				" Сборка  0000.00.00 ",
 				#ifdef WG12232A
-				" WG12232A           ",
+				"                    ",
 				#endif
 				#ifdef WG12232L3
 				" WG12232L3          ",
@@ -8714,7 +8724,10 @@ else if(ind==iInv_tabl)
 		{
 		sub_ind=1;
 		}
-				
+	else if(but==butE_)
+		{
+		inv[5]._uout_av_stat=0;
+		}				
 	else if(but==butL)
 		{
 		sub_ind=0;
@@ -17063,6 +17076,7 @@ if (socket_tcp != 0)
     tcp_listen (socket_tcp, 502);
   	}
 kan_aktivity_cnt=15;
+inv[5]._uout_av_stat=0;
 			
 while (1)  
 	{

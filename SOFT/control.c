@@ -654,7 +654,7 @@ else
 	
 	}
 #endif
-
+/*
 #ifdef UKU_220_IPS_TERMOKOMPENSAT
 //напряжение сети
 
@@ -750,7 +750,8 @@ else
 	}
 if(bps[11]._device!=dNET_METR) net_F3=net_F;
 #endif
-
+*/
+/*
 //Напряжения батарей
 temp_SL=(signed long)adc_buff_[0];
 temp_SL*=Kubat[0];
@@ -813,7 +814,7 @@ temp_SL=(signed long)adc_buff_[1];
 temp_SL*=Kubatm[1];
 temp_SL/=2000L;
 bat[1]._Ubm=(signed short)temp_SL;
-#endif
+#endif*/
 /*
 //Токи батарей
 if(!mess_find_unvol(MESS2MATEMAT))
@@ -1459,7 +1460,20 @@ if (NUMINV)
 			if(inv[i]._flags_tm&0x20)
 				{
 				master_inv_ison=1;
-				}   
+				}
+				
+			inv[i]._fw_mk_data[0]	=bps[i+20]._bps_fw_info[0];
+			inv[i]._fw_mk_data[1]	=bps[i+20]._bps_fw_info[1];
+			inv[i]._fw_mk_data[2]	=bps[i+20]._bps_fw_info[2];
+			inv[i]._fw_mk_hv		=bps[i+20]._bps_fw_info[3];
+			inv[i]._fw_mk_sv		=bps[i+20]._bps_fw_info[4];
+			inv[i]._fw_mk_bld		=(short)bps[i+20]._bps_fw_info[5] + (((short)bps[i+20]._bps_fw_info[6])<<8);  
+			inv[i]._fw_plis_data[0]	=bps[i+20]._bps_fw_info[7];
+			inv[i]._fw_plis_data[1]	=bps[i+20]._bps_fw_info[8];
+			inv[i]._fw_plis_data[2]	=bps[i+20]._bps_fw_info[9];
+			inv[i]._fw_plis_hv		=bps[i+20]._bps_fw_info[10];
+			inv[i]._fw_plis_sv		=bps[i+20]._bps_fw_info[11];
+			inv[i]._fw_plis_bld		=(short)bps[i+20]._bps_fw_info[12] + (((short)bps[i+20]._bps_fw_info[13])<<8);			 
      		} 
 		else 
      		{

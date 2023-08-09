@@ -2558,7 +2558,7 @@ else if(ind==iInv_v3)
 	{
 	const char* ptr[10];
  
-	simax=8;
+	simax=9;
 
 	ptr[1]=			" Uвых =        (В   ";
 	ptr[2]=			" Iвых =        )A   ";
@@ -2567,7 +2567,8 @@ else if(ind==iInv_v3)
 	ptr[5]=			" Uсети =       <В   ";
 	ptr[6]=			" Uшины =       >В   ";
 	ptr[7]=			" Uвход =       ^В   ";
-	ptr[8]=			sm_exit;
+	ptr[8]=			" Версия ПО          ";
+	ptr[9]=			sm_exit;
 
 
 	ptr[0]=		"                    ";
@@ -2618,7 +2619,7 @@ else if(ind==iInv_v3)
 	if(sub_ind-index_set>2)index_set=sub_ind-2;
 	else if (sub_ind<index_set)index_set=sub_ind;
 
-	if(sub_ind>=simax)	pointer_set(1);
+	if(sub_ind>=simax-1)	pointer_set(1);
 
 
 		
@@ -2644,7 +2645,21 @@ else if(ind==iInv_v3)
 	//int2lcdyx(sub_ind,0,2,0);
 	//int2lcdyx(index_set,0,4,0);
 	//int2lcdyx(inv[sub_ind1]._flags_tm,0,8,0);
-	//int2lcdyx(inv[sub_ind1]._flags_tm_dop,0,4,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[12]/*bps[sub_ind1]._bps_fw_info_cnt*/,0,2,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[13]/*bps[sub_ind1]._bps_fw_info_cnt*/,0,6,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[14]/*bps[sub_ind1]._bps_fw_info_cnt*/,0,10,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[15]/*bps[sub_ind1]._bps_fw_info_cnt*/,0,14,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[16]/*bps[sub_ind1]._bps_fw_info_cnt*/,0,18,0);
+//	int2lcdyx(bps[sub_ind1+20]._buff[17]/*bps[sub_ind1]._bps_fw_info_cnt*/,1,18,0);
+
+//	lcd_buffer[22]=bps[sub_ind1+20]._bps_fw_info[0];
+//	lcd_buffer[23]=bps[sub_ind1+20]._bps_fw_info[1];
+//	lcd_buffer[24]=bps[sub_ind1+20]._bps_fw_info[2];
+//	lcd_buffer[25]=bps[sub_ind1+20]._bps_fw_info[3];
+//	lcd_buffer[26]=bps[sub_ind1+20]._bps_fw_info[4];
+//	lcd_buffer[22]=bps[sub_ind1+20]._bps_fw_info[5];
+//	lcd_buffer[28]=bps[sub_ind1+20]._bps_fw_info[6];
+//	lcd_buffer[29]=bps[sub_ind1+20]._bps_fw_info[7];
     }
 
 else if(ind==iByps)
@@ -8000,7 +8015,26 @@ else if(ind==iFWabout)
 	sprintf(&lcd_buffer[9],"%d.%d.%d",HARDVARE_VERSION,SOFT_VERSION,BUILD);
 	}
 
+else if(ind==iFWInv_about)
+	{
 
+	bgnd_par(	" ПО МК              ",
+				" Сборка  2000.00.00 ",
+				" ПО ПЛИС            ",
+				" Сборка  2000.00.00 ");
+	int2lcdyx(inv[sub_ind1]._fw_mk_data[0],1,12,0);
+	int2lcdyx(inv[sub_ind1]._fw_mk_data[1],1,15,0);
+	int2lcdyx(inv[sub_ind1]._fw_mk_data[2],1,18,0);
+	
+	sprintf(&lcd_buffer[7],"%d.%d.%d",inv[sub_ind1]._fw_mk_hv,inv[sub_ind1]._fw_mk_sv,inv[sub_ind1]._fw_mk_bld);
+
+	int2lcdyx(inv[sub_ind1]._fw_plis_data[0],3,12,0);
+	int2lcdyx(inv[sub_ind1]._fw_plis_data[1],3,15,0);
+	int2lcdyx(inv[sub_ind1]._fw_plis_data[2],3,18,0);
+
+	sprintf(&lcd_buffer[49],"%d.%d.%d",inv[sub_ind1]._fw_plis_hv,inv[sub_ind1]._fw_plis_sv,inv[sub_ind1]._fw_plis_bld);
+
+	}
 #endif
 /*
 const char sm7[]	={" Источник N2        "}; //
@@ -8700,7 +8734,13 @@ else if(ind==iInv_v3)
 		{
 		mcp2515_transmit(sub_ind1,sub_ind1,CMND,ALRM_RES,0,0,0,0);
 		}
-		*/		
+		*/
+	else if((but==butE)&&(sub_ind==simax-1))
+		{
+		tree_up(iFWInv_about,0,0,sub_ind1);
+		ret(1000);
+		}
+						
 	else if(((but==butE)&&(sub_ind==simax))||(but==butL))
 		{
 	    tree_down(0,0);
@@ -16624,6 +16664,15 @@ else if(ind==iNpn_set)
 
 	}
 else if(ind==iFWabout)
+	{
+	ret(1000);
+	if(but==butE)
+	     {
+	     tree_down(0,0);
+	     ret(0);
+	     }
+	}
+else if(ind==iFWInv_about)
 	{
 	ret(1000);
 	if(but==butE)

@@ -578,7 +578,7 @@ typedef enum {
 	iInv,iInv_v2,iInv_v3,
 	iNpn_set,
 	iByps,iByps3f,iK_byps_sel,
-	iFWabout}i_enum;
+	iFWabout,iFWInv_about}i_enum;
 typedef struct  
 {
 
@@ -925,6 +925,8 @@ typedef struct
 //     signed  short _x_; 
      char _adr_ee;
 	char _last_avar;
+	char _bps_fw_info_cnt;
+	char _bps_fw_info[16];
      } BPS_STAT; 
 extern BPS_STAT bps[1];
 
@@ -985,7 +987,14 @@ typedef struct
 	char _temper_av_stat;
 	signed char _conn_av_cnt;
 	char _conn_av_stat;
-
+	char _fw_mk_data[3];
+	char _fw_mk_hv;
+	char _fw_mk_sv;
+	short _fw_mk_bld;
+	char _fw_plis_data[3];
+	char _fw_plis_hv;
+	char _fw_plis_sv;
+	short _fw_plis_bld;
 	} INV_STAT; 
 extern INV_STAT inv[64];
 extern char first_inv_slot;

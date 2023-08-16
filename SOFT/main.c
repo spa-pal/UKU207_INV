@@ -8017,12 +8017,17 @@ else if(ind==iFWabout)
 
 else if(ind==iFWInv_about)
 	{
-
+	char i;
 	bgnd_par(	" ПО МК              ",
 				" Сборка  2000.00.00 ",
 				" ПО ПЛИС            ",
 				" Сборка  2000.00.00 ");
-	int2lcdyx(inv[sub_ind1]._fw_mk_data[0],1,12,0);
+
+	for(i=0; i<80; i++)
+		{
+		lcd_buffer[i]=bps[sub_ind1+20]._bps_fw_info[i];
+		}
+/*	int2lcdyx(inv[sub_ind1]._fw_mk_data[0],1,12,0);
 	int2lcdyx(inv[sub_ind1]._fw_mk_data[1],1,15,0);
 	int2lcdyx(inv[sub_ind1]._fw_mk_data[2],1,18,0);
 	
@@ -8033,7 +8038,7 @@ else if(ind==iFWInv_about)
 	int2lcdyx(inv[sub_ind1]._fw_plis_data[2],3,18,0);
 
 	sprintf(&lcd_buffer[49],"%d.%d.%d",inv[sub_ind1]._fw_plis_hv,inv[sub_ind1]._fw_plis_sv,inv[sub_ind1]._fw_plis_bld);
-
+	*/
 	}
 #endif
 /*

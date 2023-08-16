@@ -1267,7 +1267,7 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
 	inv[slave_num-first_inv_slot]._valid=1; 
-	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=15))
+	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=80))
 		{
 		bps[slave_num]._bps_fw_info_cnt=RXBUFF[6];
 		bps[slave_num]._bps_fw_info[RXBUFF[6]]=RXBUFF[7];

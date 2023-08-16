@@ -926,7 +926,7 @@ typedef struct
      char _adr_ee;
 	char _last_avar;
 	char _bps_fw_info_cnt;
-	char _bps_fw_info[16];
+	char _bps_fw_info[80];
      } BPS_STAT; 
 extern BPS_STAT bps[1];
 

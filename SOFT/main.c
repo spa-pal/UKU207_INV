@@ -1258,7 +1258,7 @@ static char sub_cnt,sub_cnt1;
 char i,sub_cnt_max;
 char ii_;
 static char ii_cnt,cnt_ind_bat;
-
+	 
 
 	   
 sub_cnt_max=5;
@@ -9973,7 +9973,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MAX++;
-	     	gran(&U_NET_MAX,180,205);
+	     	gran(&U_NET_MAX,110,205);
 	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
 			speed=1;
 	     	}
@@ -9981,7 +9981,7 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_NET_MAX--;
-	     	gran(&U_NET_MAX,180,205);
+	     	gran(&U_NET_MAX,110,205);
 			gran(&U_NET_MIN,175,U_NET_MAX-5);
 	     	lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
 			lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
@@ -9994,7 +9994,7 @@ else if(ind==iSet_INV)
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MIN++; 
-			gran(&U_NET_MIN,175,200);
+			gran(&U_NET_MIN,105,200);
 			gran(&U_NET_MAX,U_NET_MIN+5,205);
 	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			lc640_write_int(EE_U_NET_MAX,U_NET_MAX);
@@ -10004,7 +10004,7 @@ else if(ind==iSet_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 	     	U_NET_MIN--;
-	     	gran(&U_NET_MIN,175,200);
+	     	gran(&U_NET_MIN,105,200);
 	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			speed=1;
 	     	}
@@ -12866,7 +12866,7 @@ else if(ind==iK_INV)
 	     	{
 	     	temp_SS-=2;
 	     	}
-	     gran(&temp_SS,1900,3000);
+	     gran(&temp_SS,1000,3000);
 		lc640_write_int(KT_EXT0,temp_SS);					
 		speed=1;	
 					

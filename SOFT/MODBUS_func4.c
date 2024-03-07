@@ -5,7 +5,7 @@
 #include "control.h"
 
 signed short I_reg1, U_reg2, P_reg3, T_reg4;
-signed char flags_inv_h[22], flags_inv_l[22];
+signed char flags_inv_h[33], flags_inv_l[33];
 unsigned char sk1_stat_mb, sk2_stat_mb, sk3_stat_mb, sk4_stat_mb; 
 
 void wr_reg_func4(void){ //Заполнение регистров для функции 4 перед их отправкой
@@ -25,7 +25,7 @@ void wr_reg_func4(void){ //Заполнение регистров для функции 4 перед их отправкой
 		T_reg4=0;					//Рег4
 	}
 	//----------
-	for(i=0;i<22;i++){
+	for(i=0;i<33;i++){
 		flags_inv_l[i]=inv[i]._flags_tm&0xf7;
 		flags_inv_h[i]=0;
 		if(inv[i]._conn_av_stat) 	flags_inv_h[i]|=1;
@@ -537,222 +537,233 @@ unsigned char *const reg_func4 []={
 &NULL_0,  //
 &NULL_0,  //230
 &NULL_0,  //230
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №23
+(unsigned char*)&inv[22]._Uout+1, 	//231 
+(unsigned char*)&inv[22]._Uout,  	//231
+(unsigned char*)&inv[22]._Iout+1,
+(unsigned char*)&inv[22]._Iout,
+(unsigned char*)&inv[22]._T+1,
+(unsigned char*)&inv[22]._T,
+(unsigned char*)&inv[22]._Pout+1,
+(unsigned char*)&inv[22]._Pout,
+(unsigned char*)&inv[22]._Uacin+1,	 
+(unsigned char*)&inv[22]._Uacin,		 
+(unsigned char*)&inv[22]._Uload+1,
+(unsigned char*)&inv[22]._Uload,
+(unsigned char*)&flags_inv_h[22],  
+(unsigned char*)&flags_inv_l[22],  
+(unsigned char*)&inv[22]._Udcin+1,
+(unsigned char*)&inv[22]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//240
 &NULL_0,//240
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №24
+(unsigned char*)&inv[23]._Uout+1, 	//241 
+(unsigned char*)&inv[23]._Uout,  	//241
+(unsigned char*)&inv[23]._Iout+1,
+(unsigned char*)&inv[23]._Iout,
+(unsigned char*)&inv[23]._T+1,
+(unsigned char*)&inv[23]._T,
+(unsigned char*)&inv[23]._Pout+1,
+(unsigned char*)&inv[23]._Pout,
+(unsigned char*)&inv[23]._Uacin+1,	 
+(unsigned char*)&inv[23]._Uacin,		 
+(unsigned char*)&inv[23]._Uload+1,
+(unsigned char*)&inv[23]._Uload,
+(unsigned char*)&flags_inv_h[23],  
+(unsigned char*)&flags_inv_l[23],  
+(unsigned char*)&inv[23]._Udcin+1,
+(unsigned char*)&inv[23]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//250
 &NULL_0,//250
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №25
+(unsigned char*)&inv[24]._Uout+1, 	//251 
+(unsigned char*)&inv[24]._Uout,  	//251
+(unsigned char*)&inv[24]._Iout+1,
+(unsigned char*)&inv[24]._Iout,
+(unsigned char*)&inv[24]._T+1,
+(unsigned char*)&inv[24]._T,
+(unsigned char*)&inv[24]._Pout+1,
+(unsigned char*)&inv[24]._Pout,
+(unsigned char*)&inv[24]._Uacin+1,	 
+(unsigned char*)&inv[24]._Uacin,		 
+(unsigned char*)&inv[24]._Uload+1,
+(unsigned char*)&inv[24]._Uload,
+(unsigned char*)&flags_inv_h[24],  
+(unsigned char*)&flags_inv_l[24],  
+(unsigned char*)&inv[24]._Udcin+1,
+(unsigned char*)&inv[24]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,  //260
 &NULL_0,  //260
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №26
+(unsigned char*)&inv[25]._Uout+1, 	//261 
+(unsigned char*)&inv[25]._Uout,  	//261
+(unsigned char*)&inv[25]._Iout+1,
+(unsigned char*)&inv[25]._Iout,
+(unsigned char*)&inv[25]._T+1,
+(unsigned char*)&inv[25]._T,
+(unsigned char*)&inv[25]._Pout+1,
+(unsigned char*)&inv[25]._Pout,
+(unsigned char*)&inv[25]._Uacin+1,	 
+(unsigned char*)&inv[25]._Uacin,		 
+(unsigned char*)&inv[25]._Uload+1,
+(unsigned char*)&inv[25]._Uload,
+(unsigned char*)&flags_inv_h[25],  
+(unsigned char*)&flags_inv_l[25],  
+(unsigned char*)&inv[25]._Udcin+1,
+(unsigned char*)&inv[25]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//270
 &NULL_0,//270
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №27
+(unsigned char*)&inv[26]._Uout+1, 	//271 
+(unsigned char*)&inv[26]._Uout,  	//271
+(unsigned char*)&inv[26]._Iout+1,
+(unsigned char*)&inv[26]._Iout,
+(unsigned char*)&inv[26]._T+1,
+(unsigned char*)&inv[26]._T,
+(unsigned char*)&inv[26]._Pout+1,
+(unsigned char*)&inv[26]._Pout,
+(unsigned char*)&inv[26]._Uacin+1,	 
+(unsigned char*)&inv[26]._Uacin,		 
+(unsigned char*)&inv[26]._Uload+1,
+(unsigned char*)&inv[26]._Uload,
+(unsigned char*)&flags_inv_h[26],  
+(unsigned char*)&flags_inv_l[26],  
+(unsigned char*)&inv[26]._Udcin+1,
+(unsigned char*)&inv[26]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//280
 &NULL_0,//280
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №28
+(unsigned char*)&inv[27]._Uout+1, 	//281 
+(unsigned char*)&inv[27]._Uout,  	//281
+(unsigned char*)&inv[27]._Iout+1,
+(unsigned char*)&inv[27]._Iout,
+(unsigned char*)&inv[27]._T+1,
+(unsigned char*)&inv[27]._T,
+(unsigned char*)&inv[27]._Pout+1,
+(unsigned char*)&inv[27]._Pout,
+(unsigned char*)&inv[27]._Uacin+1,	 
+(unsigned char*)&inv[27]._Uacin,		 
+(unsigned char*)&inv[27]._Uload+1,
+(unsigned char*)&inv[27]._Uload,
+(unsigned char*)&flags_inv_h[27],  
+(unsigned char*)&flags_inv_l[27],  
+(unsigned char*)&inv[27]._Udcin+1,
+(unsigned char*)&inv[27]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//290
 &NULL_0,//290
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №29
+(unsigned char*)&inv[28]._Uout+1, 	//291 
+(unsigned char*)&inv[28]._Uout,  	//291
+(unsigned char*)&inv[28]._Iout+1,
+(unsigned char*)&inv[28]._Iout,
+(unsigned char*)&inv[28]._T+1,
+(unsigned char*)&inv[28]._T,
+(unsigned char*)&inv[28]._Pout+1,
+(unsigned char*)&inv[28]._Pout,
+(unsigned char*)&inv[28]._Uacin+1,	 
+(unsigned char*)&inv[28]._Uacin,		 
+(unsigned char*)&inv[28]._Uload+1,
+(unsigned char*)&inv[28]._Uload,
+(unsigned char*)&flags_inv_h[28],  
+(unsigned char*)&flags_inv_l[28],  
+(unsigned char*)&inv[28]._Udcin+1,
+(unsigned char*)&inv[28]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//300
 &NULL_0,//300
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №30
+(unsigned char*)&inv[29]._Uout+1, 	//301 
+(unsigned char*)&inv[29]._Uout,  	//301
+(unsigned char*)&inv[29]._Iout+1,
+(unsigned char*)&inv[29]._Iout,
+(unsigned char*)&inv[29]._T+1,
+(unsigned char*)&inv[29]._T,
+(unsigned char*)&inv[29]._Pout+1,
+(unsigned char*)&inv[29]._Pout,
+(unsigned char*)&inv[29]._Uacin+1,	 
+(unsigned char*)&inv[29]._Uacin,		 
+(unsigned char*)&inv[29]._Uload+1,
+(unsigned char*)&inv[29]._Uload,
+(unsigned char*)&flags_inv_h[29],  
+(unsigned char*)&flags_inv_l[29],  
+(unsigned char*)&inv[29]._Udcin+1,
+(unsigned char*)&inv[29]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,  //310
 &NULL_0,  //310
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №31
+(unsigned char*)&inv[30]._Uout+1, 	//311 
+(unsigned char*)&inv[30]._Uout,  	//311
+(unsigned char*)&inv[30]._Iout+1,
+(unsigned char*)&inv[30]._Iout,
+(unsigned char*)&inv[30]._T+1,
+(unsigned char*)&inv[30]._T,
+(unsigned char*)&inv[30]._Pout+1,
+(unsigned char*)&inv[30]._Pout,
+(unsigned char*)&inv[30]._Uacin+1,	 
+(unsigned char*)&inv[30]._Uacin,		 
+(unsigned char*)&inv[30]._Uload+1,
+(unsigned char*)&inv[30]._Uload,
+(unsigned char*)&flags_inv_h[30],  
+(unsigned char*)&flags_inv_l[30],  
+(unsigned char*)&inv[30]._Udcin+1,
+(unsigned char*)&inv[30]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//320
 &NULL_0,//320
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №32
+(unsigned char*)&inv[31]._Uout+1, 	//331 
+(unsigned char*)&inv[31]._Uout,  	//331
+(unsigned char*)&inv[31]._Iout+1,
+(unsigned char*)&inv[31]._Iout,
+(unsigned char*)&inv[31]._T+1,
+(unsigned char*)&inv[31]._T,
+(unsigned char*)&inv[31]._Pout+1,
+(unsigned char*)&inv[31]._Pout,
+(unsigned char*)&inv[31]._Uacin+1,	 
+(unsigned char*)&inv[31]._Uacin,		 
+(unsigned char*)&inv[31]._Uload+1,
+(unsigned char*)&inv[31]._Uload,
+(unsigned char*)&flags_inv_h[31],  
+(unsigned char*)&flags_inv_l[31],  
+(unsigned char*)&inv[31]._Udcin+1,
+(unsigned char*)&inv[31]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//330
 &NULL_0,//330
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+//Инвертор №33
+(unsigned char*)&inv[32]._Uout+1, 	//331 
+(unsigned char*)&inv[32]._Uout,  	//331
+(unsigned char*)&inv[32]._Iout+1,
+(unsigned char*)&inv[32]._Iout,
+(unsigned char*)&inv[32]._T+1,
+(unsigned char*)&inv[32]._T,
+(unsigned char*)&inv[32]._Pout+1,
+(unsigned char*)&inv[32]._Pout,
+(unsigned char*)&inv[32]._Uacin+1,	 
+(unsigned char*)&inv[32]._Uacin,		 
+(unsigned char*)&inv[32]._Uload+1,
+(unsigned char*)&inv[32]._Uload,
+(unsigned char*)&flags_inv_h[32],  
+(unsigned char*)&flags_inv_l[32],  
+(unsigned char*)&inv[32]._Udcin+1,
+(unsigned char*)&inv[32]._Udcin,
 &NULL_0,
 &NULL_0,
 &NULL_0,//340
@@ -939,30 +950,30 @@ unsigned char *const reg_func4 []={
 &NULL_0,
 &NULL_0,
 &NULL_0,
-&NULL_0,//430
-&NULL_0,//430
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,//440
-&NULL_0,//440
-&NULL_0,
-&NULL_0,
+(unsigned char*)&load_U_inv_3F[0]+1,//430
+(unsigned char*)&load_U_inv_3F[0],//430
+(unsigned char*)&load_I_inv_3F[0]+1,//431
+(unsigned char*)&load_I_inv_3F[0],//431
+(unsigned char*)&load_P_inv_3F[0]+1,//432
+(unsigned char*)&load_P_inv_3F[0],//432
+(unsigned char*)&load_P_inv_3F[0]+3,//433
+(unsigned char*)&load_P_inv_3F[0]+2,//433
+(unsigned char*)&load_U_inv_3F[1]+1,//434
+(unsigned char*)&load_U_inv_3F[1],//434
+(unsigned char*)&load_I_inv_3F[1]+1,//435
+(unsigned char*)&load_I_inv_3F[1],//435
+(unsigned char*)&load_P_inv_3F[1]+1,//436
+(unsigned char*)&load_P_inv_3F[1],//436
+(unsigned char*)&load_P_inv_3F[1]+3,//437
+(unsigned char*)&load_P_inv_3F[1]+2,//437
+(unsigned char*)&load_U_inv_3F[2]+1,//438
+(unsigned char*)&load_U_inv_3F[2],//438
+(unsigned char*)&load_I_inv_3F[2]+1,//439
+(unsigned char*)&load_I_inv_3F[2],//439
+(unsigned char*)&load_P_inv_3F[2]+1,//440
+(unsigned char*)&load_P_inv_3F[2],//440
+(unsigned char*)&load_P_inv_3F[2]+3,//441
+(unsigned char*)&load_P_inv_3F[2]+2,//441
 &NULL_0,
 &NULL_0,
 &NULL_0,

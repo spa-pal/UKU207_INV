@@ -47,15 +47,15 @@ signed short snmp_bps_temperature[8];
 signed short snmp_bps_stat[8];
 
 //Состояние инверторов
-signed short snmp_inv_number[32];
-signed short snmp_inv_output_voltage[32];
-signed short snmp_inv_output_current[32];
-signed short snmp_inv_output_power[32];
-signed short snmp_inv_temperature[32];
-signed short snmp_inv_stat[32];
-signed short snmp_inv_input_voltage_DC[32];
-signed short snmp_inv_input_voltage_AC[32];
-signed short snmp_inv_output_bus_voltage[32];
+signed short snmp_inv_number[35];
+signed short snmp_inv_output_voltage[35];
+signed short snmp_inv_output_current[35];
+signed short snmp_inv_output_power[35];
+signed short snmp_inv_temperature[35];
+signed short snmp_inv_stat[35];
+signed short snmp_inv_input_voltage_DC[35];
+signed short snmp_inv_input_voltage_AC[35];
+signed short snmp_inv_output_bus_voltage[35];
 
 //Состояние байпаса
 signed short snmpBypassULoad;
@@ -358,33 +358,33 @@ else snmp_bat_capacity[1]=BAT_C_REAL[1];
 snmp_bat_charge[1]=bat[1]._zar;
 snmp_bat_status[1]=bat[1]._av;
 
-
+/*0502
 snmp_bps_number[0]=1;
 snmp_bps_voltage[0]=bps[0]._Uii;
 snmp_bps_current[0]=bps[0]._Ii;
 snmp_bps_temperature[0]=bps[0]._Ti;
 snmp_bps_stat[0]=bps[0]._av;												//Байт состояния БПСа.
-
+ 0502*/
 /*if(St_[0]&(1<<2))snmp_bps_stat[0]=(1<<3); 							//авария по Umin
 else if(St_[0]&(1<<3))snmp_bps_stat[0]=(1<<2); 						//авария по Umax
 else if(bps[0]._av&(1<<0))snmp_bps_stat[0]=(1<<1); 						//авария по Tmax
 else if(St_[0]&(1<<5))snmp_bps_stat[0]=(1<<5); 						//заблокирован
 else if((!(St_[0]&0x3c))&&(!St&0x01)&&(!OFFBP1))snmp_bps_stat[0]=1; 		//Работает
 */
-
+/*0502
 snmp_bps_number[1]=2;
 snmp_bps_voltage[1]=bps[1]._Uii;
 snmp_bps_current[1]=bps[1]._Ii;
 snmp_bps_temperature[1]=bps[1]._Ti;
 snmp_bps_stat[1]=bps[1]._av;
-												//Байт состояния БПСа.
+0502*/												//Байт состояния БПСа.
 /*if(St_[1]&(1<<2))snmp_bps_stat[1]=(1<<3); 							//авария по Umin
 else if(St_[1]&(1<<3))snmp_bps_stat[1]=(1<<2); 						//авария по Umax
 else if(St_[1]&(1<<4))snmp_bps_stat[1]=(1<<1); 						//авария по Tmax
 else if(St_[1]&(1<<5))snmp_bps_stat[1]=(1<<5); 						//заблокирован
 else if((!(St_[1]&0x3c))&&(!St&0x01)&&(!OFFBP2))snmp_bps_stat[1]=1; 		//Работает
 */
-
+/*0502
 snmp_bps_number[2]=3;
 snmp_bps_voltage[2]=bps[2]._Uii;
 snmp_bps_current[2]=bps[2]._Ii;
@@ -420,9 +420,9 @@ snmp_bps_voltage[7]=bps[7]._Uii;
 snmp_bps_current[7]=bps[7]._Ii;
 snmp_bps_temperature[7]=bps[7]._Ti;
 snmp_bps_stat[7]=bps[7]._av;
+0502*/
 
-
-for(i = 0; i<32 ; i++)
+for(i = 0; i<33 ; i++)
 	{
 	snmp_inv_number[i]=i+1;
 	snmp_inv_output_voltage[i]=inv[i]._Uout;

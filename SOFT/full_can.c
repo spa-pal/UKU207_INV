@@ -639,7 +639,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[12]=*(((char*)(&load_I))+1);
 	
 	TXBUFF[13]=0xcc;
-	TXBUFF[13]|=4;(NUMIST&0x07);
+	TXBUFF[13]|=4;/*0502(NUMIST&0x07)0502*/;
 	TXBUFF[13]|=((NUMBAT&0x03)<<4);
 	
 
@@ -758,7 +758,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[7]=1;
 		
 	
-	if(NUMIST<1)TXBUFF[8]=0xff;	
+/*0502	if(NUMIST<1)TXBUFF[8]=0xff;	
 	else if(bps[0]._state==bsWRK)TXBUFF[8]=0xf1; 
 	else if(bps[0]._av&(1<<3))TXBUFF[8]=0xf4;
 	else if(bps[0]._av&(1<<0))TXBUFF[8]=0xf5;
@@ -770,7 +770,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[10]=*(((char*)(&bps[0]._Uii))+1);
 	TXBUFF[11]=*((char*)(&bps[0]._Ii));
 	TXBUFF[12]=*(((char*)(&bps[0]._Ii))+1);
-	TXBUFF[13]=bps[0]._Ti;
+	TXBUFF[13]=bps[0]._Ti; 0502*/
 	
     	paking(&TXBUFF[6],8);
     
@@ -792,7 +792,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[6]=0xB2;
 	TXBUFF[7]=2;
 		
-	
+/*0502	
 	if(NUMIST<3)TXBUFF[8]=0xff;	
 	else if(bps[1]._state==bsWRK)TXBUFF[8]=0xf1; 
 	else if(bps[1]._av&(1<<3))TXBUFF[8]=0xf4;
@@ -805,7 +805,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[10]=*(((char*)(&bps[1]._Uii))+1);
 	TXBUFF[11]=*((char*)(&bps[1]._Ii));
 	TXBUFF[12]=*(((char*)(&bps[1]._Ii))+1);
-	TXBUFF[13]=bps[1]._Ti;
+	TXBUFF[13]=bps[1]._Ti;	0502*/
 	
     	paking(&TXBUFF[6],8);
     
@@ -829,7 +829,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[6]=0xB2;
 	TXBUFF[7]=3;
 		
-	
+/*0502	
 	if(NUMIST<3)TXBUFF[8]=0xff;	
 	else if(bps[2]._state==bsWRK)TXBUFF[8]=0xf1; 
 	else if(bps[2]._av&(1<<3))TXBUFF[8]=0xf4;
@@ -842,7 +842,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[10]=*(((char*)(&bps[2]._Uii))+1);
 	TXBUFF[11]=*((char*)(&bps[2]._Ii));
 	TXBUFF[12]=*(((char*)(&bps[2]._Ii))+1);
-	TXBUFF[13]=bps[2]._Ti;
+	TXBUFF[13]=bps[2]._Ti;	  0502*/
 	
     	paking(&TXBUFF[6],8);
     
@@ -865,7 +865,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[6]=0xB2;
 	TXBUFF[7]=4;
 		
-	
+/*0502	
 	if(NUMIST<4)TXBUFF[8]=0xff;	
 	else if(bps[3]._state==bsWRK)TXBUFF[8]=0xf1; 
 	else if(bps[3]._av&(1<<3))TXBUFF[8]=0xf4;
@@ -878,7 +878,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xc0)==0x40)&&
 	TXBUFF[10]=*(((char*)(&bps[3]._Uii))+1);
 	TXBUFF[11]=*((char*)(&bps[3]._Ii));
 	TXBUFF[12]=*(((char*)(&bps[3]._Ii))+1);
-	TXBUFF[13]=bps[3]._Ti;
+	TXBUFF[13]=bps[3]._Ti; 0502*/
 	
     	paking(&TXBUFF[6],8);
     
@@ -990,7 +990,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
 	can2_out_adr(TXBUFF,9);
 	}
 
-
+/*0502
 
 // БПС1 - выключить
 if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
@@ -1093,7 +1093,7 @@ else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
 
 	can2_out_adr(TXBUFF,9);
 
-	}
+	} 0502*/
 
 // Включить параллельную работу источников
 else if((RXBUFF[0]==0x30)&&((RXBUFF[1]&0xe0)==0x60)&&
@@ -1143,6 +1143,7 @@ void can_in_an1(void)
 //char i;
 //signed short temp_SS;
 char slave_num;
+char inv_num;
 
 //if(!bIN2) goto CAN_IN_AN1_end; 
 
@@ -1180,7 +1181,7 @@ if((RXBUFF[0]==sub_ind1)&&(RXBUFF[1]==PUTID)&&(RXBUFF[2]==0xdd)&&(RXBUFF[3]==0xd
 
 	can_reset_cnt=0;
      } *///может конфликтовать с 3 посылкой нового инвертора
-
+/*0502
 if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{
      slave_num=RXBUFF[0]&0x1f;  
@@ -1196,27 +1197,26 @@ if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 	bps[slave_num]._buff[11]=RXBUFF[7];	
 
 
-/*	can_slot[slave_num,8]=RXBUFF[0];
-	can_slot[slave_num,9]=RXBUFF[1];
-	can_slot[slave_num,10]=RXBUFF[2];
-	can_slot[slave_num,11]=RXBUFF[3];
-	can_slot[slave_num,12]=RXBUFF[4];
-	can_slot[slave_num,13]=RXBUFF[5];
-	can_slot[slave_num,14]=RXBUFF[6];
-	can_slot[slave_num,15]=RXBUFF[7]; */
+
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10; 
 
    	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
 	can_reset_cnt=0;
-   	}
+   	}  0502*/
 
 if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
     {
     slave_num=RXBUFF[0]&0x3f;
+	/*0502*/
+	inv_num=slave_num-first_inv_slot;
+	/*0502*/
+
+	/*0502
 	bps[slave_num]._device=dINV;
-     	
+    
+	 	
 	bps[slave_num]._buff[0]=RXBUFF[2]; 
 	bps[slave_num]._buff[1]=RXBUFF[3];
 	bps[slave_num]._buff[2]=RXBUFF[4];
@@ -1225,9 +1225,22 @@ if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	bps[slave_num]._buff[5]=RXBUFF[7];
 	
 	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10;
-	inv[slave_num-first_inv_slot]._valid=1;
-	
+	bps[slave_num]._is_on_cnt=10; 
+	0502*/
+
+	/*0502*/
+	inv[inv_num]._buff[0]=RXBUFF[2]; 
+	inv[inv_num]._buff[1]=RXBUFF[3];
+	inv[inv_num]._buff[2]=RXBUFF[4];
+	inv[inv_num]._buff[3]=RXBUFF[5];
+	inv[inv_num]._buff[4]=RXBUFF[6];
+	inv[inv_num]._buff[5]=RXBUFF[7];
+
+	inv[inv_num]._cnt=0;
+	inv[inv_num]._is_on_cnt=10;
+	inv[inv_num]._valid=1;
+	/*0502*/
+
  	//if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
 
 	can_reset_cnt=0;
@@ -1235,7 +1248,12 @@ if((RXBUFF[1]==PUTTM1INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 
 if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
  	{
-    slave_num=RXBUFF[0]&0x3f;  
+    slave_num=RXBUFF[0]&0x3f; 
+	/*0502*/
+	inv_num=slave_num-first_inv_slot;
+	/*0502*/ 
+	
+	/*0502
 	bps[slave_num]._device=dINV;
      
 	bps[slave_num]._buff[6]=RXBUFF[2]; 
@@ -1247,14 +1265,32 @@ if((RXBUFF[1]==PUTTM2INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
-	inv[slave_num-first_inv_slot]._valid=1; 
+	0502*/
+
+	/*0502*/
+	inv[inv_num]._buff[6]=RXBUFF[2]; 
+	inv[inv_num]._buff[7]=RXBUFF[3];
+	inv[inv_num]._buff[8]=RXBUFF[4];
+	inv[inv_num]._buff[9]=RXBUFF[5];
+	inv[inv_num]._buff[10]=RXBUFF[6];
+	inv[inv_num]._buff[11]=RXBUFF[7];	
+
+	inv[inv_num]._cnt=0;
+	inv[inv_num]._is_on_cnt=10;
+	inv[inv_num]._valid=1; 
+	/*0502*/
 
 	can_reset_cnt=0;
    	}
 
 if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
  	{
-    slave_num=RXBUFF[0]&0x3f;  
+    slave_num=RXBUFF[0]&0x3f; 
+		/*0502*/
+	inv_num=slave_num-first_inv_slot;
+	/*0502*/
+	
+	/*0502 
 	bps[slave_num]._device=dINV;
 
 	bps[slave_num]._buff[12]=RXBUFF[2]; 
@@ -1266,11 +1302,24 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10;
-	inv[slave_num-first_inv_slot]._valid=1; 
+	0502*/
+
+	/*0502*/
+	inv[inv_num]._buff[12]=RXBUFF[2]; 
+	inv[inv_num]._buff[13]=RXBUFF[3];
+	inv[inv_num]._buff[14]=RXBUFF[4];
+	inv[inv_num]._buff[15]=RXBUFF[5];
+	inv[inv_num]._buff[16]=RXBUFF[6];
+	inv[inv_num]._buff[17]=RXBUFF[7];	
+	
+	inv[inv_num]._cnt=0;
+	inv[inv_num]._is_on_cnt=10;
+	inv[inv_num]._valid=1; 
+	/*0502*/
 	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=80))
 		{
-		bps[slave_num]._bps_fw_info_cnt=RXBUFF[6];
-		bps[slave_num]._bps_fw_info[RXBUFF[6]]=RXBUFF[7];
+		inv[inv_num]._inv_fw_info_cnt=RXBUFF[6];
+		inv[inv_num]._inv_fw_info[RXBUFF[6]]=RXBUFF[7];
 		}
 	can_reset_cnt=0;
    	}
@@ -1374,7 +1423,7 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		}
    	}
 
-
+/*0502
 if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{
     slave_num=RXBUFF[0]&0x1f;  
@@ -1389,22 +1438,15 @@ if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 	bps[slave_num]._buff[5]=RXBUFF[7];	
 
 
-/*	can_slot[slave_num,8]=RXBUFF[0];
-	can_slot[slave_num,9]=RXBUFF[1];
-	can_slot[slave_num,10]=RXBUFF[2];
-	can_slot[slave_num,11]=RXBUFF[3];
-	can_slot[slave_num,12]=RXBUFF[4];
-	can_slot[slave_num,13]=RXBUFF[5];
-	can_slot[slave_num,14]=RXBUFF[6];
-	can_slot[slave_num,15]=RXBUFF[7]; */
+
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10; 
 
    	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
 	can_reset_cnt=0;
-   	}
-
+   	}  0502*/
+/*0502
 if((RXBUFF[1]==PUTTM_NET)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{
     slave_num=RXBUFF[0]&0x1f;  
@@ -1419,23 +1461,15 @@ if((RXBUFF[1]==PUTTM_NET)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 	bps[slave_num]._buff[5]=RXBUFF[7];	
 
 
-/*	can_slot[slave_num,8]=RXBUFF[0];
-	can_slot[slave_num,9]=RXBUFF[1];
-	can_slot[slave_num,10]=RXBUFF[2];
-	can_slot[slave_num,11]=RXBUFF[3];
-	can_slot[slave_num,12]=RXBUFF[4];
-	can_slot[slave_num,13]=RXBUFF[5];
-	can_slot[slave_num,14]=RXBUFF[6];
-	can_slot[slave_num,15]=RXBUFF[7]; */
 	
 	bps[slave_num]._cnt=0;
 	bps[slave_num]._is_on_cnt=10; 
 
    	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
 	can_reset_cnt=0;
-   	}
+   	} 0502*/
 
-
+/*0502
 if((RXBUFF[1]==PUTTM_NET1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
  	{
     slave_num=RXBUFF[0]&0x1f;  
@@ -1452,7 +1486,7 @@ if((RXBUFF[1]==PUTTM_NET1)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 
    	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
 	can_reset_cnt=0;
-   	}
+   	} 0502*/
 
 
 if( ((RXBUFF[0]&0x1f)==8)&&((RXBUFF[1])==PUTTM) )
@@ -1486,7 +1520,7 @@ if( ((RXBUFF[0]&0x1f)==10)&&((RXBUFF[1])==PUTTM) )
 	can_reset_cnt=0;
      }
 
-
+/*0502
 if( ((RXBUFF[0]&0x1f)==20)&&((RXBUFF[1])==PUTTM) )
      {
      eb2_data[0]=RXBUFF[2];
@@ -1542,7 +1576,7 @@ if( ((RXBUFF[0]&0x1f)==23)&&((RXBUFF[1])==PUTTM) )
 	eb2_data_short[5]=*((short*)&eb2_data[22]);
 
 	can_reset_cnt=0;
-     }
+     }	0502*/
 /*
 if( (RXBUFF[1]==PUTTM_MAKB1)&&(RXBUFF[0]>=0)&&(RXBUFF[0]<=3))
      {

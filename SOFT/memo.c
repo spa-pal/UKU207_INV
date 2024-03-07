@@ -67,10 +67,10 @@ APV_ON=lc640_read_int(EE_APV_ON);
 IZMAX=lc640_read_int(EE_IZMAX);
 U0B=lc640_read_int(EE_U0B);
 TZAS=lc640_read_int(EE_TZAS);
-NUMIST=lc640_read_int(EE_NUMIST);
-gran(&NUMIST,0,8);
+/*0502NUMIST=lc640_read_int(EE_NUMIST);
+gran(&NUMIST,0,8); 0502*/
 NUMINV=lc640_read_int(EE_NUMINV);
-gran(&NUMINV,0,32);
+gran(&NUMINV,0,33);
 NUMSK=lc640_read_int(EE_NUMSK);
 NUMDT=lc640_read_int(EE_NUMDT);
 NUMAVT=lc640_read_int(EE_NUMAVT);

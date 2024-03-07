@@ -237,6 +237,7 @@ net_U=2100;
 net_F=501;
 */
 
+/*0502
 rs232_data_out_buff[0]=avar_stat;
 rs232_data_out_buff[1]=spc_stat;
 rs232_data_out_buff[2]=load_U;
@@ -252,6 +253,7 @@ rs232_data_out_buff[11]=bps[1]._Uii;
 rs232_data_out_buff[12]=bps[1]._Ii;
 rs232_data_out_buff[13]=bps[1]._Ti;
 rs232_data_out_buff[14]=bps[1]._av; 
+0502*/
 
 /*
 
@@ -285,6 +287,7 @@ rs232_data_out_buff[5]=net_Ub;
 rs232_data_out_buff[6]=net_Uc;
 rs232_data_out_buff[7]=net_F3;
 rs232_data_out_buff[8]=t_ext[0];
+/*0502
 rs232_data_out_buff[9]=bps[0]._Uii;
 rs232_data_out_buff[10]=bps[0]._Ii;
 rs232_data_out_buff[11]=bps[0]._Ti;
@@ -293,6 +296,7 @@ rs232_data_out_buff[13]=bps[1]._Uii;
 rs232_data_out_buff[14]=bps[1]._Ii;
 rs232_data_out_buff[15]=bps[1]._Ti;
 rs232_data_out_buff[16]=bps[1]._av;
+0502*/
 
 uart_out_adr0 ((char*)rs232_data_out_buff, 34);
 }
@@ -311,6 +315,7 @@ rs232_data_out_buff[5]=net_Ub;
 rs232_data_out_buff[6]=net_Uc;
 rs232_data_out_buff[7]=net_F3;
 rs232_data_out_buff[8]=t_ext[0];
+/*0502
 rs232_data_out_buff[9]=bps[0]._Uii;
 rs232_data_out_buff[10]=bps[0]._Ii;
 rs232_data_out_buff[11]=bps[0]._Ti;
@@ -328,6 +333,7 @@ rs232_data_out_buff[22]=bps[3]._Ii;
 rs232_data_out_buff[23]=bps[3]._Ti;
 rs232_data_out_buff[24]=bps[3]._av;
 rs232_data_out_buff[25]=Ib_ips_termokompensat;
+0502*/
 
 uart_out_adr0 ((char*)rs232_data_out_buff, 52);
 }

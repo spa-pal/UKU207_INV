@@ -359,7 +359,7 @@ avar_unet_hndl_end:
 	__nop();		
 }
 
-
+/*0502
 //-----------------------------------------------
 void avar_bps_hndl(char dev, char v, char in)
 {
@@ -562,7 +562,7 @@ avar_src_hndl_lbl1:
 	
 avar_src_hndl_end:
 __nop();		
-}
+} 0502*/
 
 //-----------------------------------------------
 void avar_inv_hndl(char dev, char v, char in, short value)
@@ -572,8 +572,8 @@ unsigned short event_ptr,lc640_adr,event_ptr_find,event_cnt;
 char avar_simbol;
 
 avar_simbol='O'; 			
-if(v=='O')avar_simbol=v;  		//Выходное напряжение инвертора
-//else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
+if(v=='O')avar_simbol=v;  		//Выходное напряжение инвертора	завышено
+else if(v=='o')avar_simbol=v;	//Выходное напряжение инвертора занижено
 else if(v=='C')
 	{
 	avar_simbol=v;	//разрыв связи инвертора
@@ -581,6 +581,9 @@ else if(v=='C')
 	}
 
 else if(v=='T')avar_simbol=v;	//Температура инвертора
+else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
+else if(v=='L')avar_simbol=v;	//Перегрузка(инверторы)
+else if(v=='S')avar_simbol=v;	//Внутренняя неисправность(инверторы)
 
 if(in==1)
 	{

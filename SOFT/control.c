@@ -154,6 +154,7 @@ char kb_start[2],kb_start_ips;
 //**********************************************
 //Работа с инверторами
 char num_of_wrks_inv;
+char num_of_wrks_inv_3F[3];
 char bps_all_off_cnt,bps_mask_off_cnt,bps_mask_on_off_cnt;
 char bps_hndl_2sec_cnt;
 unsigned short bps_on_mask,bps_off_mask;
@@ -503,7 +504,7 @@ void matemat(void)
 //signed short temp_SS;
 signed long temp_SL/*,temp_SL_*/;
 char /*temp,*/i;
-
+/*0802
 #ifdef UKU_MGTS
 //напряжение сети
 temp_SL=(signed long)net_buff_;
@@ -653,7 +654,7 @@ else
 	net_U=(signed short)temp_SL;
 	
 	}
-#endif
+#endif 0802*/
 /*
 #ifdef UKU_220_IPS_TERMOKOMPENSAT
 //напряжение сети
@@ -835,7 +836,7 @@ if(!mess_find_unvol(MESS2MATEMAT))
 	}
 */
 
-
+/*0802
 //Токи батарей
 if(!mess_find_unvol(MESS2MATEMAT))
 	{
@@ -960,21 +961,52 @@ else if(NUMMAKB==4)
 	}
 
 #endif
+0802*/
+if(NUMBYPASS==0)
+	{
+	if(NUMPHASE==1)
+		{
+		//Напряжение нагрузки
+		load_U=load_U_inv;
+		//Ток нагрузки
+		load_I=load_I_inv;
+		if(load_I<0)load_I=0;
+		//Мощность в нагрузке
+		load_P=load_P_inv;
+		}
+	else if(NUMPHASE==3)
+		{
+
+		}
+	}
+else if(NUMBYPASS!=0)
+	{
+	if(NUMPHASE==1)
+		{
+		//Напряжение нагрузки
+		load_U=byps[0]._Uout;
+		//Ток нагрузки
+		load_I=byps[0]._Iout;
+		if(load_I<0)load_I=0;
+		//Мощность в нагрузке
+		load_P=byps[0]._Pout;
+		}
+	else if(NUMPHASE==3)
+		{
+		}
+	}
 
 
-//Напряжение нагрузки
-if(NUMBYPASS==0)load_U=load_U_inv;
 
-//Ток нагрузки
-if(NUMBYPASS==0)load_I=load_I_inv;
-if(load_I<0)load_I=0;
 
-//Мощность в нагрузке
-if(NUMBYPASS==0)load_P=load_P_inv;
+
+
+
 //load_P=100;
 //if(load_P<0)load_P=0;
 //if(load_P>65000L)load_P=0;
 
+/*0802
 #ifdef UKU_KONTUR
 //Внешний датчик температуры №1(температура внешнего воздуха)
 if((adc_buff_[6]>800)&&(adc_buff_[6]<3800))ND_EXT[0]=0;
@@ -1170,7 +1202,7 @@ else if((ibt._nd[0]==1) &&  (ibt._nd[1]==1))
 	if(t_ext_can_nd<5)t_box= t_ext_can;
 	else t_box=20;
 	}
-
+0802*/
 /*
 //Вычисление температуры шкафа
 
@@ -1331,13 +1363,13 @@ else
 
 
 //*********************************************
-
+/*0502
 if((BAT_IS_ON[0]==bisON)&&(bat[0]._Ub>200)) Ibmax=bat[0]._Ib;
 if((BAT_IS_ON[1]==bisON)&&(bat[1]._Ub>200)&&(bat[1]._Ib>bat[0]._Ib)) Ibmax=bat[1]._Ib;
 
 if((AUSW_MAIN==22063)||(AUSW_MAIN==22023)||(AUSW_MAIN==22043))Ibmax=Ib_ips_termokompensat;
-
-for(i=0;i<NUMIST;i++)
+ 0502*/
+/*0502for(i=0;i<NUMIST;i++)
 	{
 	if(bps[i]._cnt<25)
      	{
@@ -1359,7 +1391,7 @@ for(i=0;i<NUMIST;i++)
 	     bps[i]._rotor=0;    
      	}
      
-     }
+     } 0502*/
 
 
 
@@ -1378,7 +1410,7 @@ for(i=0;i<NUMIST;i++)
 
 
 inv[0]._Uout=6;
-
+/*0802
 #ifdef UKU_GLONASS
 
 if (NUMINV)
@@ -1408,8 +1440,8 @@ if (NUMINV)
      		}
      	}
    	}
-#endif
-
+#endif	  0802*/
+/*
 if(f_out_byps_cnt)
 	{
 	f_out_byps_cnt--;
@@ -1417,7 +1449,7 @@ if(f_out_byps_cnt)
 		{
 		f_out_byps=0;
 		}
-	}
+	}*/
 
 
 if (NUMINV)
@@ -1425,6 +1457,7 @@ if (NUMINV)
 	char master_inv_ison=0;
 	f_out_inv=0;
 	//someInvAvIsOn=0; 
+	/*0502
 	for(i=0;i<NUMINV;i++)
 		{
 		if(bps[i+20]._cnt<5)
@@ -1490,7 +1523,75 @@ if (NUMINV)
 			inv[i]._valid=0; 
 			inv[i]._flags_tm_dop=0;  
      		}
+     	}0502*/
+	/*0502*/
+		for(i=0;i<NUMINV;i++)
+		{
+		if(inv[i]._cnt<5)
+     		{
+     		inv[i]._Iout=inv[i]._buff[0]+(inv[i]._buff[1]*256);
+     		inv[i]._Pout=((signed short)inv[i]._buff[2])+((signed short)(inv[i]._buff[3]<<8));
+			if(inv[i]._Pout<0)inv[i]._Pout=0;
+     		inv[i]._Uout=inv[i]._buff[4]+(inv[i]._buff[5]*256);
+     		inv[i]._T=(signed)(inv[i]._buff[6]);
+     		inv[i]._flags_tm=inv[i]._buff[7];
+     		inv[i]._Uacin=inv[i]._buff[8]+(inv[i]._buff[9]*256);
+     		inv[i]._Uload=inv[i]._buff[10]+(inv[i]._buff[11]*256);
+			inv[i]._Udcin=inv[i]._buff[12]+(inv[i]._buff[13]*256);
+			inv[i]._flags_tm_dop=inv[i]._buff[14];
+			//inv[i]._cnt=0;
+			if(inv[i]._flags_tm&0x1a)
+				{
+				inv[i]._avIsOn=1;
+				//someInvAvIsOn=1;
+				}
+			else 
+				{
+				inv[i]._avIsOn=0;
+				}
+
+			if(inv[i]._flags_tm&0x40)
+				{
+				if((unsigned char)(inv[i]._buff[15])==0x7f) 		f_out_inv=750;
+				else if((unsigned char)(inv[i]._buff[15])==0x80) f_out_inv=250;
+				else 												f_out_inv=500+(signed char)(inv[i]._buff[15]);
+				}
+
+			if(inv[i]._flags_tm&0x20)
+				{
+				master_inv_ison=1;
+				}
+				
+			inv[i]._fw_mk_data[0]	=inv[i]._inv_fw_info[0];
+			inv[i]._fw_mk_data[1]	=inv[i]._inv_fw_info[1];
+			inv[i]._fw_mk_data[2]	=inv[i]._inv_fw_info[2];
+			inv[i]._fw_mk_hv		=inv[i]._inv_fw_info[3];
+			inv[i]._fw_mk_sv		=inv[i]._inv_fw_info[4];
+			inv[i]._fw_mk_bld		=(short)inv[i]._inv_fw_info[5] + (((short)inv[i]._inv_fw_info[6])<<8);  
+			inv[i]._fw_plis_data[0]	=inv[i]._inv_fw_info[7];
+			inv[i]._fw_plis_data[1]	=inv[i]._inv_fw_info[8];
+			inv[i]._fw_plis_data[2]	=inv[i]._inv_fw_info[9];
+			inv[i]._fw_plis_hv		=inv[i]._inv_fw_info[10];
+			inv[i]._fw_plis_sv		=inv[i]._inv_fw_info[11];
+			inv[i]._fw_plis_bld		=(short)inv[i]._inv_fw_info[12] + (((short)inv[i]._inv_fw_info[13])<<8);			 
+     		} 
+		else 
+     		{
+      		inv[i]._Iout=0;
+			inv[i]._Pout=0;
+			inv[i]._Uout=0;
+     		inv[i]._T=0;
+     		inv[i]._flags_tm=0; 
+     		inv[i]._Uload=0;
+     		inv[i]._Uacin=0;
+			inv[i]._Udcin=0;
+			//inv[i]._cnt=25;
+			inv[i]._avIsOn=0;  
+			inv[i]._valid=0; 
+			inv[i]._flags_tm_dop=0;  
+     		}
      	}
+	/*0502*/
 	if(master_inv_ison==0)f_out_inv=0;
    	}
 
@@ -1507,7 +1608,7 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS))
 	f_out_byps=0;
 	}
 
-if((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) 
+if(((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3)))
 	{
 	byps[1]._Iout=0;
 	byps[1]._Pout=0;
@@ -1519,7 +1620,7 @@ if((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS))
 	byps[1]._valid=0;
 	}
 
-if((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) 
+if(((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3))) 
 	{
 	byps[2]._Iout=0;
 	byps[2]._Pout=0;
@@ -2134,6 +2235,8 @@ void inv_hndl(void)
 char ptr__,i;
 signed short temp_SS1,temp_SS2,temp_SS3;
 signed long temp_SL1,temp_SL2,temp_SL3;
+signed short /*temp_SS1_3F[3],*/temp_SS2_3F[3]/*,temp_SS3_3F[3]*/;
+signed long temp_SL1_3F[3]/*,temp_SL2_3F[3]*/,temp_SL3_3F[3];
 
 if(sh_cnt0<10)
 	{
@@ -2235,7 +2338,7 @@ if(mess_find_unvol(MESS2BPS_HNDL))
 								
 	}
 
-
+/*0502
 else if(b1Hz_sh)
 	{
 	ptr__=0;
@@ -2262,8 +2365,8 @@ else if(b1Hz_sh)
 	
 		 
   	}
-
-
+0502*/
+/*0502
 for(i=0;i<NUMIST;i++)
      {
      if(bps[i]._ist_blok_host_cnt!=0)
@@ -2272,8 +2375,7 @@ for(i=0;i<NUMIST;i++)
 	     bps[i]._ist_blok_host_cnt--;
           }
      }
-
-
+0502*/
 
 
 b1Hz_sh=0;
@@ -2284,7 +2386,21 @@ temp_SS3=0;
 temp_SL1=0;
 temp_SL2=0;
 temp_SL3=0;
+temp_SL1_3F[0]=0;
+temp_SL1_3F[1]=0;
+temp_SL1_3F[2]=0;
+temp_SS2_3F[0]=0;
+temp_SS2_3F[1]=0;
+temp_SS2_3F[2]=0;
+temp_SL3_3F[0]=0;
+temp_SL3_3F[1]=0;
+temp_SL3_3F[2]=0;
+
 num_of_wrks_inv=0;
+num_of_wrks_inv_3F[0]=0;
+num_of_wrks_inv_3F[1]=0;
+num_of_wrks_inv_3F[2]=0;
+
 for(i=0;i<NUMINV;i++)
 	{
 	if((inv[i]._flags_tm&0x20))
@@ -2293,17 +2409,61 @@ for(i=0;i<NUMINV;i++)
 		temp_SL1+=(signed long)inv[i]._Uout;
 		temp_SS2+=inv[i]._Iout;
 		temp_SL3+=(signed long)inv[i]._Pout;
+
+		if((i%3)==0)
+			{
+			num_of_wrks_inv_3F[0]++;
+			temp_SL1_3F[0]+=(signed long)inv[i]._Uout;
+			temp_SS2_3F[0]+=inv[i]._Iout;
+			temp_SL3_3F[0]+=(signed long)inv[i]._Pout;
+			}
+		else if((i%3)==1)
+			{
+			num_of_wrks_inv_3F[1]++;
+			temp_SL1_3F[1]+=(signed long)inv[i]._Uout;
+			temp_SS2_3F[1]+=inv[i]._Iout;
+			temp_SL3_3F[1]+=(signed long)inv[i]._Pout;
+			}
+		else if((i%3)==2)
+			{
+			num_of_wrks_inv_3F[2]++;
+			temp_SL1_3F[2]+=(signed long)inv[i]._Uout;
+			temp_SS2_3F[2]+=inv[i]._Iout;
+			temp_SL3_3F[2]+=(signed long)inv[i]._Pout;
+			}
 		}
 
+	if( (!(inv[i]._flags_tm&0xbf)) && (!(inv[i]._flags_tm_dop&0x01)) && (inv[i]._cnt<5) )
+		{
+		if(inv[i]._inv_int_err_cnt<100)inv[i]._inv_int_err_cnt++;
+		} 
+	else inv[i]._inv_int_err_cnt=0;
 	}
 
 //temp_SL3=-100L;
-
-load_U_inv=(signed long)(temp_SL1/num_of_wrks_inv);
+load_U_inv=(signed short)(temp_SL1/num_of_wrks_inv);
 if(temp_SS2<0)temp_SS2=0;
 load_I_inv=temp_SS2;
 if(temp_SL3<0)temp_SL3=0;
 load_P_inv=temp_SL3;
+
+load_U_inv_3F[0]=(signed short)(temp_SL1_3F[0]/num_of_wrks_inv_3F[0]);
+if(temp_SS2_3F[0]<0)temp_SS2_3F[0]=0;
+load_I_inv_3F[0]=temp_SS2_3F[0];
+if(temp_SL3_3F[0]<0)temp_SL3_3F[0]=0;
+load_P_inv_3F[0]=temp_SL3_3F[0];
+
+load_U_inv_3F[1]=(signed short)(temp_SL1_3F[1]/num_of_wrks_inv_3F[1]);
+if(temp_SS2_3F[1]<0)temp_SS2_3F[1]=0;
+load_I_inv_3F[1]=temp_SS2_3F[1];
+if(temp_SL3_3F[1]<0)temp_SL3_3F[1]=0;
+load_P_inv_3F[1]=temp_SL3_3F[1];
+
+load_U_inv_3F[2]=(signed short)(temp_SL1_3F[2]/num_of_wrks_inv_3F[2]);
+if(temp_SS2_3F[2]<0)temp_SS2_3F[2]=0;
+load_I_inv_3F[2]=temp_SS2_3F[2];
+if(temp_SL3_3F[2]<0)temp_SL3_3F[2]=0;
+load_P_inv_3F[2]=temp_SL3_3F[2];
 
 }
 
@@ -2321,28 +2481,80 @@ if(NUMINV==0)return;
 
 for(ii=0;ii<NUMINV;ii++)
 	{
-	// Авария по выходным напряжениям инверторов
-	if((inv[ii]._flags_tm&0x18) &&  inv[ii]._valid)
+	// Авария по внутреннему состянию инверторов
+	if( (!(inv[ii]._flags_tm&0xbf)) && (!(inv[ii]._flags_tm_dop&0x01)) && (inv[ii]._valid) )
 		{
-		if(inv[ii]._uout_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+		if(inv[ii]._self_err_av_cnt<(3*CONST_AV_INV_HNDL_MAX_CNT))
 			{
-			inv[ii]._uout_av_cnt++;
-			if((inv[ii]._uout_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._uout_av_stat))
+			inv[ii]._self_err_av_cnt++;
+			if((inv[ii]._self_err_av_cnt>=(3*CONST_AV_INV_HNDL_MAX_CNT))&&(!inv[ii]._self_err_av_stat))
+				{
+				inv[ii]._self_err_av_stat=1;
+				avar_inv_hndl(ii,'S',1,0);
+				}  
+			}
+		else inv[ii]._self_err_av_cnt=3*CONST_AV_INV_HNDL_MAX_CNT;
+		}  
+	else if((!(!(inv[ii]._flags_tm&0xbf)) && (!(inv[ii]._flags_tm_dop&0x01))) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._self_err_av_cnt>0)
+			{
+			inv[ii]._self_err_av_cnt-=3;
+			if((inv[ii]._self_err_av_cnt<=0)&&(inv[ii]._self_err_av_stat))
+				{
+				inv[ii]._self_err_av_stat=0;
+				avar_inv_hndl(ii,'S',0,0);
+				} 
+			}
+		else inv[ii]._self_err_av_cnt=0;
+		}
+	// Авария по выходным напряжениям инверторов
+	if((inv[ii]._flags_tm&0x08) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._uout_max_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._uout_max_av_cnt++;
+			if((inv[ii]._uout_max_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._uout_av_stat))
 				{
 				inv[ii]._uout_av_stat=1;
 				avar_inv_hndl(ii,'O',1,inv[ii]._Uout);
 				}  
 			}
 		}  
-	else if((!(inv[ii]._flags_tm&0x18)) &&  inv[ii]._valid)
+	else if((!(inv[ii]._flags_tm&0x08)) &&  inv[ii]._valid)
 		{
-		if(inv[ii]._uout_av_cnt)
+		if(inv[ii]._uout_max_av_cnt)
 			{
-			inv[ii]._uout_av_cnt--;
-			if((inv[ii]._uout_av_cnt==0)&&(inv[ii]._uout_av_stat))
+			inv[ii]._uout_max_av_cnt--;
+			if((inv[ii]._uout_max_av_cnt==0)&&(inv[ii]._uout_av_stat))
 				{
 				inv[ii]._uout_av_stat=0;
 				avar_inv_hndl(ii,'O',0,0);
+				} 
+			}
+		}
+
+	if((inv[ii]._flags_tm&0x10) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._uout_min_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._uout_min_av_cnt++;
+			if((inv[ii]._uout_min_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._uout_av_stat))
+				{
+				inv[ii]._uout_av_stat=1;
+				avar_inv_hndl(ii,'o',1,inv[ii]._Uout);
+				}  
+			}
+		}  
+	else if((!(inv[ii]._flags_tm&0x10)) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._uout_min_av_cnt)
+			{
+			inv[ii]._uout_min_av_cnt--;
+			if((inv[ii]._uout_min_av_cnt==0)&&(inv[ii]._uout_av_stat))
+				{
+				inv[ii]._uout_av_stat=0;
+				avar_inv_hndl(ii,'o',0,0);
 				} 
 			}
 		}
@@ -2360,7 +2572,7 @@ for(ii=0;ii<NUMINV;ii++)
 				}  
 			}
 		}  
-	else if((!(inv[ii]._flags_tm&0x02)) &&  inv[ii]._valid)
+	else if((!(inv[ii]._flags_tm&0x06)) &&  inv[ii]._valid)
 		{
 		if(inv[ii]._temper_av_cnt)
 			{
@@ -2369,6 +2581,32 @@ for(ii=0;ii<NUMINV;ii++)
 				{
 				inv[ii]._temper_av_stat=0;
 				avar_inv_hndl(ii,'T',0,0);
+				} 
+			}
+		}
+
+	// Авария по перегрузке инверторов
+	if((inv[ii]._flags_tm&0x01) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._overload_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._overload_av_cnt++;
+			if((inv[ii]._overload_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._overload_av_stat))
+				{
+				inv[ii]._overload_av_stat=1;
+				avar_inv_hndl(ii,'L',1,0);
+				}  
+			}
+		}  
+	else if((!(inv[ii]._flags_tm&0x01)) &&  inv[ii]._valid)
+		{
+		if(inv[ii]._overload_av_cnt)
+			{
+			inv[ii]._overload_av_cnt--;
+			if((inv[ii]._overload_av_cnt==0)&&(inv[ii]._overload_av_stat))
+				{
+				inv[ii]._overload_av_stat=0;
+				avar_inv_hndl(ii,'L',0,0);
 				} 
 			}
 		}
@@ -2398,6 +2636,35 @@ for(ii=0;ii<NUMINV;ii++)
 				} 
 			}
 		}
+//inv[sub_ind1]._flags_tm_dop&0x01
+
+	// Авария по входному напряжению
+	if((inv[ii]._flags_tm_dop&0x01)&&(inv[ii]._valid))
+		{
+		if(inv[ii]._uin_av_cnt<CONST_AV_INV_HNDL_MAX_CNT)
+			{
+			inv[ii]._uin_av_cnt++;
+			if((inv[ii]._uin_av_cnt>=CONST_AV_INV_HNDL_MAX_CNT)&&(!inv[ii]._uin_av_stat))
+				{
+				inv[ii]._uin_av_stat=1;
+				avar_inv_hndl(ii,'I',1,0);
+				}  
+			}
+		}  
+	else if(inv[ii]._valid)
+		{
+		if(inv[ii]._uin_av_cnt)
+			{
+			inv[ii]._uin_av_cnt--;
+			if((inv[ii]._uin_av_cnt==0)&&(inv[ii]._uin_av_stat))
+				{
+				inv[ii]._uin_av_stat=0;
+				avar_inv_hndl(ii,'I',0,0);
+				} 
+			}
+		}
+
+
 
 	}
 }
@@ -2411,7 +2678,15 @@ char temp;
 temp=0;
 for(ii=0;ii<NUMINV;ii++)
 	{
-	if((inv[ii]._uout_av_stat)||(inv[ii]._temper_av_stat)||(inv[ii]._conn_av_stat)) temp=1;
+	if
+		(
+		(inv[ii]._uout_av_stat) ||
+		(inv[ii]._temper_av_stat) ||
+		(inv[ii]._conn_av_stat) ||
+		inv[ii]._self_err_av_stat ||
+		inv[ii]._overload_av_stat ||
+		inv[ii]._uin_av_stat
+		) temp=1;
 	}
 someInvAvIsOn = temp;
 
@@ -3424,7 +3699,7 @@ else if(RELEVENTSIGN==rvsBPS)
 	else vent_stat=0;
 	*/
 
-	if	(
+/*0502	if	(
 		((NUMIST)&&((bps[0]._Ti>TVENTON)||(bps[0]._cnt>=30)))
 		||
 		((NUMIST>1)&&((bps[1]._Ti>TVENTON)||(bps[1]._cnt>=30)))
@@ -3466,7 +3741,7 @@ else if(RELEVENTSIGN==rvsBPS)
 			{
 			vent_stat=0;
 			}
-		}
+		}0502*/
 	}
 else if(RELEVENTSIGN==rvsEXT)
 	{

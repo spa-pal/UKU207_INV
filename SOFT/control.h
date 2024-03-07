@@ -6,6 +6,7 @@
 //**********************************************
 //Работа с инверторами
 extern char num_of_wrks_inv;
+extern char num_of_wrks_inv_3F[3];
 extern char bps_all_off_cnt,bps_mask_off_cnt,bps_mask_on_off_cnt;
 extern char bps_hndl_2sec_cnt;
 extern unsigned short bps_on_mask,bps_off_mask;

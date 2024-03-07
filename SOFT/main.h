@@ -165,6 +165,20 @@
 #define DISPLAY_MAKB_TEMPER3_STAT			1,16
 #define DISPLAY_MAKB_TEMPER4_STAT			1,17
 
+#define DISPLAY_SYSTEM_WO_BYPASS	18
+#define DISPLAY_U_LOAD						1
+#define DISPLAY_I_LOAD						2
+#define DISPLAY_P_LOAD						3
+#define DISPLAY_U_LOAD_PHASE_A				4
+#define DISPLAY_I_LOAD_PHASE_A				5
+#define DISPLAY_P_LOAD_PHASE_A				6
+#define DISPLAY_U_LOAD_PHASE_B				7
+#define DISPLAY_I_LOAD_PHASE_B				8
+#define DISPLAY_P_LOAD_PHASE_B				9
+#define DISPLAY_U_LOAD_PHASE_C				10
+#define DISPLAY_I_LOAD_PHASE_C				11
+#define DISPLAY_P_LOAD_PHASE_C				12
+
 #define DISPLAY_BYPASS				19
 #define DISPLAY_BYPASS_U_LOAD				1
 #define DISPLAY_BYPASS_I_LOAD				2
@@ -702,7 +716,7 @@ extern signed short U_IN_AC_MIN_AV;
 extern signed short U_IN_DC_MAX_AV;
 extern signed short U_IN_DC_MIN_AV;
 extern signed short NUMBAT;
-extern signed short NUMIST;
+/*0502extern signed short NUMIST; 0502*/
 extern signed short NUMINV;
 extern signed short NUMDT;
 extern signed short NUMSK;
@@ -928,12 +942,13 @@ typedef struct
 	char _bps_fw_info_cnt;
 	char _bps_fw_info[80];
      } BPS_STAT; 
-extern BPS_STAT bps[1];
+/*0502extern BPS_STAT bps[1];0502*/
 
 //***********************************************
 //Состояние инверторов
 typedef struct
      {
+	 char _buff[21];
      //enum {dSRC=3,dINV=5}_device;
 	char _av;
 	//0бит - авария по перегреву
@@ -972,7 +987,7 @@ typedef struct
 	 char _flags_tm_dop;
 	char _avIsOn;
 	char _flags_tm_old;
-	signed short _overload_av_cnt;     
+//	signed short _overload_av_cnt;     
 	signed short _temp_av_cnt;
 	signed short _umax_av_cnt;
 	signed short _umin_av_cnt;
@@ -981,12 +996,20 @@ typedef struct
 	char _adr_ee;
 	char _last_avar;
 	char _valid;
-	signed char _uout_av_cnt;
+	signed char _uin_av_cnt;
+	char _uin_av_stat;
+	//signed char _uout_av_cnt;
+	signed char		_uout_min_av_cnt;
+	signed char		_uout_max_av_cnt;
 	char _uout_av_stat;
 	signed char _temper_av_cnt;
 	char _temper_av_stat;
+	signed char _overload_av_cnt;
+	char _overload_av_stat;
 	signed char _conn_av_cnt;
 	char _conn_av_stat;
+	signed short _self_err_av_cnt;
+	char _self_err_av_stat;
 	char _fw_mk_data[3];
 	char _fw_mk_hv;
 	char _fw_mk_sv;
@@ -995,8 +1018,11 @@ typedef struct
 	char _fw_plis_hv;
 	char _fw_plis_sv;
 	short _fw_plis_bld;
+	char _inv_fw_info_cnt;
+	char _inv_fw_info[80];
+	char _inv_int_err_cnt;
 	} INV_STAT; 
-extern INV_STAT inv[64];
+extern INV_STAT inv[42];
 extern char first_inv_slot;
 //extern char someInvAvIsOn;
 
@@ -1008,6 +1034,9 @@ extern signed long load_P;
 extern signed short load_U_inv;
 extern signed short load_I_inv;
 extern signed long load_P_inv;
+extern signed short load_U_inv_3F[3];
+extern signed short load_I_inv_3F[3];
+extern signed long load_P_inv_3F[3];
 
 extern signed short dcin_U;
 

@@ -18,6 +18,11 @@ extern unsigned char sh_cnt0,b1Hz_sh;
 extern signed char dcin_av_cnt;
 extern char dcin_av_stat;
 
+//**********************************************
+//Аварии AC (без байпаса)
+extern signed char	acout_av_cnt,acout_av_cnt_A, acout_av_cnt_B, acout_av_cnt_C;
+extern char acout_av_stat,acout_av_stat_A,acout_av_stat_B,acout_av_stat_C;
+
 
 extern short cntrl_stat_blok_cnt,cntrl_stat_blok_cnt_,cntrl_stat_blok_cnt_plus[2],cntrl_stat_blok_cnt_minus[2];
 

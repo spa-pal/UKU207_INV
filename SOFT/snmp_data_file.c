@@ -796,7 +796,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_set_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_u_set,220,230);
 	lc640_write_int(EE_U_OUT_SET,snmp_u_set);
@@ -806,7 +806,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_max_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_u_max,240,270);
 	lc640_write_int(EE_U_OUT_MAX,snmp_u_max);
@@ -817,7 +817,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_min_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_u_min,0,200);
 	lc640_write_int(EE_U_OUT_MIN,snmp_u_min);
@@ -828,9 +828,9 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_net_on_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
-	gran(&snmp_u_net_on,180,205);
+	gran(&snmp_u_net_on,110,205);
 	gran(&snmp_u_net_on,snmp_u_net_off+5,205);
 	lc640_write_int(EE_U_NET_MAX,snmp_u_net_on);
 	}
@@ -838,10 +838,10 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_net_off_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
-	gran(&snmp_u_net_off,175,200);
-	gran(&snmp_u_net_off,175,snmp_u_net_on-5);
+	gran(&snmp_u_net_off,105,200);
+	gran(&snmp_u_net_off,105,snmp_u_net_on-5);
 	lc640_write_int(EE_U_NET_MIN,snmp_u_net_off);
 	}
 }
@@ -889,7 +889,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_bypass_max_dc_input_voltage_alarm_level_write(int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_bypass_max_dc_input_voltage_alarm_level,20,300);
 	lc640_write_int(EE_U_IN_DC_MAX_AV,snmp_bypass_max_dc_input_voltage_alarm_level);
@@ -899,7 +899,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_bypass_min_dc_input_voltage_alarm_level_write(int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_bypass_min_dc_input_voltage_alarm_level,20,300);
 	lc640_write_int(EE_U_IN_DC_MIN_AV,snmp_bypass_min_dc_input_voltage_alarm_level);
@@ -910,7 +910,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_bat_on_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	short temp_min=0,temp_max=300,temp_d=1;
 		 if(AUSW_MAIN==24)
@@ -927,7 +927,7 @@ if(mode==MIB_WRITE)
 			}
 		else if(AUSW_MAIN==220)
 		 	{
-			temp_min=175,temp_max=215,temp_d=1;
+			temp_min=175,temp_max=300,temp_d=1;
 			}
 	gran(&snmp_u_bat_on,temp_min,temp_max);
 	gran(&snmp_u_bat_on,snmp_u_bat_off+5,temp_max);
@@ -937,7 +937,7 @@ if(mode==MIB_WRITE)
 //-----------------------------------------------
 void snmp_u_bat_off_write (int mode)
 {
-if(mode==MIB_WRITE)
+if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	short temp_min=0,temp_max=300,temp_d=1;
 		 if(AUSW_MAIN==24)
@@ -954,11 +954,11 @@ if(mode==MIB_WRITE)
 			}
 		else if(AUSW_MAIN==220)
 		 	{
-			temp_min=170,temp_max=210,temp_d=1;
+			temp_min=170,temp_max=300,temp_d=1;
 			}
 
 	gran(&snmp_u_bat_off,temp_min,temp_max);
-	gran(&snmp_u_bat_off,175,snmp_u_bat_on-5);
+	//gran(&snmp_u_bat_off,10,snmp_u_bat_on-5);
 	lc640_write_int(EE_U_BAT_MIN,snmp_u_bat_off);
 	}
 }

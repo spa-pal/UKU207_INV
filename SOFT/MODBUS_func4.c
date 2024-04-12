@@ -1011,22 +1011,22 @@ unsigned char *const reg_func4 []={
 &NULL_0,
 &NULL_0,
 &NULL_0,
-&NULL_0,//460
-&NULL_0,//460
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+(unsigned char*)&load_U_inv_3F[0]+1,//460
+(unsigned char*)&load_U_inv_3F[0],//460
+(unsigned char*)&load_I_inv_3F[0]+1,//461
+(unsigned char*)&load_I_inv_3F[0],//461
+(unsigned char*)&load_P_inv_3F[0]+1,//462
+(unsigned char*)&load_P_inv_3F[0],//462
+(unsigned char*)&load_P_inv_3F[0]+3,//463
+(unsigned char*)&load_P_inv_3F[0]+2,//463
+(unsigned char*)&load_U_inv_3F[1]+1,//464
+(unsigned char*)&load_U_inv_3F[1],//464
+(unsigned char*)&load_I_inv_3F[1]+1,//465
+(unsigned char*)&load_I_inv_3F[1],//465
+(unsigned char*)&load_P_inv_3F[1]+1,//466
+(unsigned char*)&load_P_inv_3F[1],//466
+(unsigned char*)&load_P_inv_3F[1]+3,//467
+(unsigned char*)&load_P_inv_3F[1]+2,//467
 &NULL_0,
 &NULL_0,
 &NULL_0,

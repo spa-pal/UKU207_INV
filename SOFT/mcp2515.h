@@ -14,7 +14,12 @@
 #define CNF2_init	0xfb /*0b11111011*/  //Ps1=7tq,Pr=2tq 
 #define CNF3_init	0x02 /*0b00000010*/  //Ps2=6tq   
 #elif(KAN_XTAL==10)
-#define CNF1_init	0xc3 /*0b11000011*/  //tq=500ns   //10MHz
+/*62.5*/
+//#define CNF1_init	0xc3 /*0b11000011*/  //tq=500ns   //10MHz
+//#define CNF2_init	0xfe /*0b11111110*/  //Ps1=7tq,Pr=2tq 
+//#define CNF3_init	0x03 /*0b00000011*/  //Ps2=6tq
+ /*125*/
+#define CNF1_init	0xc1 /*0b11000000*/  //tq=500ns   //10MHz
 #define CNF2_init	0xfe /*0b11111110*/  //Ps1=7tq,Pr=2tq 
 #define CNF3_init	0x03 /*0b00000011*/  //Ps2=6tq
 #elif(KAN_XTAL==20)

@@ -25,6 +25,10 @@ void ke_mem_hndl(char b,unsigned short in);
 void vz_mem_hndl(unsigned short in);
 void wrk_mem_hndl(char b);
 void avar_byps_hndl(char dev, char v, char in, short value);
+void wrk_from_net_hndl(void);
+void wrk_from_inv_hndl(void);
+void prior_from_net_hndl(void);
+void prior_from_inv_hndl(void);
 
 
 

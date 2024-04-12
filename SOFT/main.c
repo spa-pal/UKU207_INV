@@ -599,6 +599,12 @@ char dcAvIsOn; 			//авария по входному напряжению DC
 char uOutAvIsOn;		//авария по выходному напряжению
 char uNetAvIsOn;		//авария по входному напряжению AC
 char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
+char wrkFromNet1Inv0_del=10; 	//работа от сети(1)/инверторов(0) с задержкой, после счетчика
+char wrkFromNet1Inv0_cnt; 	//работа от сети(1)/инверторов(0) счетчик
+char priorFromNet1Inv0; 		//приоритет - работа от сети(1)/инверторов(0)
+char priorFromNet1Inv0_del=10; 	//приоритет - работа от сети(1)/инверторов(0) с задержкой, после счетчика
+char priorFromNet1Inv0_cnt; 	//приоритет - работа от сети(1)/инверторов(0) счетчик
+char systemIsWrk;				//система работает, есть хотя бы один инвертор который передает по KAN что он подключен к выходной шине
 
 
 U8 socket_tcp;
@@ -3051,6 +3057,66 @@ if(ind==iMn_INV)
 
 		}
 
+	else if((NUMBYPASS==0)&&(NUMPHASE==2))	
+		{
+		ptrs[0]	=	"  В работе    kинв. ";
+
+/*0702		ptrs[1]="    Pвых=     @Вт   ";	 0702*/
+/*0702*/ptrs[1]="Pвых=   ]/  ]кВт    ";
+ 		ptrs[2]="Uвых=  [В/  zВ      ";
+		ptrs[3]="Iвых=  }A/  }A      ";
+     //	ptrs[2]="    Pвых=     @Вт   ";
+     	ptrs[4]=" 0%:0^:0& 0</>  /0{ ";
+		ptrs[5]="    Udc.вх.   #В    ";
+		ptrs[6]="    Fвых.     yГц   ";
+
+		ptrs[6+(F_IND_EN==1)]=						" Байпас             ";     
+		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
+		ptrs[7+(F_IND_EN==1)]=  					" Байпас N2          ";
+		ptrs[8+(F_IND_EN==1)]=  					" Байпас N3          ";
+	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+
+		}
+
 	else if((NUMBYPASS==0)&&(NUMPHASE==3))	
 		{
 		ptrs[0]	=	"  В работе    kинв. ";
@@ -3241,7 +3307,7 @@ if(ind==iMn_INV)
 
 
 	int2lcd(num_of_wrks_inv,'k',0);
-	if(NUMPHASE==3)
+	if((NUMPHASE==3)||(NUMPHASE==2))
 		{
 		if(NUMBYPASS)
 			{
@@ -3284,7 +3350,7 @@ if(ind==iMn_INV)
 		if(byps[2]._Pout>65000)byps[2]._Pout=0;
 
 /*0702		if(NUMPHASE==3)long2lcd_mmm((unsigned short)(byps[0]._Pout+byps[1]._Pout+byps[2]._Pout),'@',0);	  0702*/
-/*0702*/if(NUMPHASE==3)
+/*0702*/if((NUMPHASE==3)||(NUMPHASE==2))
 			{
 			if(NUMBYPASS)
 				{
@@ -3372,7 +3438,8 @@ if(ind==iMn_INV)
 	//int2lcdyx(NUMBYPASS,0,2,0);
 	//int2lcdyx(inv[2]._self_err_av_cnt,0,2,0);
 	//int2lcdyx(inv[2]._self_err_av_stat,0,4,0);
-	//int2lcdyx(inv[2]._cnt,0,8,0);
+	//int2lcdyx(systemIsWrk,0,3,0);
+	//int2lcdyx(acout_av_stat,0,6,0);
 
 	}
  /*0502
@@ -4485,6 +4552,95 @@ else if(ind==iLog_)
 		
 		}
 
+	if((av_head[0]=='W')&&(av_head[2]=='N'))
+		{
+		bgnd_par(	
+				"   Переход работы   ",
+				"      байпаса       ",
+				"с инверторов на сеть",
+				"  0%(  0^ 0@:0#:0$  ");
+				
+				  	
+		int2lcd(av_data_on[4],'@',0);
+		int2lcd(av_data_on[5],'#',0);
+		int2lcd(av_data_on[6],'$',0);
+		int2lcd(av_data_on[2],'%',0);
+		int2lcd(av_data_on[0],'^',0); 
+		if(!((av_data_on[1]>=1)&&(av_data_on[1]<=12)))av_data_on[1]=1;
+		sub_bgnd(sm_mont[av_data_on[1]],'(',0);
+		//int2lcd(av_data_on[1],'(',0);
+		//int2lcdyx(av_data_on[1],2,1,0);
+		av_j_si_max=0;
+		
+		}
+
+ 	if((av_head[0]=='W')&&(av_head[2]=='I'))
+		{
+		bgnd_par(	
+				"   Переход работы   ",
+				"      байпаса       ",
+				"с сети на инверторы ",
+				"  0%(  0^ 0@:0#:0$  ");
+				
+				  	
+		int2lcd(av_data_on[4],'@',0);
+		int2lcd(av_data_on[5],'#',0);
+		int2lcd(av_data_on[6],'$',0);
+		int2lcd(av_data_on[2],'%',0);
+		int2lcd(av_data_on[0],'^',0); 
+		if(!((av_data_on[1]>=1)&&(av_data_on[1]<=12)))av_data_on[1]=1;
+		sub_bgnd(sm_mont[av_data_on[1]],'(',0);
+		//int2lcd(av_data_on[1],'(',0);
+		//int2lcdyx(av_data_on[1],2,1,0);
+		av_j_si_max=0;
+		
+		}
+
+	if((av_head[0]=='T')&&(av_head[2]=='N'))
+		{
+		bgnd_par(	
+				"  Смена приоритета  ",
+				"   работы байпаса   ",
+				"с инверторов на сеть",
+				"  0%(  0^ 0@:0#:0$  ");
+				
+				  	
+		int2lcd(av_data_on[4],'@',0);
+		int2lcd(av_data_on[5],'#',0);
+		int2lcd(av_data_on[6],'$',0);
+		int2lcd(av_data_on[2],'%',0);
+		int2lcd(av_data_on[0],'^',0); 
+		if(!((av_data_on[1]>=1)&&(av_data_on[1]<=12)))av_data_on[1]=1;
+		sub_bgnd(sm_mont[av_data_on[1]],'(',0);
+		//int2lcd(av_data_on[1],'(',0);
+		//int2lcdyx(av_data_on[1],2,1,0);
+		av_j_si_max=0;
+		
+		}
+
+ 	if((av_head[0]=='T')&&(av_head[2]=='I'))
+		{
+		bgnd_par(	
+				"  Смена приоритета  ",
+				"   работы байпаса   ",
+				"с сети на инверторы ",
+				"  0%(  0^ 0@:0#:0$  ");
+				
+				  	
+		int2lcd(av_data_on[4],'@',0);
+		int2lcd(av_data_on[5],'#',0);
+		int2lcd(av_data_on[6],'$',0);
+		int2lcd(av_data_on[2],'%',0);
+		int2lcd(av_data_on[0],'^',0); 
+		if(!((av_data_on[1]>=1)&&(av_data_on[1]<=12)))av_data_on[1]=1;
+		sub_bgnd(sm_mont[av_data_on[1]],'(',0);
+		//int2lcd(av_data_on[1],'(',0);
+		//int2lcdyx(av_data_on[1],2,1,0);
+		av_j_si_max=0;
+		
+		}
+
+
 	else if((av_head[0]=='P')&&(av_head[2]=='A'))
 		{  
 		ptrs[0]="   Авария сети!!!   ";
@@ -4524,6 +4680,54 @@ else if(ind==iLog_)
 		
 		av_j_si_max=1;
 		}
+
+	else if((av_head[0]=='O')&&(av_head[2]=='U'))
+		{  
+		ptrs[0]=" Авария Uвых     !В ";
+		ptrs[1]=" Uвых.  не в норме! ";
+		if(av_head[1]==1)		ptrs[1]=" Uвых.фА не в норме!";
+		if(av_head[1]==2)		ptrs[1]=" Uвых.фB не в норме!";
+		if(av_head[1]==3)		ptrs[1]=" Uвых.фC не в норме!";
+
+		ptrs[2]="  0%&  0^ 0@:0#:0$  ";
+		if((av_data_off[0]=='A')&&(av_data_off[1]=='A'))
+			{
+			ptrs[3]="    не устранена    ";
+			bgnd_par(ptrs[0],ptrs[1],ptrs[2],ptrs[3]);
+			}
+		else 
+			{
+			gran_char(&index_set,0,1);
+			ptrs[3]="     устранена      ";
+			ptrs[4]="  0[]  0< 0>:0=:0z  ";
+			bgnd_par(ptrs[index_set],ptrs[1+index_set],ptrs[2+index_set],ptrs[3+index_set]);
+			int2lcd(av_data_off[4],'>',0);
+			int2lcd(av_data_off[5],'=',0);
+			int2lcd(av_data_off[6],'z',0);
+			int2lcd(av_data_off[2],'[',0);
+			int2lcd(av_data_off[0],'<',0); 
+			if(!((av_data_off[1]>=1)&&(av_data_off[1]<=12)))av_data_off[1]=1;
+			sub_bgnd(sm_mont[av_data_off[1]],']',0);
+
+			}	
+		//int2lcd(av_head[1]+1,'+',0);
+		int2lcd(av_data_on[4],'@',0);
+		int2lcd(av_data_on[5],'#',0);
+		int2lcd(av_data_on[6],'$',0);
+		int2lcd(av_data_on[2],'%',0);
+		int2lcd(av_data_on[0],'^',0); 
+		if(!((av_data_on[1]>=1)&&(av_data_on[1]<=12)))av_data_on[1]=1;
+		sub_bgnd(sm_mont[av_data_on[1]],'&',0);
+
+		int2lcd(av_head_int[0],'!',0);
+
+		if(av_head[1]>=9)		sub_bgnd(" Z",'Z',0);
+		int2lcd(av_head[1]+1,'Z',0);
+		
+		av_j_si_max=1;
+		}
+
+
 	else if((av_head[0]=='D')&&(av_head[2]=='U'))
 		{  
 		ptrs[0]=" Авария Udc      !В ";
@@ -5507,7 +5711,7 @@ else if(ind==iSet_INV)
 	ptrs[25]=		"                  >0";
 	ptrs[26]=      	" Реле               ";
 	ptrs[27]=      	" Аварийные пороги   ";
-	ptrs[28]=      	" байпас             ";
+	ptrs[28]=      	" системы            ";
 	ptrs[29]=		" Внешние датчики    ";
 	ptrs[30]=      	" Серийный N        w";
 	ptrs[31]=      	" Индикация Fвых    W";
@@ -6247,8 +6451,11 @@ else if(ind==iRele_set)
     ptrs[1]=	" Авария DC         #";
 	ptrs[2]=	" Авария Uвых       $"; 
     ptrs[3]=	" Авария Uвх        %";
-    ptrs[4]=	" Состояние входного ";
-	ptrs[5]=	" селектора (AC/DC) ^";
+ //   ptrs[4]=	" Состояние входного ";
+//	ptrs[5]=	" селектора (AC/DC) ^";
+    ptrs[4]=	" Работа байпаса     ";
+	//ptrs[5]=	" от сети(<)/инв(>) ^";
+	ptrs[5]=	" от сети/инв       ^";
 	ptrs[6]=	" Активное состояние ";
 	ptrs[7]=	"  реле             &";
     ptrs[8]=	sm_exit;
@@ -6271,6 +6478,8 @@ else if(ind==iRele_set)
 	checkboxing('#',RELE_SET_MASK[sub_ind1]&(1<<1));
  	checkboxing('$',RELE_SET_MASK[sub_ind1]&(1<<2));
 	checkboxing('%',RELE_SET_MASK[sub_ind1]&(1<<3));
+	checkboxing('<',1);
+	checkboxing('>',0);
  	checkboxing('^',RELE_SET_MASK[sub_ind1]&(1<<4));
 //	checkboxing('[',RELE_SET_MASK[sub_ind1]&(1<<5));
 //	checkboxing('{',RELE_SET_MASK[sub_ind1]&(1<<6));
@@ -6299,7 +6508,7 @@ else if(ind==iByps_av_set)
 	else if(sub_ind<index_set)index_set=sub_ind;
 	
 	bgnd_par(	"   ПОРОГИ АВАРИЙ    ",
-				"      БАЙПАСС       ",
+				"      СИСТЕМЫ       ",
 				ptrs[index_set],
 				ptrs[index_set+1]);
 	pointer_set(2);
@@ -11025,9 +11234,18 @@ else if(ind==iSet_INV)
 		sub_ind=0;
 		}		
 	else if(sub_ind==0)
-	     {
-	     if(but==butE)
-	          	{
+		{
+		if(but==butE)
+	     	{
+			if(systemIsWrk)
+			 	{
+				show_mess(		"Изменение параметров",
+		          				"   работы системы   ",
+		          				"  заблокировано!!!  ",
+		          				"                    ",3000);
+				}
+		 	else
+				{
 				default_temp=100;
 				tree_up(iDef,0,0,0);
 				/*
@@ -11040,7 +11258,8 @@ else if(ind==iSet_INV)
 				lc640_write_int(EE_U_BAT_MIN,175);
 				*/
 	          	}
-	     }	
+			}
+		}	
 	
      else if(sub_ind==1)
 		{
@@ -11090,6 +11309,15 @@ else if(ind==iSet_INV)
 
      else if(sub_ind==8)
 	     {
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_SET++;
@@ -11109,10 +11337,20 @@ else if(ind==iSet_INV)
 	     	lc640_write_int(EE_U_OUT_MAX,U_OUT_MAX);
 			speed=1;
 	     	}
-          }
+			}
+		}
 
-     else if(sub_ind==10)
+	else if(sub_ind==10)
 	     {
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MAX++;
@@ -11130,10 +11368,20 @@ else if(ind==iSet_INV)
 			//lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
 	     	}
+			}
           }
 
      else if(sub_ind==12)
 	     {
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_OUT_MIN++;
@@ -11151,10 +11399,20 @@ else if(ind==iSet_INV)
 	     	lc640_write_int(EE_U_OUT_MIN,U_OUT_MIN);
 			speed=1;
 	     	}
+			}
           }
 
      else if(sub_ind==14)
 	     {
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MAX++;
@@ -11172,10 +11430,20 @@ else if(ind==iSet_INV)
 			lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			speed=1;
 	     	}
+			}
           }
 
      else if(sub_ind==16)
 	     {
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 	     if((but==butR)||(but==butR_))
 	     	{
 	     	U_NET_MIN++; 
@@ -11193,11 +11461,21 @@ else if(ind==iSet_INV)
 	     	lc640_write_int(EE_U_NET_MIN,U_NET_MIN);
 			speed=1;
 	     	}
+			}
           }
 
      else if(sub_ind==18)
 	     {
 		 short temp_min=0,temp_max=300,temp_d=1;
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 		 if(AUSW_MAIN==24)
 		 	{
 			temp_min=22,temp_max=26,temp_d=1;
@@ -11221,6 +11499,7 @@ else if(ind==iSet_INV)
 	     	lc640_write_int(EE_U_BAT_MAX,U_BAT_MAX);
 			speed=1;
 	     	}
+
 	     
 	     else if((but==butL)||(but==butL_))
 	     	{
@@ -11231,11 +11510,21 @@ else if(ind==iSet_INV)
 			lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
 			speed=1;
 	     	}
+			}
           }
 
      else if(sub_ind==20)
 	     {
 		 short temp_min=0,temp_max=300,temp_d=1;
+		 if(systemIsWrk)
+		 	{
+			show_mess(		"Изменение параметров",
+	          				"   работы системы   ",
+	          				"  заблокировано!!!  ",
+	          				"                    ",3000);
+			}
+		 else
+		 	{
 		 if(AUSW_MAIN==24)
 		 	{
 			temp_min=20,temp_max=24,temp_d=1;
@@ -11269,6 +11558,7 @@ else if(ind==iSet_INV)
 	     	lc640_write_int(EE_U_BAT_MIN,U_BAT_MIN);
 			speed=1;
 	     	}
+			}
           }
 
 	 else if(sub_ind==22)
@@ -12040,13 +12330,15 @@ else if(ind==iStr_INV)
 		 	{
 			if((but==butR)||(but==butR_))
 				{
-		     	NUMPHASE=3;
+		     	NUMPHASE++;//;NUMPHASE=3;
+				gran(&NUMPHASE,1,3);
 		     	lc640_write_int(EE_NUMPHASE,NUMPHASE);
 		     	}
 		     
 			else if((but==butL)||(but==butL_))
 		     	{
-		     	NUMPHASE=1;
+		     	NUMPHASE--;//NUMPHASE=1;
+				gran(&NUMPHASE,1,3);
 		     	lc640_write_int(EE_NUMPHASE,NUMPHASE);
 
 		     	}
@@ -18387,6 +18679,7 @@ while (1)
 		byps_av_hndl();
 		inv_av_hndl();
 		dc_in_av_hndl();
+		ac_out_av_hndl();
 		}
 
 	if(b5Hz)

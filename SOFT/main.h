@@ -178,6 +178,12 @@
 #define DISPLAY_U_LOAD_PHASE_C				10
 #define DISPLAY_I_LOAD_PHASE_C				11
 #define DISPLAY_P_LOAD_PHASE_C				12
+#define DISPLAY_U_LOAD_PHASE_A_2PH			13
+#define DISPLAY_I_LOAD_PHASE_A_2PH			14
+#define DISPLAY_P_LOAD_PHASE_A_2PH			15
+#define DISPLAY_U_LOAD_PHASE_B_2PH			16
+#define DISPLAY_I_LOAD_PHASE_B_2PH			17
+#define DISPLAY_P_LOAD_PHASE_B_2PH			18
 
 #define DISPLAY_BYPASS				19
 #define DISPLAY_BYPASS_U_LOAD				1
@@ -1180,6 +1186,13 @@ extern char dcAvIsOn; 			//авария по входному напряжению DC
 extern char uOutAvIsOn;			//авария по выходному напряжению
 extern char uNetAvIsOn;			//авария по входному напряжению AC
 extern char wrkFromNet1Inv0; 	//работа от сети(1)/инверторов(0)
+extern char wrkFromNet1Inv0_del; 	//работа от сети(1)/инверторов(0) с задержкой, после счетчика
+extern char wrkFromNet1Inv0_cnt; 	//работа от сети(1)/инверторов(0) счетчик
+extern char priorFromNet1Inv0; 		//приоритет - работа от сети(1)/инверторов(0)
+extern char priorFromNet1Inv0_del; 	//приоритет - работа от сети(1)/инверторов(0) с задержкой, после счетчика
+extern char priorFromNet1Inv0_cnt; 	//приоритет - работа от сети(1)/инверторов(0) счетчик
+extern char systemIsWrk;				//система работает, есть хотя бы один инвертор который передает по KAN что он подключен к выходной шине
+
 
 extern signed short f_out;
 extern signed short f_out_inv;

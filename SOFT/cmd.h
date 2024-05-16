@@ -48,3 +48,4 @@
 #define ALRM_RES 0x63
 #define PUTTM1BYPS 0xD8
 #define PUTTM2BYPS 0xD9
+#define PUTTM3BYPS 0xDa

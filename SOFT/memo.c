@@ -19,6 +19,8 @@ char i;
 //Ki0src[0]=lc640_read_int(KI0SRC1);
 //Ki0src[1]=lc640_read_int(KI0SRC2);
 
+KAN_BR=lc640_read_int(EE_KAN_BR);
+
 Kubat[0]=lc640_read_int(EE_KUBAT1);
 Kubat[1]=lc640_read_int(EE_KUBAT2);
 Kubatm[0]=lc640_read_int(EE_KUBATM1);
@@ -112,8 +114,10 @@ NUMINAC=lc640_read_int(EE_NUMINAC);
 MODBUS_ADRESS=lc640_read_int(EE_MODBUS_ADRESS);
 MODBUS_BAUDRATE=lc640_read_int(EE_MODBUS_BAUDRATE);
 U_OUT_SET=lc640_read_int(EE_U_OUT_SET);
-U_NET_MAX=lc640_read_int(EE_U_NET_MAX);
-U_NET_MIN=lc640_read_int(EE_U_NET_MIN);
+U_NET_ON_MAX=lc640_read_int(EE_U_NET_ON_MAX);
+U_NET_ON_MIN=lc640_read_int(EE_U_NET_ON_MIN);
+U_NET_OFF_MAX=lc640_read_int(EE_U_NET_OFF_MAX);
+U_NET_OFF_MIN=lc640_read_int(EE_U_NET_OFF_MIN);
 U_BAT_MAX=lc640_read_int(EE_U_BAT_MAX);
 U_BAT_MIN=lc640_read_int(EE_U_BAT_MIN); 
 U_OUT_MAX=lc640_read_int(EE_U_OUT_MAX);
@@ -127,6 +131,8 @@ U_IN_AC_MAX_AV=lc640_read_int(EE_U_IN_AC_MAX_AV);
 U_IN_AC_MIN_AV=lc640_read_int(EE_U_IN_AC_MIN_AV);
 U_IN_DC_MAX_AV=lc640_read_int(EE_U_IN_DC_MAX_AV);
 U_IN_DC_MIN_AV=lc640_read_int(EE_U_IN_DC_MIN_AV);
+//U_AC_1=lc640_read_int(EE_U_AC_1);
+//U_AC_2=lc640_read_int(EE_U_AC_2);
 
 F_IND_EN=lc640_read_int(EE_F_IND_EN);
 
@@ -273,7 +279,7 @@ __ee_spc_phase=lc640_read_int(EE_SPC_PHASE);
 //NUMPHASE=-1;
 if((NUMBYPASS>5)||(NUMBYPASS<0)) NUMBYPASS=5;
 if((NUMPHASE!=3)&&(NUMPHASE!=2)&&(NUMPHASE!=1))NUMPHASE=1;
-
+language=lc640_read_int(EE_LANGUAGE);//o_2
 }
 
 

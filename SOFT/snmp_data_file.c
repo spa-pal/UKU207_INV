@@ -686,8 +686,8 @@ snmp_alarm_auto_disable=AV_OFF_AVT;
 snmp_u_set=U_OUT_SET;
 snmp_u_max=U_OUT_MAX;
 snmp_u_min=U_OUT_MIN;
-snmp_u_net_on=U_NET_MAX;
-snmp_u_net_off=U_NET_MIN;
+snmp_u_net_on=U_NET_ON_MAX;
+snmp_u_net_off=U_NET_ON_MIN;
 snmp_u_bat_on=U_BAT_MAX;
 snmp_u_bat_off=U_BAT_MIN;
 snmp_bypass_max_ac_output_voltage_alarm_level=U_OUT_AC_MAX_AV;
@@ -832,7 +832,7 @@ if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_u_net_on,110,205);
 	gran(&snmp_u_net_on,snmp_u_net_off+5,205);
-	lc640_write_int(EE_U_NET_MAX,snmp_u_net_on);
+	lc640_write_int(EE_U_NET_ON_MAX,snmp_u_net_on);
 	}
 }
 //-----------------------------------------------
@@ -842,7 +842,7 @@ if((mode==MIB_WRITE)&&(!systemIsWrk))
 	{
 	gran(&snmp_u_net_off,105,200);
 	gran(&snmp_u_net_off,105,snmp_u_net_on-5);
-	lc640_write_int(EE_U_NET_MIN,snmp_u_net_off);
+	lc640_write_int(EE_U_NET_ON_MIN,snmp_u_net_off);
 	}
 }
 

@@ -598,7 +598,8 @@ typedef enum {
 	iInv,iInv_v2,iInv_v3,
 	iNpn_set,
 	iByps,iByps3f,iK_byps_sel,
-	iFWabout,iFWInv_about}i_enum;
+	iFWabout,iFWInv_about,iFWByps_about,
+	iInv_sets, iByps_sets}i_enum;
 typedef struct  
 {
 
@@ -711,8 +712,10 @@ extern signed short TBOXWARMOFF;
 extern signed short U_OUT_SET;
 extern signed short U_OUT_MAX;
 extern signed short U_OUT_MIN;
-extern signed short U_NET_MAX;
-extern signed short U_NET_MIN;
+extern signed short U_NET_ON_MAX;
+extern signed short U_NET_OFF_MAX;
+extern signed short U_NET_ON_MIN;
+extern signed short U_NET_OFF_MIN;
 extern signed short U_BAT_MAX;
 extern signed short U_BAT_MIN;
 extern signed short U_OUT_AC_MAX_AV;
@@ -721,6 +724,8 @@ extern signed short U_IN_AC_MAX_AV;
 extern signed short U_IN_AC_MIN_AV;
 extern signed short U_IN_DC_MAX_AV;
 extern signed short U_IN_DC_MIN_AV;
+//extern signed short U_AC_1;
+//extern signed short U_AC_2;
 extern signed short NUMBAT;
 /*0502extern signed short NUMIST; 0502*/
 extern signed short NUMINV;
@@ -839,6 +844,7 @@ extern signed short SNTP_ENABLE;
 extern signed short SNTP_GMT;
 
 extern signed short F_IND_EN;
+extern signed short KAN_BR;
 
 //***********************************************
 //Состояние батарей
@@ -889,6 +895,14 @@ typedef struct
 	char 			_unet_av_stat;
 	signed char		_uout_av_cnt;
 	char 			_uout_av_stat;
+	signed char		_finv_av_cnt;
+	char 			_finv_av_stat;
+	signed char 	_mnl_net_cnt;
+	char 			_mnl_net_stat;
+	signed char 	_mnl_inv_cnt;
+	char 			_mnl_inv_stat;
+	signed char		_fin_av_cnt;
+	char 			_fin_av_stat;
 	signed char		_uin_av_cnt;
 	char 			_uin_av_stat;
 	signed char 	_temper_av_cnt;
@@ -898,6 +912,8 @@ typedef struct
 	char			_cnt;
 	char 		_adress;
 	char _valid;
+	char _byps_fw_info[80];
+	char _byps_fw_info_cnt;
 	} BYPS_STAT; 
 extern BYPS_STAT byps[3];
 
@@ -1191,13 +1207,16 @@ extern char wrkFromNet1Inv0_cnt; 	//работа от сети(1)/инверторов(0) счетчик
 extern char priorFromNet1Inv0; 		//приоритет - работа от сети(1)/инверторов(0)
 extern char priorFromNet1Inv0_del; 	//приоритет - работа от сети(1)/инверторов(0) с задержкой, после счетчика
 extern char priorFromNet1Inv0_cnt; 	//приоритет - работа от сети(1)/инверторов(0) счетчик
-extern char systemIsWrk;				//система работает, есть хотя бы один инвертор который передает по KAN что он подключен к выходной шине
-
+extern char systemIsWrk;			//система работает, есть хотя бы один инвертор который передает по KAN что он подключен к выходной шине
+extern char fBypsInAvIsOn;			//авария по расфазировке хотя бы у одного байпаса 
+extern char fBypsInvAvIsOn;			//авария по расфазировке входного инверторного напряжения хотя бы у одного байпаса
 
 extern signed short f_out;
 extern signed short f_out_inv;
 extern signed short f_out_byps;
 extern signed short f_out_byps_cnt;
+
+extern char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_,B4_4;
 
 extern char snmp_plazma;
 extern char plazma_bypas;
@@ -1223,6 +1242,12 @@ extern char plazma_rx;
 extern U8 socket_tcp;
 extern U8 tcp_soc_avg;
 extern U8 tcp_connect_stat;
+
+//o_2_s
+//------  английский язык -----------------------
+extern signed short language;
+extern const char sm_mont_en[13][4];
+//o_2_e
 /*----------------------------------------------------------------------------
  * end of file
  *---------------------------------------------------------------------------*/

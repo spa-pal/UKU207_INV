@@ -380,14 +380,14 @@ lc640_read_long_ptr(tempii+8,dt_);
 lc640_read_long_ptr(tempii+12,dt__);
 
 iii=find(simbol);
-     
+//0_2 сообщение 10 знаков + пробел. для выравнивания даты     
 if(dt[0]=='U')
     	{ 
     	if(dt[2]=='R')
     		{
-    		lcd_buffer[iii++]='В';
-    		lcd_buffer[iii++]='к';
-    		lcd_buffer[iii++]='л';
+    	if(language)lcd_buffer[iii++]='В'; else lcd_buffer[iii++]='O';//o_2
+   		if(language)lcd_buffer[iii++]='к'; else lcd_buffer[iii++]='n';//o_2
+    	if(language)lcd_buffer[iii++]='л'; else lcd_buffer[iii++]=' ';//o_2
     		}
     	
 	lcd_buffer[iii++]=' ';
@@ -396,6 +396,9 @@ if(dt[0]=='U')
    	lcd_buffer[iii++]=' ';
    	lcd_buffer[iii++]=' ';
    	lcd_buffer[iii++]=' ';
+
+	lcd_buffer[iii++]=' ';//o_2
+	lcd_buffer[iii++]=' ';//o_2
 
     	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     		{
@@ -424,7 +427,8 @@ if(dt[0]=='U')
      	int2lcd(dt_[2],'!',0);
      	int2lcd(dt_[0],'#',0);   
      	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
   		}	   
      }   
 else if(dt[0]=='W')
@@ -437,6 +441,7 @@ else if(dt[0]=='W')
    		lcd_buffer[iii++]='т';*/ 
     	if(dt[2]=='N')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='И';
     		lcd_buffer[iii++]='Н';
     		lcd_buffer[iii++]='В';
@@ -446,9 +451,21 @@ else if(dt[0]=='W')
     		lcd_buffer[iii++]='Е';
     		lcd_buffer[iii++]='Т';
     		lcd_buffer[iii++]='Ь';
+			}else{//o_2_s
+			lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+    		lcd_buffer[iii++]='V';
+			lcd_buffer[iii++]='-';     		
+   			lcd_buffer[iii++]='>';
+    		lcd_buffer[iii++]='M';
+    		lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+			}//o_2_e
     		}
     	else if(dt[2]=='I')
     		{
+			if(language){//o_2
     		lcd_buffer[iii++]='С';
     		lcd_buffer[iii++]='Е';
     		lcd_buffer[iii++]='Т';
@@ -458,9 +475,19 @@ else if(dt[0]=='W')
     		lcd_buffer[iii++]='И';
     		lcd_buffer[iii++]='Н';
     		lcd_buffer[iii++]='В';
-
-
+			}else{//o_2_s
+    		lcd_buffer[iii++]='M';
+    		lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='I';
+			lcd_buffer[iii++]='N';
+			lcd_buffer[iii++]='-';     		
+   			lcd_buffer[iii++]='>';
+    		lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+    		lcd_buffer[iii++]='V';
+			}//o_2_e
     		}    	
+		lcd_buffer[iii++]=' ';//o_2
 		lcd_buffer[iii++]=' ';
 
     	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
@@ -490,7 +517,8 @@ else if(dt[0]=='W')
      	int2lcd(dt_[2],'!',0);
      	int2lcd(dt_[0],'#',0);   
      	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
   		}	   
      }       
 else if(dt[0]=='T')
@@ -503,6 +531,7 @@ else if(dt[0]=='T')
    		lcd_buffer[iii++]='т';*/ 
     	if(dt[2]=='N')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='П';
     		lcd_buffer[iii++]='Р';
     		lcd_buffer[iii++]='И';
@@ -513,9 +542,22 @@ else if(dt[0]=='T')
     		lcd_buffer[iii++]='Е';
     		lcd_buffer[iii++]='Т';
     		lcd_buffer[iii++]='Ь';
+			}else{//o_2_s
+			lcd_buffer[iii++]='P';
+    		lcd_buffer[iii++]='R';
+    		lcd_buffer[iii++]='I';
+			lcd_buffer[iii++]='O';     		
+   			lcd_buffer[iii++]='R';
+			lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]='M';
+    		lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+			}//o_2_e
     		}
     	else if(dt[2]=='I')
     		{
+			if(language){//o_2
     		lcd_buffer[iii++]='П';
     		lcd_buffer[iii++]='Р';
     		lcd_buffer[iii++]='И';
@@ -525,8 +567,19 @@ else if(dt[0]=='T')
     		lcd_buffer[iii++]='И';
     		lcd_buffer[iii++]='Н';
     		lcd_buffer[iii++]='В';
-
-
+			lcd_buffer[iii++]=' ';//o_2
+			}else{//o_2_s
+    		lcd_buffer[iii++]='P';
+    		lcd_buffer[iii++]='R';
+    		lcd_buffer[iii++]='I';
+			lcd_buffer[iii++]='O';
+			lcd_buffer[iii++]='R';     		
+   			lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+    		lcd_buffer[iii++]='V';
+			lcd_buffer[iii++]=' ';
+			}//o_2_e
     		}    	
 		lcd_buffer[iii++]=' ';
 
@@ -557,11 +610,13 @@ else if(dt[0]=='T')
      	int2lcd(dt_[2],'!',0);
      	int2lcd(dt_[0],'#',0);   
      	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
   		}	   
      }       
 else if(dt[0]=='P')
 	{
+	if(language){//o_2
 	lcd_buffer[iii++]='П';
 	lcd_buffer[iii++]='С';
 	lcd_buffer[iii++]=' ';
@@ -571,7 +626,19 @@ else if(dt[0]=='P')
 	lcd_buffer[iii++]=' ';
 	lcd_buffer[iii++]=' ';
 	lcd_buffer[iii++]=' ';
-     	
+	}else{//o_2_s
+	lcd_buffer[iii++]='M';
+    lcd_buffer[iii++]='A';
+	lcd_buffer[iii++]='I';
+    lcd_buffer[iii++]='N';
+	lcd_buffer[iii++]='S';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';
+	}//o_2_e
+    lcd_buffer[iii++]=' ';//o_2
+	lcd_buffer[iii++]=' ';//o_2 	
 	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
 		{
 		lcd_buffer[iii++]='0';
@@ -599,11 +666,13 @@ else if(dt[0]=='P')
       	int2lcd(dt_[2],'!',0);
      	int2lcd(dt_[0],'#',0);   
       	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-	 	sub_bgnd(sm_mont[dt_[1]],'@',0);  
+	 	if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
   		}     	
 	}   
 else if(dt[0]=='I')
     {
+if(language){//o_2
 	lcd_buffer[iii++]='И';
 	lcd_buffer[iii++]='н';
 	lcd_buffer[iii++]='в';
@@ -621,6 +690,26 @@ else if(dt[0]=='I')
 		lcd_buffer[iii++]='А';
     	lcd_buffer[iii++]='в';
 		}
+}else{//o_2_s
+	lcd_buffer[iii++]='I';
+	lcd_buffer[iii++]='n';
+	lcd_buffer[iii++]='v';
+	if(dt[1]<9)
+		{
+		lcd_buffer[iii++]=0x31+dt[1];
+		lcd_buffer[iii++]='A';
+    	lcd_buffer[iii++]='l';
+		lcd_buffer[iii++]=' ';
+		}
+    else if((dt[1]>=9)&&(dt[1]<99))
+		{
+		lcd_buffer[iii++]=0x30+((dt[1]+1)/10);
+		lcd_buffer[iii++]=0x30+((dt[1]+1)%10);
+		lcd_buffer[iii++]='A';
+    	lcd_buffer[iii++]='l';
+		}
+}//o_2_e
+
 /*    	else 
     		{
     		lcd_buffer[iii++]=' ';
@@ -628,6 +717,8 @@ else if(dt[0]=='I')
     		} */
     lcd_buffer[iii++]=' ';
 	lcd_buffer[iii++]=' ';
+	lcd_buffer[iii++]=' ';//o_2
+	lcd_buffer[iii++]=' ';//o_2
     if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     	{
 		lcd_buffer[iii++]='0';
@@ -655,7 +746,8 @@ else if(dt[0]=='I')
 		int2lcd(dt_[2],'!',0);
 		int2lcd(dt_[0],'#',0);   
 		if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
 		}
 	}    
 
@@ -663,6 +755,7 @@ else if(dt[0]=='B')
     	{
     	if(dt[2]=='N')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -675,7 +768,22 @@ else if(dt[0]=='B')
 			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
-     	
+     	}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='m';
+    		lcd_buffer[iii++]='a';
+    		lcd_buffer[iii++]='i';
+			lcd_buffer[iii++]='n';
+			lcd_buffer[iii++]='s';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';    		
+		}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
     		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -703,11 +811,80 @@ else if(dt[0]=='B')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
+    			}
+    		}
+		else if(dt[2]=='C')
+    		{
+			if(language){//o_2
+			lcd_buffer[iii++]='А';
+    		lcd_buffer[iii++]='в';
+    		lcd_buffer[iii++]='B';
+    		lcd_buffer[iii++]='y';
+    		lcd_buffer[iii++]='p';
+    		//lcd_buffer[iii++]='т';
+			//lcd_buffer[iii++]='ь';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';
+     	}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='B';
+    		lcd_buffer[iii++]='y';
+    		lcd_buffer[iii++]='p';
+    		//lcd_buffer[iii++]='i';
+			//lcd_buffer[iii++]='n';
+			//lcd_buffer[iii++]='s';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' '; 
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';   		
+		}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+    		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='O')
     		{
+			if(language){
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -720,7 +897,22 @@ else if(dt[0]=='B')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='o';
+    		lcd_buffer[iii++]='u';
+    		lcd_buffer[iii++]='t';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -748,11 +940,13 @@ else if(dt[0]=='B')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='I')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -765,7 +959,22 @@ else if(dt[0]=='B')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='i';
+    		lcd_buffer[iii++]='n';
+    		lcd_buffer[iii++]='v';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -793,11 +1002,143 @@ else if(dt[0]=='B')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
+    			}
+    		}
+   	else if(dt[2]=='F')
+    		{
+			if(language){//o_2
+			lcd_buffer[iii++]='А';
+    		lcd_buffer[iii++]='в';
+    		lcd_buffer[iii++]='Ф';
+    		lcd_buffer[iii++]='и';
+    		lcd_buffer[iii++]='н';
+    		lcd_buffer[iii++]='в';
+			//lcd_buffer[iii++]='ь';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='Ф';
+    		lcd_buffer[iii++]='i';
+    		lcd_buffer[iii++]='n';
+    		lcd_buffer[iii++]='v';
+    		//lcd_buffer[iii++]='n';
+    		//lcd_buffer[iii++]='s';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
+    			}
+    		}
+    	else if(dt[2]=='f')
+    		{
+			if(language){//o_2
+			lcd_buffer[iii++]='А';
+    		lcd_buffer[iii++]='в';
+    		lcd_buffer[iii++]='Ф';
+    		lcd_buffer[iii++]='с';
+    		lcd_buffer[iii++]='е';
+    		lcd_buffer[iii++]='т';
+			lcd_buffer[iii++]='ь';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' ';
+    		//lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='Ф';
+    		lcd_buffer[iii++]='m';
+    		lcd_buffer[iii++]='a';
+    		lcd_buffer[iii++]='i';
+    		lcd_buffer[iii++]='n';
+    		lcd_buffer[iii++]='s';
+			/*if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else*/ 				lcd_buffer[iii++]=' ';
+    		//lcd_buffer[iii++]=' ';
+     		//lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='T')
     		{
+			if(language){
 			lcd_buffer[iii++]='Б';
     		lcd_buffer[iii++]='а';
     		lcd_buffer[iii++]='й';
@@ -810,7 +1151,22 @@ else if(dt[0]=='B')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='B';
+    		lcd_buffer[iii++]='y';
+    		lcd_buffer[iii++]='p';
+    		lcd_buffer[iii++]='a';
+    		lcd_buffer[iii++]='s';
+    		lcd_buffer[iii++]='s';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -838,7 +1194,124 @@ else if(dt[0]=='B')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
+    			}
+    		}
+   	else if(dt[2]=='M')
+    		{
+			if(language){
+			lcd_buffer[iii++]='С';
+    		lcd_buffer[iii++]='Е';
+    		lcd_buffer[iii++]='Т';
+    		lcd_buffer[iii++]='Ь';
+    		lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]='Р';
+			lcd_buffer[iii++]='У';
+    		lcd_buffer[iii++]='Ч';
+     		lcd_buffer[iii++]='Н';
+			lcd_buffer[iii++]=' ';
+    		}else{//o_2_s
+			lcd_buffer[iii++]='M';
+    		lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+    		lcd_buffer[iii++]='S';
+    		lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]='H';
+    		lcd_buffer[iii++]='A';
+     		lcd_buffer[iii++]='N';
+			lcd_buffer[iii++]='D';
+			}//o_2_e
+			//lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
+    			}
+    		}
+   	else if(dt[2]=='m')
+    		{
+			if(language){
+			lcd_buffer[iii++]='И';
+    		lcd_buffer[iii++]='Н';
+    		lcd_buffer[iii++]='В';
+    		lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]='Р';
+			lcd_buffer[iii++]='У';
+    		lcd_buffer[iii++]='Ч';
+     		lcd_buffer[iii++]='Н';
+			lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+    		}else{//o_2_s
+			lcd_buffer[iii++]='I';
+    		lcd_buffer[iii++]='N';
+    		lcd_buffer[iii++]='V';
+    		lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]='H';
+    		lcd_buffer[iii++]='A';
+     		lcd_buffer[iii++]='N';
+			lcd_buffer[iii++]='D';
+    		lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			//lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
+    			{
+    		    lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='!';
+    		    lcd_buffer[iii++]=':'; 
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='@';
+   	 			lcd_buffer[iii++]=':';
+   	 			lcd_buffer[iii++]='0';
+   	 			lcd_buffer[iii++]='#';
+   	 	    	int2lcd(dt__[0],'!',0);
+   	 			int2lcd(dt__[1],'@',0);
+   	 			int2lcd(dt__[2],'#',0);    		     		
+    			}	                   
+    		else      	
+    			{
+    	 		lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='!';
+    	    	lcd_buffer[iii++]='@'; 
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]=' ';
+    			lcd_buffer[iii++]='0';
+    			lcd_buffer[iii++]='#';
+    			int2lcd(dt_[2],'!',0);
+    			int2lcd(dt_[0],'#',0);   
+    	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
 /*
@@ -1063,6 +1536,7 @@ else if(dt[0]=='O')
     	{
     	if(dt[2]=='U')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -1075,6 +1549,22 @@ else if(dt[0]=='O')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
+			}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='o';
+    		lcd_buffer[iii++]='u';
+    		lcd_buffer[iii++]='t';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
     		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -1102,11 +1592,13 @@ else if(dt[0]=='O')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='O')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -1119,7 +1611,22 @@ else if(dt[0]=='O')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='o';
+    		lcd_buffer[iii++]='u';
+    		lcd_buffer[iii++]='t';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -1147,11 +1654,13 @@ else if(dt[0]=='O')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='I')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='А';
     		lcd_buffer[iii++]='в';
     		lcd_buffer[iii++]='U';
@@ -1164,7 +1673,22 @@ else if(dt[0]=='O')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='A';
+    		lcd_buffer[iii++]='l';
+    		lcd_buffer[iii++]='U';
+    		lcd_buffer[iii++]='i';
+    		lcd_buffer[iii++]='n';
+    		lcd_buffer[iii++]='v';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -1192,11 +1716,13 @@ else if(dt[0]=='O')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
     	else if(dt[2]=='T')
     		{
+			if(language){//o_2
 			lcd_buffer[iii++]='Б';
     		lcd_buffer[iii++]='а';
     		lcd_buffer[iii++]='й';
@@ -1209,7 +1735,22 @@ else if(dt[0]=='O')
    			else 				lcd_buffer[iii++]=' ';
     		lcd_buffer[iii++]=' ';
      		lcd_buffer[iii++]=' ';
-    		
+    		}else{//o_2_s
+			lcd_buffer[iii++]='B';
+    		lcd_buffer[iii++]='y';
+    		lcd_buffer[iii++]='p';
+    		lcd_buffer[iii++]='a';
+    		lcd_buffer[iii++]='s';
+    		lcd_buffer[iii++]='s';
+			if(dt[1]==1)		lcd_buffer[iii++]='A';
+			else if(dt[1]==2)	lcd_buffer[iii++]='B';
+			else if(dt[1]==3)	lcd_buffer[iii++]='C'; 
+   			else 				lcd_buffer[iii++]=' ';
+    		lcd_buffer[iii++]=' ';
+     		lcd_buffer[iii++]=' ';
+			}//o_2_e
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
 			if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     			{
     		    lcd_buffer[iii++]='0';
@@ -1237,7 +1778,8 @@ else if(dt[0]=='O')
     			int2lcd(dt_[2],'!',0);
     			int2lcd(dt_[0],'#',0);   
     	    	if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-				sub_bgnd(sm_mont[dt_[1]],'@',0);  
+				if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+				else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
     			}
     		}
      	     	
@@ -1247,6 +1789,7 @@ else if(dt[0]=='D')
 	{
 	if(dt[2]=='U')
 		{
+		if(language){//o_2
 		lcd_buffer[iii++]='А';
 		lcd_buffer[iii++]='в';
 		lcd_buffer[iii++]='U';
@@ -1256,7 +1799,19 @@ else if(dt[0]=='D')
 		lcd_buffer[iii++]=' ';
 		lcd_buffer[iii++]=' ';
 		lcd_buffer[iii++]=' ';
-     	
+     	}else{//o_2_s
+		lcd_buffer[iii++]='A';
+		lcd_buffer[iii++]='l';
+		lcd_buffer[iii++]='U';
+		lcd_buffer[iii++]='d';
+		lcd_buffer[iii++]='c';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		lcd_buffer[iii++]=' ';
+		}//o_2_e
+		lcd_buffer[iii++]=' ';//o_2
+		lcd_buffer[iii++]=' ';//o_2
 		if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
 			{
 			lcd_buffer[iii++]='0';
@@ -1284,16 +1839,23 @@ else if(dt[0]=='D')
 			int2lcd(dt_[2],'!',0);
 			int2lcd(dt_[0],'#',0);   
 			if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-			sub_bgnd(sm_mont[dt_[1]],'@',0);  
+			if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+			else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2   
 			}
 		}
 	}
      	
 else if(dt[0]=='S')
     	{
+		if(language){//o_2
     	lcd_buffer[iii++]='Б';
     	lcd_buffer[iii++]='П';
     	lcd_buffer[iii++]='С';
+		}else{//o_2_s
+    	lcd_buffer[iii++]='P';
+    	lcd_buffer[iii++]='S';
+    	lcd_buffer[iii++]='U';
+		}//o_2_e
  	if(dt[1]<9)
     		{
     		lcd_buffer[iii++]=0x31+dt[1];
@@ -1311,6 +1873,10 @@ else if(dt[0]=='S')
     		} 
     	lcd_buffer[iii++]=' '; 
     	lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
     	
     	if((dt_[0]==LPC_RTC->YEAR)&&(dt_[1]==LPC_RTC->MONTH)&&(dt_[2]==LPC_RTC->DOM))
     		{
@@ -1339,15 +1905,22 @@ else if(dt[0]=='S')
     		int2lcd(dt_[2],'!',0);
     		int2lcd(dt_[0],'#',0);   
     		if(!((dt_[1]>=1)&&(dt_[1]<=12)))dt_[1]=1;
-		sub_bgnd(sm_mont[dt_[1]],'@',0);  
+		if(language)sub_bgnd(sm_mont[dt_[1]],'@',0);//o_2
+		else sub_bgnd(sm_mont_en[dt_[1]],'@',0);//o_2 
 		}    	
     	}
      	
 else if(dt[0]=='B')
     	{
+		if(language){//o_2
     	lcd_buffer[iii++]='Б';
     	lcd_buffer[iii++]='а';
     	lcd_buffer[iii++]='т';
+		}else{//o_2_s
+    	lcd_buffer[iii++]='B';
+    	lcd_buffer[iii++]='a';
+    	lcd_buffer[iii++]='t';
+		}//o_2_e
  	if(dt[1]<9)
     		{
     		lcd_buffer[iii++]=0x31+dt[1];
@@ -1364,6 +1937,11 @@ else if(dt[0]=='B')
     		lcd_buffer[iii++]=' ';     		
     		} 
     	lcd_buffer[iii++]=' ';
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
+			lcd_buffer[iii++]=' ';//o_2
     	}     	    
      	
 

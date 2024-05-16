@@ -3,6 +3,7 @@
 #include "LPC17xx.H"
 #include "main.h"
 #include "full_can.h"
+#include "eeprom_map.h"
 
 char mcp2515_can_st,mcp2515_can_st_old;
 char MCP2515_RXBUFF[40];
@@ -103,7 +104,7 @@ if((spi_temp&0xe0)!=0x80)
 	mcp2515_bit_modify(CANCTRL,0xe0,0x80);
 	}
 delay_us(10);		
-mcp2515_write(CNF1,CNF1_init);
+mcp2515_write(CNF1,(lc640_read(EE_KAN_BR)==62) ? CNF1_init_62 : CNF1_init_125);
 mcp2515_write(CNF2,CNF2_init);
 mcp2515_write(CNF3,CNF3_init);
 

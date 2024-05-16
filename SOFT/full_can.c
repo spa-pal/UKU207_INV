@@ -1343,10 +1343,23 @@ if((RXBUFF[1]==PUTTM1BYPS))
 		byps[bypass_adress-61]._adress=bypass_adress;
 		 
      	byps[bypass_adress-61]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
-		byps[bypass_adress-61]._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
-		byps[bypass_adress-61]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+		if(KAN_BR==62)
+			{
+			byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256));
+			byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+
+			}
+		else
+			{
+			byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256))*4L;
+			byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;
+			}
 	
+		if(RXBUFF[7]&0x80) A0_[bypass_adress-61]=1;
+		else A0_[bypass_adress-61]=0;
+			
 		byps[bypass_adress-61]._cnt=0;
+		if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
 		byps[bypass_adress-61]._valid=1;
 
 		if(byps[bypass_adress-61]._Pout<0) byps[bypass_adress-61]._Pout=0;
@@ -1356,10 +1369,22 @@ if((RXBUFF[1]==PUTTM1BYPS))
 		byps[0]._adress=bypass_adress;
 		 
      	byps[0]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
-		byps[0]._Pout=(signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256);
-		byps[0]._Uout=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
-	
+		if(KAN_BR==62)
+			{
+			byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256));
+			byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+
+			}
+		else
+			{
+			byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256))*4L;
+			byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;
+			}
+		if(RXBUFF[7]&0x80) A0_[bypass_adress-61]=1;
+		else A0_[bypass_adress-61]=0;	
+				
 		byps[0]._cnt=0;
+		if(byps[0]._valid==0) avar_byps_hndl(1,'C',0,0);
 		byps[0]._valid=1;
 
 		if(byps[0]._Pout<0) byps[0]._Pout=0;
@@ -1376,25 +1401,91 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		{
 		byps[bypass_adress-61]._T=(char)RXBUFF[2];
 		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
-		byps[bypass_adress-61]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
-		byps[bypass_adress-61]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+		if(KAN_BR==62)
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256));
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+
+			}
+		else
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256))&0x3fff;;
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;;
+			}
+
+		if(RXBUFF[5]&0x80) A1_[bypass_adress-61]=1;
+		else A1_[bypass_adress-61]=0;
+		if(RXBUFF[5]&0x40) F1_[bypass_adress-61]=1;
+		else F1_[bypass_adress-61]=0;
+
+		if(RXBUFF[7]&0x80) A2_[bypass_adress-61]=1;
+		else A2_[bypass_adress-61]=0;
+		if(RXBUFF[7]&0x40) F2_[bypass_adress-61]=1;
+		else F2_[bypass_adress-61]=0;
 
 		byps[bypass_adress-61]._cnt=0;
+		if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
 		byps[bypass_adress-61]._valid=1;
 		}
 	else 
 		{
 		byps[0]._T=(char)RXBUFF[2];
 		byps[0]._flags=(char)RXBUFF[3];
-		byps[0]._UinACprim=(signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256);
-		byps[0]._UinACinvbus=(signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256);
+		if(KAN_BR==62)
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256));
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+
+			}
+		else
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256))&0x3fff;;
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;;
+			}
+
+		if(RXBUFF[5]&0x80) A1_[bypass_adress-61]=1;
+		else A1_[bypass_adress-61]=0;
+		if(RXBUFF[5]&0x40) F1_[bypass_adress-61]=1;
+		else F1_[bypass_adress-61]=0;
+
+		if(RXBUFF[7]&0x80) A2_[bypass_adress-61]=1;
+		else A2_[bypass_adress-61]=0;
+		if(RXBUFF[7]&0x40) F2_[bypass_adress-61]=1;
+		else F2_[bypass_adress-61]=0;
 
 		byps[0]._cnt=0;
+		if(byps[0]._valid==0) avar_byps_hndl(1,'C',0,0);
 		byps[0]._valid=1;
 		}
    	}
+if((RXBUFF[1]==PUTTM3BYPS))
+ 	{
+	char bypass_adress;
+	//can_debug_plazma[1][2]++;
+	bypass_adress=RXBUFF[0]&0x3f;
 
+	if((bypass_adress==61))
+		{
+		if((RXBUFF[6]>=0)&&(RXBUFF[6]<=80))
+			{
+			byps[bypass_adress-61]._byps_fw_info_cnt=RXBUFF[6];
+			byps[bypass_adress-61]._byps_fw_info[RXBUFF[6]]=RXBUFF[7];
+			}
 
+		if(RXBUFF[4]&0x10) B4_4=1;
+		else B4_4=0;
+		if(RXBUFF[4]&0x04) B4_=1;
+		else B4_=0;
+		if(RXBUFF[4]&0x08) B5_=1;
+		else B5_=0;
+
+		}
+	byps[bypass_adress-61]._cnt=0;
+	if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
+	byps[bypass_adress-61]._valid=1;
+   	}
+
+/*
 if((RXBUFF[1]==PUTTM2BYPS))
  	{
 	char bypass_adress;
@@ -1421,7 +1512,7 @@ if((RXBUFF[1]==PUTTM2BYPS))
 		byps[0]._cnt=0;
 		byps[0]._valid=1;
 		}
-   	}
+   	}*/
 
 /*0502
 if((RXBUFF[1]==PUTTM_IBATMETER)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))

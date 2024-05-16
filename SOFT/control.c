@@ -1156,6 +1156,7 @@ if (NUMINV)
 
 if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS)) 
 	{
+	if(byps[0]._valid==1) avar_byps_hndl(1,'C',1,0);
 	byps[0]._Iout=0;
 	byps[0]._Pout=0;
 	byps[0]._Uout=0;
@@ -1165,10 +1166,30 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS))
 	byps[0]._UinACinvbus=0;
 	byps[0]._valid=0;
 	f_out_byps=0;
+
+	B4_=0;
+	B5_=0;
+	B4_4=0;
+	A0_[0]=0;
+	A0_[1]=0;
+	A0_[2]=0;
+	A1_[0]=0;
+	A1_[1]=0;
+	A1_[2]=0;
+	A2_[0]=0;
+	A2_[1]=0;
+	A2_[2]=0;
+	F1_[0]=0;
+	F1_[1]=0;
+	F1_[2]=0;
+	F2_[0]=0;
+	F2_[1]=0;
+	F2_[2]=0;
 	}
 
 if(((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3)))
 	{
+	if(byps[1]._valid==1) avar_byps_hndl(2,'C',1,0);
 	byps[1]._Iout=0;
 	byps[1]._Pout=0;
 	byps[1]._Uout=0;
@@ -1177,10 +1198,30 @@ if(((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && 
 	byps[1]._UinACprim=0;
 	byps[1]._UinACinvbus=0;
 	byps[1]._valid=0;
+
+	B4_=0;
+	B5_=0;
+	B4_4=0;
+	A0_[0]=0;
+	A0_[1]=0;
+	A0_[2]=0;
+	A1_[0]=0;
+	A1_[1]=0;
+	A1_[2]=0;
+	A2_[0]=0;
+	A2_[1]=0;
+	A2_[2]=0;
+	F1_[0]=0;
+	F1_[1]=0;
+	F1_[2]=0;
+	F2_[0]=0;
+	F2_[1]=0;
+	F2_[2]=0;
 	}
 
 if(((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3))) 
 	{
+	if(byps[2]._valid==1) avar_byps_hndl(3,'C',1,0);
 	byps[2]._Iout=0;
 	byps[2]._Pout=0;
 	byps[2]._Uout=0;
@@ -1189,6 +1230,25 @@ if(((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && 
 	byps[2]._UinACprim=0;
 	byps[2]._UinACinvbus=0;
 	byps[2]._valid=0;
+
+	B4_=0;
+	B5_=0;
+	B4_4=0;
+	A0_[0]=0;
+	A0_[1]=0;
+	A0_[2]=0;
+	A1_[0]=0;
+	A1_[1]=0;
+	A1_[2]=0;
+	A2_[0]=0;
+	A2_[1]=0;
+	A2_[2]=0;
+	F1_[0]=0;
+	F1_[1]=0;
+	F1_[2]=0;
+	F2_[0]=0;
+	F2_[1]=0;
+	F2_[2]=0;
 	}
 
 
@@ -1768,7 +1828,7 @@ for	(ii_=0;ii_<2;ii_++)
 		}
 
 	//Авария Unet
-	if(uNetAvIsOn && (RELE_SET_MASK[ii_]&0x08)) // Есть авария входного напряжения (AC) и эта авария разрешена для этого реле
+	if((uNetAvIsOn || byps[0]._uin_av_stat || byps[1]._uin_av_stat || byps[2]._uin_av_stat || fBypsInAvIsOn || fBypsInvAvIsOn) && (RELE_SET_MASK[ii_]&0x08)) // Есть авария входного напряжения (AC) и эта авария разрешена для этого реле
 		{
 		avar_stat_temp[ii_]=1;
 		}
@@ -2374,6 +2434,42 @@ else
 
 if(NUMBYPASS==0)
 	{
+	fBypsInAvIsOn=0;
+	}
+else
+	{
+	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(byps[ii]._fin_av_stat)
+			{
+			temp=1;
+			break;
+			}
+		}
+	fBypsInAvIsOn=temp;
+	}
+
+if(NUMBYPASS==0)
+	{
+	fBypsInvAvIsOn=0;
+	}
+else
+	{
+	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(byps[ii]._finv_av_stat)
+			{
+			temp=1;
+			break;
+			}
+		}
+	fBypsInvAvIsOn=temp;
+	}
+
+if(NUMBYPASS==0)
+	{
 	wrkFromNet1Inv0=0;
 	priorFromNet1Inv0=0;
 	}
@@ -2402,12 +2498,23 @@ else
 	priorFromNet1Inv0=temp;
 	}
 
+}
+
+//-----------------------------------------------
+void system_status_hndl_10Hz(void)
+{
+char ii;
+char temp, temp_;
+
+temp=0;
+temp_=0;
+
 if(wrkFromNet1Inv0)
 	{
-	if(wrkFromNet1Inv0_cnt<5)
+	if(wrkFromNet1Inv0_cnt<((KAN_BR==62) ? 50 : 5))
 		{
 		wrkFromNet1Inv0_cnt++;
-		if(wrkFromNet1Inv0_cnt==5) 
+		if(wrkFromNet1Inv0_cnt==((KAN_BR==62) ? 50 : 5)) 
 			{
 			if(wrkFromNet1Inv0_del==0)
 				{
@@ -2417,7 +2524,7 @@ if(wrkFromNet1Inv0)
 			wrkFromNet1Inv0_del=1;
 			}
 		}
-	else wrkFromNet1Inv0_cnt=5;
+	else wrkFromNet1Inv0_cnt=((KAN_BR==62) ? 50 : 5);
 	}
 else 
 	{
@@ -2439,10 +2546,10 @@ else
 
 if(priorFromNet1Inv0)
 	{
-	if(priorFromNet1Inv0_cnt<5)
+	if(priorFromNet1Inv0_cnt<((KAN_BR==62) ? 50 : 5))
 		{
 		priorFromNet1Inv0_cnt++;
-		if(priorFromNet1Inv0_cnt==5) 
+		if(priorFromNet1Inv0_cnt==((KAN_BR==62) ? 50 : 5)) 
 			{
 			if(priorFromNet1Inv0_del==0)
 				{
@@ -2452,7 +2559,7 @@ if(priorFromNet1Inv0)
 			priorFromNet1Inv0_del=1;
 			}
 		}
-	else priorFromNet1Inv0_cnt=5;
+	else priorFromNet1Inv0_cnt=((KAN_BR==62) ? 50 : 5);
 	}
 else 
 	{
@@ -2472,8 +2579,6 @@ else
 	else priorFromNet1Inv0_cnt=0;
 	}
 }
-
-
 //-----------------------------------------------
 void dc_in_av_hndl(void)
 {
@@ -2657,85 +2762,314 @@ if(NUMBYPASS==0)return;
 /*if(NUMPHASE==1)		SHIFT_CONST=0;
 else*/ if(NUMPHASE==3)SHIFT_CONST=1;
 
+
+	if(KAN_BR==62)
+		{
+	
+		
+
+		}
+	else
+		{
+		if((B4_4) &&  byps[0]._valid)
+			{
+			if(byps[0]._mnl_net_cnt<5)
+				{
+				byps[0]._mnl_net_cnt++;
+				if((byps[0]._mnl_net_cnt>=5)&&(!byps[0]._mnl_net_stat))
+					{
+					byps[0]._mnl_net_stat=1;
+					avar_byps_hndl(0,'M',1,0);
+					}  
+				}			
+			}  
+		else if((!B4_4) &&  byps[0]._valid)
+			{
+			if(byps[0]._mnl_net_cnt)
+				{
+				byps[0]._mnl_net_cnt--;
+				if((byps[0]._mnl_net_cnt==0)&&(byps[0]._mnl_net_stat))
+					{
+					byps[0]._mnl_net_stat=0;
+					avar_byps_hndl(0,'M',0,0);
+					} 
+				}			
+			}  
+		}
+
+	if(KAN_BR==62)
+		{
+	
+		
+
+		}
+	else
+		{
+		if((B5_) &&  byps[0]._valid)
+			{
+			if(byps[0]._mnl_inv_cnt<5)
+				{
+				byps[0]._mnl_inv_cnt++;
+				if((byps[0]._mnl_inv_cnt>=5)&&(!byps[0]._mnl_inv_stat))
+					{
+					byps[0]._mnl_inv_stat=1;
+					avar_byps_hndl(0,'m',1,0);
+					}  
+				}			
+			}  
+		else if((!B5_) &&  byps[0]._valid)
+			{
+			if(byps[0]._mnl_inv_cnt)
+				{
+				byps[0]._mnl_inv_cnt--;
+				if((byps[0]._mnl_inv_cnt==0)&&(byps[0]._mnl_inv_stat))
+					{
+					byps[0]._mnl_inv_stat=0;
+					avar_byps_hndl(0,'m',0,0);
+					} 
+				}			
+			}  
+		}
+
 for(ii=0;ii<NUMPHASE;ii++)
 	{
-	// Авария по выходному напряжению байпаса
-	if((((byps[ii]._Uout/10)>=U_OUT_AC_MAX_AV) || ((byps[ii]._Uout/10)<=U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+	if(KAN_BR==62)
 		{
-		if(byps[ii]._uout_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
-			{
-			byps[ii]._uout_av_cnt++;
-			if((byps[ii]._uout_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uout_av_stat))
-				{
-				byps[ii]._uout_av_stat=1;
-				avar_byps_hndl(ii+SHIFT_CONST,'O',1,byps[ii]._Uout/10);
-				}  
-			}
-		}  
-	else if((((byps[ii]._Uout/10)<U_OUT_AC_MAX_AV) && ((byps[ii]._Uout/10)>U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+	
+		// Авария по фазе входного напряжения байпаса
+
+		}
+	else
 		{
-		if(byps[ii]._uout_av_cnt)
+		if((ii==0) && (!F1_[ii]) &&  byps[ii]._valid)
 			{
-			byps[ii]._uout_av_cnt--;
-			if((byps[ii]._uout_av_cnt==0)&&(byps[ii]._uout_av_stat))
+			if(byps[ii]._fin_av_cnt<10)
 				{
-				byps[ii]._uout_av_stat=0;
-				avar_byps_hndl(ii+SHIFT_CONST,'O',0,0);
-				} 
+				byps[ii]._fin_av_cnt++;
+				if((byps[ii]._fin_av_cnt>=10)&&(!byps[ii]._fin_av_stat))
+					{
+					byps[ii]._fin_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'f',1,0);
+					}  
+				}			
+			}  
+		else if((ii==0) && (F1_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._fin_av_cnt)
+				{
+				byps[ii]._fin_av_cnt--;
+				if((byps[ii]._fin_av_cnt==0)&&(byps[ii]._fin_av_stat))
+					{
+					byps[ii]._fin_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'f',0,0);
+					} 
+				}			
+			}  
+		}
+
+	if(KAN_BR==62)
+		{
+	
+		// Авария по фазе входного (инверторного) напряжения байпаса
+
+		}
+	else
+		{
+		if((ii==0) && (!F2_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._finv_av_cnt<10)
+				{
+				byps[ii]._finv_av_cnt++;
+				if((byps[ii]._finv_av_cnt>=10)&&(!byps[ii]._finv_av_stat))
+					{
+					byps[ii]._finv_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'F',1,0);
+					}  
+				}			
+			}  
+		else if((ii==0) && (F2_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._finv_av_cnt)
+				{
+				byps[ii]._finv_av_cnt--;
+				if((byps[ii]._finv_av_cnt==0)&&(byps[ii]._finv_av_stat))
+					{
+					byps[ii]._finv_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'F',0,0);
+					} 
+				}			
+			}  
+		}
+
+	if(KAN_BR==62)
+		{
+	
+		// Авария по выходному напряжению байпаса
+		if((((byps[ii]._Uout/10)>=U_OUT_AC_MAX_AV) || ((byps[ii]._Uout/10)<=U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uout_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+				{
+				byps[ii]._uout_av_cnt++;
+				if((byps[ii]._uout_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uout_av_stat))
+					{
+					byps[ii]._uout_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'O',1,byps[ii]._Uout/10);
+					}  
+				}
+			}  
+		else if((((byps[ii]._Uout/10)<U_OUT_AC_MAX_AV) && ((byps[ii]._Uout/10)>U_OUT_AC_MIN_AV)) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uout_av_cnt)
+				{
+				byps[ii]._uout_av_cnt--;
+				if((byps[ii]._uout_av_cnt==0)&&(byps[ii]._uout_av_stat))
+					{
+					byps[ii]._uout_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'O',0,0);
+					} 
+				}
 			}
+		}
+	else
+		{
+		if((!A0_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uout_av_cnt<10)
+				{
+				byps[ii]._uout_av_cnt++;
+				if((byps[ii]._uout_av_cnt>=10)&&(!byps[ii]._uout_av_stat))
+					{
+					byps[ii]._uout_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'O',1,byps[ii]._Uout/10);
+					}  
+				}			
+			}  
+		else if((A0_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uout_av_cnt)
+				{
+				byps[ii]._uout_av_cnt--;
+				if((byps[ii]._uout_av_cnt==0)&&(byps[ii]._uout_av_stat))
+					{
+					byps[ii]._uout_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'O',0,0);
+					} 
+				}			
+			}  
 		}
 		 
 	// Авария по входному(сетевому) напряжению байпаса
-	if((((byps[ii]._UinACprim/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACprim/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	if(KAN_BR==62)
 		{
-		if(byps[ii]._unet_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
-			{
-			byps[ii]._unet_av_cnt++;
-			if((byps[ii]._unet_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._unet_av_stat))
-				{
-				byps[ii]._unet_av_stat=1;
-				avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._UinACprim/10);
-				}  
-			}
-		}  
-	else if((((byps[ii]._UinACprim/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACprim/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
-		{
-		if(byps[ii]._unet_av_cnt)
-			{
-			byps[ii]._unet_av_cnt--;
-			if((byps[ii]._unet_av_cnt==0)&&(byps[ii]._unet_av_stat))
-				{
-				byps[ii]._unet_av_stat=0;
-				avar_byps_hndl(ii+SHIFT_CONST,'N',0,0);
-				} 
-			}
-		} 
 
+		if((((byps[ii]._UinACprim/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACprim/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._unet_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+				{
+				byps[ii]._unet_av_cnt++;
+				if((byps[ii]._unet_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._unet_av_stat))
+					{
+					byps[ii]._unet_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._UinACprim/10);
+					}  
+				}
+			}  
+		else if((((byps[ii]._UinACprim/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACprim/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._unet_av_cnt)
+				{
+				byps[ii]._unet_av_cnt--;
+				if((byps[ii]._unet_av_cnt==0)&&(byps[ii]._unet_av_stat))
+					{
+					byps[ii]._unet_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'N',0,0);
+					} 
+				}
+			} 
+
+		}
+	else
+		{
+		if((!A1_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._unet_av_cnt<10)
+				{
+				byps[ii]._unet_av_cnt++;
+				if((byps[ii]._unet_av_cnt>=10)&&(!byps[ii]._unet_av_stat))
+					{
+					byps[ii]._unet_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'N',1,byps[ii]._UinACprim/10);
+					}  
+				}			
+			}  
+		else if((A1_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._unet_av_cnt)
+				{
+				byps[ii]._unet_av_cnt--;
+				if((byps[ii]._unet_av_cnt==0)&&(byps[ii]._unet_av_stat))
+					{
+					byps[ii]._unet_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'N',0,0);
+					} 
+				}			
+			}  
+		}
 	// Авария по входному(инверторному) напряжению байпаса
-	if((((byps[ii]._UinACinvbus/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACinvbus/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+	if(KAN_BR==62)
 		{
-		if(byps[ii]._uin_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
+		if((((byps[ii]._UinACinvbus/10)>=U_IN_AC_MAX_AV) || ((byps[ii]._UinACinvbus/10)<=U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
 			{
-			byps[ii]._uin_av_cnt++;
-			if((byps[ii]._uin_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uin_av_stat))
+			if(byps[ii]._uin_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
 				{
-				byps[ii]._uin_av_stat=1;
-				avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._UinACinvbus/10);
-				}  
-			}
-		}  
-	else if((((byps[ii]._UinACinvbus/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACinvbus/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+				byps[ii]._uin_av_cnt++;
+				if((byps[ii]._uin_av_cnt>=CONST_AV_BYPS_HNDL_MAX_CNT)&&(!byps[ii]._uin_av_stat))
+					{
+					byps[ii]._uin_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._UinACinvbus/10);
+					}  
+				}
+			}  
+		else if((((byps[ii]._UinACinvbus/10)<U_IN_AC_MAX_AV) && ((byps[ii]._UinACinvbus/10)>U_IN_AC_MIN_AV)) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uin_av_cnt)
+				{
+				byps[ii]._uin_av_cnt--;
+				if((byps[ii]._uin_av_cnt==0)&&(byps[ii]._uin_av_stat))
+					{
+					byps[ii]._uin_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'I',0,0);
+					} 
+				}
+			}  
+		}
+	else
 		{
-		if(byps[ii]._uin_av_cnt)
+		if((!A2_[ii]) &&  byps[ii]._valid)
 			{
-			byps[ii]._uin_av_cnt--;
-			if((byps[ii]._uin_av_cnt==0)&&(byps[ii]._uin_av_stat))
+			if(byps[ii]._uin_av_cnt<10)
 				{
-				byps[ii]._uin_av_stat=0;
-				avar_byps_hndl(ii+SHIFT_CONST,'I',0,0);
-				} 
-			}
-		}  
+				byps[ii]._uin_av_cnt++;
+				if((byps[ii]._uin_av_cnt>=10)&&(!byps[ii]._uin_av_stat))
+					{
+					byps[ii]._uin_av_stat=1;
+					avar_byps_hndl(ii+SHIFT_CONST,'I',1,byps[ii]._UinACinvbus/10);
+					}  
+				}			
+			}  
+		else if((A2_[ii]) &&  byps[ii]._valid)
+			{
+			if(byps[ii]._uin_av_cnt)
+				{
+				byps[ii]._uin_av_cnt--;
+				if((byps[ii]._uin_av_cnt==0)&&(byps[ii]._uin_av_stat))
+					{
+					byps[ii]._uin_av_stat=0;
+					avar_byps_hndl(ii+SHIFT_CONST,'I',0,0);
+					} 
+				}			
+			}  
+		}
 
 	// Авария по температуре байпаса
 	if((byps[ii]._flags&0x02) &&  byps[ii]._valid)

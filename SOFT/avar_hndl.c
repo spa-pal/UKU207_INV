@@ -1298,6 +1298,11 @@ if(v=='O')avar_simbol=v;  		//Выходное напряжение
 else if(v=='I')avar_simbol=v;	//Входное напряжение(инверторы)
 else if(v=='N')avar_simbol=v;	//Входное напряжение(сеть)
 else if(v=='T')avar_simbol=v;	//Температура байпаса
+else if(v=='f')avar_simbol=v;	//Расфазировка по входу(сеть)
+else if(v=='F')avar_simbol=v;	//Расфазировка по входу(инверторы)
+else if(v=='C')avar_simbol=v;	//Разрыв связи с байпасом
+else if(v=='M')avar_simbol=v;	//Активировано ручное управление (только сеть)
+else if(v=='m')avar_simbol=v;	//Активировано ручное управление (только инверторы)
 
 if(in==1)
 	{

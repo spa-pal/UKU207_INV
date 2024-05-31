@@ -924,12 +924,12 @@ unsigned char *const reg_func4 []={
 (unsigned char*)&byps[1]._UinACinvbus,//417
 (unsigned char*)&byps[2]._UinACinvbus+1,//418
 (unsigned char*)&byps[2]._UinACinvbus,//418
-&NULL_0,//419
-(unsigned char*)&byps[0]._flags,//419
-&NULL_0,//420
-(unsigned char*)&byps[1]._flags,//420
-&NULL_0,//421
-(unsigned char*)&byps[2]._flags,//421
+(unsigned char*)&byps[0]._flags_485_h,//419
+(unsigned char*)&byps[0]._flags_485_l,//419
+(unsigned char*)&byps[1]._flags_485_h,//420
+(unsigned char*)&byps[1]._flags_485_l,//420
+(unsigned char*)&byps[2]._flags_485_h,//421
+(unsigned char*)&byps[2]._flags_485_l,//421
 //   1000000 работа от инверторов(0 - от сети)
 //   0100000 приоритет инверторы (0 - сеть)
 //	 0000100 температура больше 80 Г.ц.

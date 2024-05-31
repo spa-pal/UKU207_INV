@@ -301,6 +301,7 @@ char first_inv_slot=MINIM_INV_ADRESS;
 //***********************************************
 //Состояние байпаса
 BYPS_STAT byps[3];
+char byps_fw_info[80];
 
 //***********************************************
 //Состояние нагрузки
@@ -623,6 +624,8 @@ signed short f_out_byps;
 signed short f_out_byps_cnt;
 
 char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_, B4_4;
+char B5_ff;
+char B5_ff_cnt;
 
 //o_2_s
 //------  английский язык -----------------------
@@ -4275,6 +4278,9 @@ if(language){//o_2
 
 	}
 //o_2_e
+    int2lcdyx(B5_ff,0,1,0);
+	int2lcdyx(B5_ff_cnt,0,4,0);
+	int2lcdyx(B5_,0,7,0);
 	}
  /*0502
  else if(ind==iBps)
@@ -4354,10 +4360,9 @@ if(language){//o_2
    	int2lcd_mmm(bps[sub_ind1]._Ti,']',0); 
    			 
     // char2lcdhxy(bps[sub_ind1]._state,0x32);
-    
-    //	int2lcdyx(sub_ind,0,2,0);
-//	int2lcdyx(index_set,0,4,0);	
-     }  0502*/
+     0502*/
+	
+//     }  
 
 else if(ind==iInv)
 	{
@@ -4670,6 +4675,9 @@ if(language){//o_2
 //	lcd_buffer[22]=bps[sub_ind1+20]._bps_fw_info[5];
 //	lcd_buffer[28]=bps[sub_ind1+20]._bps_fw_info[6];
 //	lcd_buffer[29]=bps[sub_ind1+20]._bps_fw_info[7];
+
+	//int2lcdyx(inv[21]._buff[10],0,3,0);
+	int2lcdyx(inv[21]._buff[11],0,7,0);
     }
 
 else if(ind==iByps)
@@ -10573,22 +10581,24 @@ if(ind==iDeb)
      	int2lcdyx(ad7705_buff[0][14],3,14,0);
      	int2lcdyx(ad7705_buff[0][15],3,19,0);*/
 
-		int2lcdyx(adc_buff_[0],0,4,0);
-    		int2lcdyx(adc_buff_[1],0,9,0);
-     	int2lcdyx(adc_buff_[2],0,14,0);
-     	int2lcdyx(adc_buff_[3],0,19,0); 
-     	int2lcdyx(adc_buff_[4],1,4,0);	
-     	int2lcdyx(adc_buff_[5],1,9,0);
-     	int2lcdyx(adc_buff_[6],1,14,0);
-     	int2lcdyx(adc_buff_[7],1,19,0); 
-     	int2lcdyx(adc_buff_[8],2,4,0);
-     	int2lcdyx(adc_buff_[9],2,9,0);
-     	int2lcdyx(adc_buff_[10],2,14,0);
-     	int2lcdyx(adc_buff_[11],2,19,0);
-     	int2lcdyx(adc_buff_[12],3,4,0);
-     	int2lcdyx(adc_buff_[13],3,9,0);
-     	int2lcdyx(adc_buff_[14],3,14,0);
-     	int2lcdyx(adc_buff_[15],3,19,0);
+		int2lcdyx(inv[7]._buff[0],0,3,0);
+		int2lcdyx(inv[7]._buff[1],1,3,0);
+		int2lcdyx(inv[7]._buff[2],2,3,0);
+		int2lcdyx(inv[7]._buff[3],3,3,0);
+		int2lcdyx(inv[7]._buff[4],0,7,0);
+		int2lcdyx(inv[7]._buff[5],1,7,0);
+		int2lcdyx(inv[7]._buff[6],2,7,0);
+		int2lcdyx(inv[7]._buff[7],3,7,0);
+		int2lcdyx(inv[7]._buff[8],0,11,0);
+		int2lcdyx(inv[7]._buff[9],1,11,0);
+		int2lcdyx(inv[7]._buff[10],2,11,0);
+		int2lcdyx(inv[7]._buff[11],3,11,0);
+		int2lcdyx(inv[7]._buff[12],0,15,0);
+		int2lcdyx(inv[7]._buff[13],1,15,0);
+		int2lcdyx(inv[7]._buff[14],2,15,0);
+		int2lcdyx(inv[7]._buff[15],3,15,0);
+		int2lcdyx(inv[7]._buff[16],0,19,0);
+		int2lcdyx(inv[7]._buff[17],1,19,0);
     	}  		  		
 
    else if(sub_ind==7)
@@ -11848,7 +11858,8 @@ if(language){//o_2
 //o_2_e
 	for(i=0; i<80; i++)
 		{
-		lcd_buffer[i]=byps[sub_ind1]._byps_fw_info[i];
+		//lcd_buffer[i]=byps[sub_ind1]._byps_fw_info[i];
+		lcd_buffer[i]=byps_fw_info[i];
 		}
 	}
 #endif
@@ -12036,7 +12047,7 @@ if(but==butUD)
      if(ind!=iDeb)
           {
 		c_ind=a_ind;
-		tree_up(iDeb,5,0,0);
+		tree_up(iDeb,6,0,0);
 		
           }
      else 

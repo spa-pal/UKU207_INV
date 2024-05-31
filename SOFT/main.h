@@ -199,20 +199,23 @@
 #define DISPLAY_BYPASS_P_LOAD_A				11	
 #define DISPLAY_BYPASS_TEMPER_A				12	
 #define DISPLAY_BYPASS_U_INPUT_AC_PRIM_A	13			
-#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_A	14			
-#define DISPLAY_BYPASS_U_LOAD_B				15		
-#define DISPLAY_BYPASS_I_LOAD_B				16	
-#define DISPLAY_BYPASS_P_LOAD_B				17
-#define DISPLAY_BYPASS_TEMPER_B				18			
-#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_B	19	
-#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_B	20	
-#define DISPLAY_BYPASS_U_LOAD_C				21	
-#define DISPLAY_BYPASS_I_LOAD_C				22 		
-#define DISPLAY_BYPASS_P_LOAD_C				23
-#define DISPLAY_BYPASS_TEMPER_C				24
-#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_C	25 
-#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_C	26 
-#define DISPLAY_BYPASS_F_LOAD				27 
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_A	14
+#define DISPLAY_BYPASS_FLAGS_A				15			
+#define DISPLAY_BYPASS_U_LOAD_B				16		
+#define DISPLAY_BYPASS_I_LOAD_B				17	
+#define DISPLAY_BYPASS_P_LOAD_B				18
+#define DISPLAY_BYPASS_TEMPER_B				19			
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_B	20	
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_B	21
+#define DISPLAY_BYPASS_FLAGS_B				22	
+#define DISPLAY_BYPASS_U_LOAD_C				23	
+#define DISPLAY_BYPASS_I_LOAD_C				24 		
+#define DISPLAY_BYPASS_P_LOAD_C				25
+#define DISPLAY_BYPASS_TEMPER_C				26
+#define DISPLAY_BYPASS_U_INPUT_AC_PRIM_C	27 
+#define DISPLAY_BYPASS_U_INPUT_AC_INV_BUS_C	28
+#define DISPLAY_BYPASS_FLAGS_C				29 
+#define DISPLAY_BYPASS_F_LOAD				30 
 
 #define COMMAND_OK		0x5555
 #define COMAND_FAIL		0xaaaa
@@ -912,11 +915,14 @@ typedef struct
 	char			_cnt;
 	char 		_adress;
 	char _valid;
-	char _byps_fw_info[80];
-	char _byps_fw_info_cnt;
+	char _flags_485_l;
+	char _flags_485_h;
+//	char _byps_fw_info[80];
+//	char _byps_fw_info_cnt;
 	} BYPS_STAT; 
 extern BYPS_STAT byps[3];
 
+extern char byps_fw_info[80];
 
 typedef struct
      {
@@ -1217,6 +1223,8 @@ extern signed short f_out_byps;
 extern signed short f_out_byps_cnt;
 
 extern char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_,B4_4;
+extern char B5_ff;
+extern char B5_ff_cnt;
 
 extern char snmp_plazma;
 extern char plazma_bypas;

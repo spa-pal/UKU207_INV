@@ -332,8 +332,8 @@ snmp_energy_current_energy=power_current;
 
 
 snmp_bat_number[0]=1;
-snmp_bat_voltage[0]=bat[0]._Ub;
-snmp_bat_current[0]=bat[0]._Ib;
+//snmp_bat_voltage[0]=bat[0]._Ub;
+//snmp_bat_current[0]=bat[0]._Ib;
 
 #ifdef UKU_220_IPS_TERMOKOMPENSAT
 if(((AUSW_MAIN==22063)||(AUSW_MAIN==22023))&&(bps[8]._device==dIBAT_METR))
@@ -342,13 +342,13 @@ if(((AUSW_MAIN==22063)||(AUSW_MAIN==22023))&&(bps[8]._device==dIBAT_METR))
 	}
 #endif
 
-snmp_bat_temperature[0]=bat[0]._Tb;
+//snmp_bat_temperature[0]=bat[0]._Tb;
 if(BAT_C_REAL[0]==0x5555)snmp_bat_capacity[0]=BAT_C_NOM[0];
 else snmp_bat_capacity[0]=BAT_C_REAL[0];
-snmp_bat_charge[0]=bat[0]._zar;
-snmp_bat_status[0]=bat[0]._av;
+//snmp_bat_charge[0]=bat[0]._zar;
+//snmp_bat_status[0]=bat[0]._av;
 
-
+/*
 snmp_bat_number[1]=2;
 snmp_bat_voltage[1]=bat[1]._Ub;
 snmp_bat_current[1]=bat[1]._Ib;
@@ -356,7 +356,7 @@ snmp_bat_temperature[1]=bat[1]._Tb;
 if(BAT_C_REAL[1]==0x5555)snmp_bat_capacity[1]=BAT_C_NOM[1];
 else snmp_bat_capacity[1]=BAT_C_REAL[1];
 snmp_bat_charge[1]=bat[1]._zar;
-snmp_bat_status[1]=bat[1]._av;
+snmp_bat_status[1]=bat[1]._av;*/
 
 /*0502
 snmp_bps_number[0]=1;
@@ -581,7 +581,7 @@ snmpBypassPLoadA = 				byps[0]._Pout;
 snmpBypassTemperA = 			byps[0]._T;
 snmpBypassUInputACPrimA = 		byps[0]._UinACprim;
 snmpBypassUInputACInvBusA = 	byps[0]._UinACinvbus;
-snmpBypassFlagsA = 				byps[0]._flags;
+snmpBypassFlagsA = 				(((unsigned short)byps[0]._flags_485_h)<<8) | ((unsigned short)byps[0]._flags_485_l);
 
 snmpBypassULoadB = 				byps[1]._Uout;
 snmpBypassILoadB = 				byps[1]._Iout;
@@ -589,7 +589,7 @@ snmpBypassPLoadB = 				byps[1]._Pout;
 snmpBypassTemperB = 			byps[1]._T;
 snmpBypassUInputACPrimB = 		byps[1]._UinACprim;
 snmpBypassUInputACInvBusB = 	byps[1]._UinACinvbus;
-snmpBypassFlagsB = 				byps[1]._flags;
+snmpBypassFlagsB = 				(((unsigned short)byps[1]._flags_485_h)<<8) | ((unsigned short)byps[1]._flags_485_l);
 
 snmpBypassULoadC = 				byps[2]._Uout;
 snmpBypassILoadC = 				byps[2]._Iout;
@@ -597,7 +597,7 @@ snmpBypassPLoadC = 				byps[2]._Pout;
 snmpBypassTemperC = 			byps[2]._T;
 snmpBypassUInputACPrimC = 		byps[2]._UinACprim;
 snmpBypassUInputACInvBusC = 	byps[2]._UinACinvbus;
-snmpBypassFlagsC = 				byps[2]._flags;
+snmpBypassFlagsC = 				(((unsigned short)byps[2]._flags_485_h)<<8) | ((unsigned short)byps[2]._flags_485_l);
 
 
 snmp_sk_number[0]=1;

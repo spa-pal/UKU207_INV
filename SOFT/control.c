@@ -968,6 +968,26 @@ else if(NUMMAKB==4)
 
 #endif
 0802*/
+
+if(B5_ff)
+	{
+	if(B5_ff_cnt<50)B5_ff_cnt++;
+	else
+		{
+		B5_ff_cnt=50;
+		B5_ = B5_ff;
+		}
+	}
+else
+	{
+	if(B5_ff_cnt>0)B5_ff_cnt--;
+	else
+		{
+		B5_ff_cnt=0;
+		B5_ = B5_ff;
+		}
+	}
+
 if(NUMBYPASS==0)
 	{
 	if(NUMPHASE==1)
@@ -1088,52 +1108,86 @@ if (NUMINV)
 		{
 		if(inv[i]._cnt<5)
      		{
-     		inv[i]._Iout=inv[i]._buff[0]+(inv[i]._buff[1]*256);
-     		inv[i]._Pout=((signed short)inv[i]._buff[2])+((signed short)(inv[i]._buff[3]<<8));
-			if(inv[i]._Pout<0)inv[i]._Pout=0;
-     		inv[i]._Uout=inv[i]._buff[4]+(inv[i]._buff[5]*256);
-     		inv[i]._T=(signed)(inv[i]._buff[6]);
-     		inv[i]._flags_tm=inv[i]._buff[7];
-     		inv[i]._Uacin=inv[i]._buff[8]+(inv[i]._buff[9]*256);
-     		inv[i]._Uload=inv[i]._buff[10]+(inv[i]._buff[11]*256);
-			inv[i]._Udcin=inv[i]._buff[12]+(inv[i]._buff[13]*256);
-			inv[i]._flags_tm_dop=inv[i]._buff[14];
-			//inv[i]._cnt=0;
-			if(inv[i]._flags_tm&0x1a)
-				{
-				inv[i]._avIsOn=1;
-				//someInvAvIsOn=1;
-				}
-			else 
-				{
-				inv[i]._avIsOn=0;
-				}
+			unsigned short temp_SS1;
+			unsigned short temp_SS2;
+			unsigned short temp_SS3;
+			unsigned short temp_SS4;
+			unsigned short temp_SS5;
+			unsigned short temp_SS6;
+			unsigned short temp_SS7;
 
-			if(inv[i]._flags_tm&0x40)
-				{
-				if((unsigned char)(inv[i]._buff[15])==0x7f) 		f_out_inv=750;
-				else if((unsigned char)(inv[i]._buff[15])==0x80) f_out_inv=250;
-				else 												f_out_inv=500+(signed char)(inv[i]._buff[15]);
-				}
+			temp_SS1 = ((unsigned short)inv[i]._buff[4])+((unsigned short)(inv[i]._buff[5]*256));
+			temp_SS2 = ((unsigned short)inv[i]._buff[0])+((unsigned short)(inv[i]._buff[1]*256));
+			temp_SS3 = ((unsigned short)(inv[i]._buff[6]));
+			temp_SS4 = ((unsigned short)inv[i]._buff[10])+((unsigned short)(inv[i]._buff[11]*256));
+			temp_SS5 = ((unsigned short)inv[i]._buff[12])+((unsigned short)(inv[i]._buff[13]*256));
+			temp_SS6 = ((unsigned short)inv[i]._buff[8])+((unsigned short)(inv[i]._buff[9]*256));
+			temp_SS7 = ((unsigned short)inv[i]._buff[7])+((unsigned short)(inv[i]._buff[14]*256));
 
-			if(inv[i]._flags_tm&0x20)
+			/*if((i==0) || (i==32)) temp_SS7|=0x0020;*/
+
+			if(
+				(temp_SS1<3000) && 
+				(temp_SS2<1000) && 
+				(temp_SS3<120) && 
+				(temp_SS4<3000) && 
+				(temp_SS5<4000) && 
+				(temp_SS6<2800) && 
+				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0))) && 
+				(temp_SS7 != 0x0120) &&
+				((temp_SS5<50) || (temp_SS5>160))
+				)
 				{
-				master_inv_ison=1;
-				}
+
+	     		inv[i]._Iout=inv[i]._buff[0]+(inv[i]._buff[1]*256);
+	     		inv[i]._Pout=((signed short)inv[i]._buff[2])+((signed short)(inv[i]._buff[3]<<8));
+				if(inv[i]._Pout<0)inv[i]._Pout=0;
+	     		inv[i]._Uout=inv[i]._buff[4]+(inv[i]._buff[5]*256);
+	     		inv[i]._T=(signed)(inv[i]._buff[6]);
+	     		inv[i]._flags_tm=inv[i]._buff[7];
+	     		inv[i]._Uacin=inv[i]._buff[8]+(inv[i]._buff[9]*256);
+				//if((i==0) || (i==32)) inv[i]._Uacin = 100;
+	     		inv[i]._Uload=inv[i]._buff[10]+(inv[i]._buff[11]*256);
+				inv[i]._Udcin=inv[i]._buff[12]+(inv[i]._buff[13]*256);
 				
-			inv[i]._fw_mk_data[0]	=inv[i]._inv_fw_info[0];
-			inv[i]._fw_mk_data[1]	=inv[i]._inv_fw_info[1];
-			inv[i]._fw_mk_data[2]	=inv[i]._inv_fw_info[2];
-			inv[i]._fw_mk_hv		=inv[i]._inv_fw_info[3];
-			inv[i]._fw_mk_sv		=inv[i]._inv_fw_info[4];
-			inv[i]._fw_mk_bld		=(short)inv[i]._inv_fw_info[5] + (((short)inv[i]._inv_fw_info[6])<<8);  
-			inv[i]._fw_plis_data[0]	=inv[i]._inv_fw_info[7];
-			inv[i]._fw_plis_data[1]	=inv[i]._inv_fw_info[8];
-			inv[i]._fw_plis_data[2]	=inv[i]._inv_fw_info[9];
-			inv[i]._fw_plis_hv		=inv[i]._inv_fw_info[10];
-			inv[i]._fw_plis_sv		=inv[i]._inv_fw_info[11];
-			inv[i]._fw_plis_bld		=(short)inv[i]._inv_fw_info[12] + (((short)inv[i]._inv_fw_info[13])<<8);			 
-     		} 
+				inv[i]._flags_tm_dop=inv[i]._buff[14];
+				//inv[i]._cnt=0;
+				if(inv[i]._flags_tm&0x1a)
+					{
+					inv[i]._avIsOn=1;
+					//someInvAvIsOn=1;
+					}
+				else 
+					{
+					inv[i]._avIsOn=0;
+					}
+	
+				if(inv[i]._flags_tm&0x40)
+					{
+					if((unsigned char)(inv[i]._buff[15])==0x7f) 		f_out_inv=750;
+					else if((unsigned char)(inv[i]._buff[15])==0x80) f_out_inv=250;
+					else 												f_out_inv=500+(signed char)(inv[i]._buff[15]);
+					}
+	
+				if(inv[i]._flags_tm&0x20)
+					{
+					master_inv_ison=1;
+					}
+					
+	/*			inv[i]._fw_mk_data[0]	=inv[i]._inv_fw_info[0];
+				inv[i]._fw_mk_data[1]	=inv[i]._inv_fw_info[1];
+				inv[i]._fw_mk_data[2]	=inv[i]._inv_fw_info[2];
+				inv[i]._fw_mk_hv		=inv[i]._inv_fw_info[3];
+				inv[i]._fw_mk_sv		=inv[i]._inv_fw_info[4];
+				inv[i]._fw_mk_bld		=(short)inv[i]._inv_fw_info[5] + (((short)inv[i]._inv_fw_info[6])<<8);  
+				inv[i]._fw_plis_data[0]	=inv[i]._inv_fw_info[7];
+				inv[i]._fw_plis_data[1]	=inv[i]._inv_fw_info[8];
+				inv[i]._fw_plis_data[2]	=inv[i]._inv_fw_info[9];
+				inv[i]._fw_plis_hv		=inv[i]._inv_fw_info[10];
+				inv[i]._fw_plis_sv		=inv[i]._inv_fw_info[11];
+				inv[i]._fw_plis_bld		=(short)inv[i]._inv_fw_info[12] + (((short)inv[i]._inv_fw_info[13])<<8);*/			 
+     			}
+			} 
 		else 
      		{
       		inv[i]._Iout=0;
@@ -1153,6 +1207,242 @@ if (NUMINV)
 	/*0502*/
 	if(master_inv_ison==0)f_out_inv=0;
    	}
+/*
+if(NUMBYPASS)
+	{
+	unsigned short temp_SS11;
+	unsigned short temp_SS12;
+	unsigned short temp_SS13;
+	unsigned short temp_SS21;
+	unsigned short temp_SS22;
+	unsigned short temp_SS23;
+	unsigned short temp_SS31;
+	unsigned short temp_SS32;
+	unsigned short temp_SS33;
+	//unsigned short temp_SS2;
+
+	if(KAN_BR==62)
+		{
+		temp_SS11 = ((unsigned short)byps[0]._buff[4]+(((unsigned short)byps[0]._buff[5])*256));
+		temp_SS12 = ((unsigned short)byps[0]._buff[8]+(((unsigned short)byps[0]._buff[9])*256));
+		temp_SS13 = ((unsigned short)byps[0]._buff[10]+(((unsigned short)byps[0]._buff[11])*256));
+		temp_SS21 = ((unsigned short)byps[1]._buff[4]+(((unsigned short)byps[1]._buff[5])*256));
+		temp_SS22 = ((unsigned short)byps[1]._buff[8]+(((unsigned short)byps[1]._buff[9])*256));
+		temp_SS23 = ((unsigned short)byps[1]._buff[10]+(((unsigned short)byps[1]._buff[11])*256));
+		temp_SS31 = ((unsigned short)byps[2]._buff[4]+(((unsigned short)byps[2]._buff[5])*256));
+		temp_SS32 = ((unsigned short)byps[2]._buff[8]+(((unsigned short)byps[2]._buff[9])*256));
+		temp_SS33 = ((unsigned short)byps[2]._buff[10]+(((unsigned short)byps[2]._buff[11])*256));
+
+		}
+	else
+		{
+		temp_SS11 = ((unsigned short)byps[0]._buff[4]+(((unsigned short)byps[0]._buff[5])*256))&0x3fff;
+		temp_SS12 = ((unsigned short)byps[0]._buff[8]+(((unsigned short)byps[0]._buff[9])*256))&0x3fff;
+		temp_SS13 = ((unsigned short)byps[0]._buff[10]+(((unsigned short)byps[0]._buff[11])*256))&0x3fff;
+		temp_SS21 = ((unsigned short)byps[1]._buff[4]+(((unsigned short)byps[1]._buff[5])*256))&0x3fff;
+		temp_SS22 = ((unsigned short)byps[1]._buff[8]+(((unsigned short)byps[1]._buff[9])*256))&0x3fff;
+		temp_SS23 = ((unsigned short)byps[1]._buff[10]+(((unsigned short)byps[1]._buff[11])*256))&0x3fff;
+		temp_SS31 = ((unsigned short)byps[2]._buff[4]+(((unsigned short)byps[2]._buff[5])*256))&0x3fff;
+		temp_SS32 = ((unsigned short)byps[2]._buff[8]+(((unsigned short)byps[2]._buff[9])*256))&0x3fff;
+		temp_SS33 = ((unsigned short)byps[2]._buff[10]+(((unsigned short)byps[2]._buff[11])*256))&0x3fff;
+
+		}
+
+	if(
+		(temp_SS11<3000) &&
+		(temp_SS12<3000) &&
+		(temp_SS13<3000) &&
+		(temp_SS21<3000) &&
+		(temp_SS22<3000) &&
+		(temp_SS23<3000) &&
+		(temp_SS31<3000) &&
+		(temp_SS32<3000) &&
+		(temp_SS33<3000) 
+		)
+		{
+		if(KAN_BR==62)
+			{
+			byps[0]._Pout=((signed long)byps[0]._buff[2]+(((signed long)byps[0]._buff[3])*256));
+			byps[0]._Uout=((signed short)byps[0]._buff[4]+(((signed short)byps[0]._buff[5])*256));
+			byps[0]._UinACprim=((signed short)byps[0]._buff[8]+(((signed short)byps[1]._buff[9])*256));
+			byps[0]._UinACinvbus=((signed short)byps[0]._buff[10]+(((signed short)byps[1]._buff[11])*256));
+ 			byps[1]._Pout=((signed long)byps[1]._buff[2]+(((signed long)byps[1]._buff[3])*256));
+			byps[1]._Uout=((signed short)byps[1]._buff[4]+(((signed short)byps[1]._buff[5])*256));
+			byps[1]._UinACprim=((signed short)byps[1]._buff[8]+(((signed short)byps[1]._buff[9])*256));
+			byps[1]._UinACinvbus=((signed short)byps[1]._buff[10]+(((signed short)byps[1]._buff[11])*256));
+			byps[2]._Pout=((signed long)byps[2]._buff[2]+(((signed long)byps[2]._buff[3])*256));
+			byps[2]._Uout=((signed short)byps[2]._buff[4]+(((signed short)byps[2]._buff[5])*256));
+			byps[2]._UinACprim=((signed short)byps[2]._buff[8]+(((signed short)byps[2]._buff[9])*256));
+			byps[2]._UinACinvbus=((signed short)byps[2]._buff[10]+(((signed short)byps[2]._buff[11])*256));
+
+			}
+		else
+			{
+			byps[0]._Pout=((signed long)byps[0]._buff[2]+(((signed long)byps[0]._buff[3])*256))*4L;
+			byps[0]._Uout=((signed short)byps[0]._buff[4]+(((signed short)byps[0]._buff[5])*256))&0x3fff;
+			byps[0]._UinACprim=((signed short)byps[0]._buff[8]+(((signed short)byps[1]._buff[9])*256))&0x3fff;
+			byps[0]._UinACinvbus=((signed short)byps[0]._buff[10]+(((signed short)byps[1]._buff[11])*256))&0x3fff;
+			byps[1]._Pout=((signed long)byps[1]._buff[2]+(((signed long)byps[1]._buff[3])*256))*4L;
+			byps[1]._Uout=((signed short)byps[1]._buff[4]+(((signed short)byps[1]._buff[5])*256))&0x3fff;
+			byps[1]._UinACprim=((signed short)byps[1]._buff[8]+(((signed short)byps[1]._buff[9])*256))&0x3fff;
+			byps[1]._UinACinvbus=((signed short)byps[1]._buff[10]+(((signed short)byps[1]._buff[11])*256))&0x3fff;
+			byps[2]._Pout=((signed long)byps[2]._buff[2]+(((signed long)byps[2]._buff[3])*256))*4L;
+			byps[2]._Uout=((signed short)byps[2]._buff[4]+(((signed short)byps[2]._buff[5])*256))&0x3fff;
+			byps[2]._UinACprim=((signed short)byps[2]._buff[8]+(((signed short)byps[2]._buff[9])*256))&0x3fff;
+			byps[2]._UinACinvbus=((signed short)byps[2]._buff[10]+(((signed short)byps[2]._buff[11])*256))&0x3fff;
+			}
+		byps[0]._Iout=(signed short)byps[0]._buff[0]+(((signed short)byps[0]._buff[1])*256);
+		byps[0]._T=(char)byps[0]._buff[6];
+		byps[0]._flags=(char)byps[0]._buff[7];
+		byps[1]._Iout=(signed short)byps[1]._buff[0]+(((signed short)byps[1]._buff[1])*256);
+		byps[1]._T=(char)byps[1]._buff[6];
+		byps[1]._flags=(char)byps[1]._buff[7];
+		byps[2]._Iout=(signed short)byps[2]._buff[0]+(((signed short)byps[2]._buff[1])*256);
+		byps[2]._T=(char)byps[2]._buff[6];
+		byps[2]._flags=(char)byps[2]._buff[7];
+
+		if(byps[0]._buff[5]&0x80) A0_[0]=1;
+		else A0_[0]=0;
+		if(byps[0]._buff[9]&0x80) A1_[0]=1;
+		else A1_[0]=0;
+		if(byps[0]._buff[9]&0x40) F1_[0]=1;
+		else F1_[0]=0;
+		if(byps[0]._buff[11]&0x80) A2_[0]=1;
+		else A2_[0]=0;
+		if(byps[0]._buff[11]&0x40) F2_[0]=1;
+		else F2_[0]=0;
+
+		if(byps[1]._buff[5]&0x80) A0_[1]=1;
+		else A0_[1]=0;
+		if(byps[1]._buff[9]&0x80) A1_[1]=1;
+		else A1_[1]=0;
+		if(byps[1]._buff[9]&0x40) F1_[1]=1;
+		else F1_[1]=0;
+		if(byps[1]._buff[11]&0x80) A2_[1]=1;
+		else A2_[1]=0;
+		if(byps[1]._buff[11]&0x40) F2_[1]=1;
+		else F2_[1]=0;
+
+		if(byps[2]._buff[5]&0x80) A0_[2]=1;
+		else A0_[2]=0;
+		if(byps[2]._buff[9]&0x80) A1_[2]=1;
+		else A1_[2]=0;
+		if(byps[2]._buff[9]&0x40) F1_[2]=1;
+		else F1_[2]=0;
+		if(byps[2]._buff[11]&0x80) A2_[2]=1;
+		else A2_[2]=0;
+		if(byps[2]._buff[11]&0x40) F2_[2]=1;
+		else F2_[2]=0;
+*/
+	
+
+/*		byps[bypass_adress-61]._T=(char)RXBUFF[2];
+		byps[bypass_adress-61]._flags=(char)RXBUFF[3];
+		if(KAN_BR==62)
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256));
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+
+			}
+		else
+			{
+			byps[bypass_adress-61]._UinACprim=((signed short)RXBUFF[4]+(((signed short)RXBUFF[5])*256))&0x3fff;;
+			byps[bypass_adress-61]._UinACinvbus=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;;
+			}
+
+		if(RXBUFF[5]&0x80) A1_[bypass_adress-61]=1;
+		else A1_[bypass_adress-61]=0;
+		if(RXBUFF[5]&0x40) F1_[bypass_adress-61]=1;
+		else F1_[bypass_adress-61]=0;
+
+		if(RXBUFF[7]&0x80) A2_[bypass_adress-61]=1;
+		else A2_[bypass_adress-61]=0;
+		if(RXBUFF[7]&0x40) F2_[bypass_adress-61]=1;
+		else F2_[bypass_adress-61]=0;
+
+		byps[bypass_adress-61]._cnt=0;
+		if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
+		byps[bypass_adress-61]._valid=1;
+
+
+						
+			byps[bypass_adress-61]._cnt=0;
+			if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
+			byps[bypass_adress-61]._valid=1;
+	
+			if(byps[bypass_adress-61]._Pout<0) byps[bypass_adress-61]._Pout=0;
+			}
+		else
+			{
+			byps[0]._adress=bypass_adress;
+			 
+	     	byps[0]._Iout=(signed short)RXBUFF[2]+(((signed short)RXBUFF[3])*256);
+			if(KAN_BR==62)
+				{
+				byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256));
+				byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256));
+	
+				}
+			else
+				{
+				byps[bypass_adress-61]._Pout=((signed long)RXBUFF[4]+(((signed long)RXBUFF[5])*256))*4L;
+				byps[bypass_adress-61]._Uout=((signed short)RXBUFF[6]+(((signed short)RXBUFF[7])*256))&0x3fff;
+				}
+			if(RXBUFF[7]&0x80) A0_[bypass_adress-61]=1;
+			else A0_[bypass_adress-61]=0;	
+					
+			byps[0]._cnt=0;
+			if(byps[0]._valid==0) avar_byps_hndl(1,'C',0,0);
+			byps[0]._valid=1;
+	
+			if(byps[0]._Pout<0) byps[0]._Pout=0;
+			}
+		} 
+		}		
+	}
+ */
+
+
+if(NUMBYPASS)
+	{
+	byps[0]._flags_485_h=0;
+	byps[0]._flags_485_l=byps[0]._flags;
+	if(B4_4) byps[0]._flags_485_h|=(1<<7); 
+	if(B5_) byps[0]._flags_485_h|=(1<<6);
+	if(A0_[0]) byps[0]._flags_485_h|=(1<<1);
+	if(A1_[0]) byps[0]._flags_485_h|=(1<<2);
+	if(F1_[0]) byps[0]._flags_485_h|=(1<<3);
+	if(A2_[0]) byps[0]._flags_485_h|=(1<<4);
+	if(F2_[0]) byps[0]._flags_485_h|=(1<<5);
+
+	if(byps[0]._valid==0) byps[0]._flags_485_h|=(1<<0); 
+
+
+	byps[1]._flags_485_h=0;
+	byps[1]._flags_485_l=(byps[1]._flags&0x3f)|(byps[0]._flags&0xc0);
+	if(B4_4) byps[1]._flags_485_h|=(1<<7); 
+	if(B5_) byps[1]._flags_485_h|=(1<<6);
+	if(A0_[1]) byps[1]._flags_485_h|=(1<<1);
+	if(A1_[1]) byps[1]._flags_485_h|=(1<<2);
+	if(F1_[0]) byps[1]._flags_485_h|=(1<<3);
+	if(A2_[1]) byps[1]._flags_485_h|=(1<<4);
+	if(F2_[0]) byps[1]._flags_485_h|=(1<<5);
+
+	if(byps[1]._valid==0) byps[1]._flags_485_h|=(1<<0);
+
+	byps[2]._flags_485_h=0;
+	byps[2]._flags_485_l=(byps[2]._flags&0x3f)|(byps[0]._flags&0xc0);
+	if(B4_4) byps[2]._flags_485_h|=(1<<7); 
+	if(B5_) byps[2]._flags_485_h|=(1<<6);
+	if(A0_[2]) byps[2]._flags_485_h|=(1<<1);
+	if(A1_[2]) byps[2]._flags_485_h|=(1<<2);
+	if(F1_[0]) byps[2]._flags_485_h|=(1<<3);
+	if(A2_[2]) byps[2]._flags_485_h|=(1<<4);
+	if(F2_[0]) byps[2]._flags_485_h|=(1<<5);
+
+	if(byps[2]._valid==0) byps[2]._flags_485_h|=(1<<0);
+	}
+
 
 if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS)) 
 	{

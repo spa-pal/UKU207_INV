@@ -912,6 +912,17 @@ typedef struct
 	char 			_temper_av_stat;
 	char			_T;
 	char 		_flags;
+	char 		_flags_;
+	char 		_flags_cnt;
+	char 		_flags_dop;
+	char 		_flags_dop_;
+	char 		_flags_dop_cnt;
+	char 		_flags1;
+	char 		_flags1_;
+	char 		_flags1_cnt;
+//	char 		_flags3;
+//	char 		_flags3_;
+//	char 		_flags3_cnt;
 	char			_cnt;
 	char 		_adress;
 	char _valid;
@@ -923,6 +934,7 @@ typedef struct
 extern BYPS_STAT byps[3];
 
 extern char byps_fw_info[80];
+extern char byps0_flags3, byps0_flags3_, byps0_flags3_cnt;
 
 typedef struct
      {

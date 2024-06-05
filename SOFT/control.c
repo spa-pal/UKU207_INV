@@ -975,7 +975,7 @@ if(B5_ff)
 	else
 		{
 		B5_ff_cnt=50;
-		B5_ = B5_ff;
+		//B5_ = B5_ff;
 		}
 	}
 else
@@ -984,7 +984,7 @@ else
 	else
 		{
 		B5_ff_cnt=0;
-		B5_ = B5_ff;
+		//B5_ = B5_ff;
 		}
 	}
 
@@ -2801,10 +2801,10 @@ temp_=0;
 
 if(wrkFromNet1Inv0)
 	{
-	if(wrkFromNet1Inv0_cnt<((KAN_BR==62) ? 50 : 5))
+	if(wrkFromNet1Inv0_cnt<(/*(KAN_BR==62) ? 50 : */5))
 		{
 		wrkFromNet1Inv0_cnt++;
-		if(wrkFromNet1Inv0_cnt==((KAN_BR==62) ? 50 : 5)) 
+		if(wrkFromNet1Inv0_cnt==(/*(KAN_BR==62) ? 50 : */5)) 
 			{
 			if(wrkFromNet1Inv0_del==0)
 				{
@@ -2814,7 +2814,7 @@ if(wrkFromNet1Inv0)
 			wrkFromNet1Inv0_del=1;
 			}
 		}
-	else wrkFromNet1Inv0_cnt=((KAN_BR==62) ? 50 : 5);
+	else wrkFromNet1Inv0_cnt=(/*(KAN_BR==62) ? 50 : */5);
 	}
 else 
 	{
@@ -2836,10 +2836,10 @@ else
 
 if(priorFromNet1Inv0)
 	{
-	if(priorFromNet1Inv0_cnt<((KAN_BR==62) ? 50 : 5))
+	if(priorFromNet1Inv0_cnt<(/*(KAN_BR==62) ? 50 : */5))
 		{
 		priorFromNet1Inv0_cnt++;
-		if(priorFromNet1Inv0_cnt==((KAN_BR==62) ? 50 : 5)) 
+		if(priorFromNet1Inv0_cnt==(/*(KAN_BR==62) ? 50 : */5)) 
 			{
 			if(priorFromNet1Inv0_del==0)
 				{
@@ -2849,7 +2849,7 @@ if(priorFromNet1Inv0)
 			priorFromNet1Inv0_del=1;
 			}
 		}
-	else priorFromNet1Inv0_cnt=((KAN_BR==62) ? 50 : 5);
+	else priorFromNet1Inv0_cnt=(/*(KAN_BR==62) ? 50 : */5);
 	}
 else 
 	{

@@ -302,6 +302,7 @@ char first_inv_slot=MINIM_INV_ADRESS;
 //Состояние байпаса
 BYPS_STAT byps[3];
 char byps_fw_info[80];
+char byps0_flags3, byps0_flags3_, byps0_flags3_cnt;
 
 //***********************************************
 //Состояние нагрузки
@@ -4278,9 +4279,9 @@ if(language){//o_2
 
 	}
 //o_2_e
-    int2lcdyx(B5_ff,0,1,0);
-	int2lcdyx(B5_ff_cnt,0,4,0);
-	int2lcdyx(B5_,0,7,0);
+    //int2lcdyx(B5_ff,0,1,0);
+	//int2lcdyx(B5_ff_cnt,0,4,0);
+	//int2lcdyx(B5_,0,7,0);
 	}
  /*0502
  else if(ind==iBps)
@@ -10559,11 +10560,21 @@ if(ind==iDeb)
     	}
     else if(sub_ind==6)
      	{
-     	bgnd_par("                    ",
+     	bgnd_par("***                 ",
      		    "                    ",
      		    "                    ",
      		    "                    ");
-     		    
+ 
+ 		char2lcdhyx(byps[0]._flags_dop_,1,3);
+		int2lcdyx(byps[0]._flags_dop_cnt,1,7,0);
+     	char2lcdhyx(byps[0]._flags_dop,1,10);
+ 		char2lcdhyx(byps[1]._flags_dop_,2,3);
+		int2lcdyx(byps[1]._flags_dop_cnt,2,7,0);
+     	char2lcdhyx(byps[1]._flags_dop,2,10);
+ 		char2lcdhyx(byps[2]._flags_dop_,3,3);
+		int2lcdyx(byps[2]._flags_dop_cnt,3,7,0);
+     	char2lcdhyx(byps[2]._flags_dop,3,10);
+			    
      	/*int2lcdyx(ad7705_buff[0][0],0,4,0);
      	int2lcdyx(ad7705_buff[0][1],0,9,0);
      	int2lcdyx(ad7705_buff[0][2],0,14,0);
@@ -10581,7 +10592,7 @@ if(ind==iDeb)
      	int2lcdyx(ad7705_buff[0][14],3,14,0);
      	int2lcdyx(ad7705_buff[0][15],3,19,0);*/
 
-		int2lcdyx(inv[7]._buff[0],0,3,0);
+		/*int2lcdyx(inv[7]._buff[0],0,3,0);
 		int2lcdyx(inv[7]._buff[1],1,3,0);
 		int2lcdyx(inv[7]._buff[2],2,3,0);
 		int2lcdyx(inv[7]._buff[3],3,3,0);
@@ -10598,7 +10609,7 @@ if(ind==iDeb)
 		int2lcdyx(inv[7]._buff[14],2,15,0);
 		int2lcdyx(inv[7]._buff[15],3,15,0);
 		int2lcdyx(inv[7]._buff[16],0,19,0);
-		int2lcdyx(inv[7]._buff[17],1,19,0);
+		int2lcdyx(inv[7]._buff[17],1,19,0);	*/
     	}  		  		
 
    else if(sub_ind==7)

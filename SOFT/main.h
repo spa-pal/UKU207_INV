@@ -1058,8 +1058,8 @@ typedef struct
 	char _fw_plis_hv;
 	char _fw_plis_sv;
 	short _fw_plis_bld;
-	char _inv_fw_info_cnt;
-	char _inv_fw_info[80];
+//	char _inv_fw_info_cnt;
+//	char _inv_fw_info[80];
 	char _inv_int_err_cnt;
 	} INV_STAT; 
 extern INV_STAT inv[42];

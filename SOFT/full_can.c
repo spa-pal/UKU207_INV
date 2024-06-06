@@ -1316,10 +1316,16 @@ if((RXBUFF[1]==PUTTM3INV2)&&((RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((RXBUFF[0]&0x
 	inv[inv_num]._is_on_cnt=10;
 	inv[inv_num]._valid=1; 
 	/*0502*/
-	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=79))
+/*	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=79))
 		{
 		inv[inv_num]._inv_fw_info_cnt=RXBUFF[6];
 		inv[inv_num]._inv_fw_info[RXBUFF[6]]=RXBUFF[7];
+		} */
+	if(((RXBUFF[6]>=0)&&(RXBUFF[6]<=79))	&& ((iInv_v3) || (ind==iFWByps_about)) && (sub_ind == inv_num))
+		{
+		//byps[bypass_adress-61]._byps_fw_info_cnt=RXBUFF[6];
+		//byps[bypass_adress-61]._byps_fw_info[RXBUFF[6]]=RXBUFF[7];
+		//byps_fw_info[RXBUFF[6]]=RXBUFF[7];
 		}
 	can_reset_cnt=0;
    	}
@@ -1572,11 +1578,11 @@ if((RXBUFF[1]==PUTTM3BYPS))
 
 	if((bypass_adress==61))
 		{
-		if((RXBUFF[6]>=0)&&(RXBUFF[6]<=79))
+		if(((RXBUFF[6]>=0)&&(RXBUFF[6]<=79)) && ((ind == iByps) || (ind == iByps3f) || (ind==iFWByps_about)))
 			{
 			//byps[bypass_adress-61]._byps_fw_info_cnt=RXBUFF[6];
 			//byps[bypass_adress-61]._byps_fw_info[RXBUFF[6]]=RXBUFF[7];
-			byps_fw_info[RXBUFF[6]]=RXBUFF[7];
+			//byps_fw_info[RXBUFF[6]]=RXBUFF[7];
 			}
 	   	}
 	if((bypass_adress==61))

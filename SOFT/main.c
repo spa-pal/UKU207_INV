@@ -11836,7 +11836,9 @@ if(language){//o_2
 //o_2_e
 	for(i=0; i<80; i++)
 		{
-		lcd_buffer[i]=inv[sub_ind1]._inv_fw_info[i];
+		//lcd_buffer[i]=inv[sub_ind1]._inv_fw_info[i];
+
+		lcd_buffer[i]=byps_fw_info[i];
 		}
 /*	int2lcdyx(inv[sub_ind1]._fw_mk_data[0],1,12,0);
 	int2lcdyx(inv[sub_ind1]._fw_mk_data[1],1,15,0);
@@ -12265,12 +12267,21 @@ else if(ind==iMn_INV)
 			}
 		else if((sub_ind>(2+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))&&(sub_ind<=(2+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)))))
 		    	{
-		    	if(NUMPHASE==1)tree_up(iByps,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
-				if(NUMPHASE==3)tree_up(iByps3f,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+		    	if(NUMPHASE==1)
+					{
+					tree_up(iByps,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+					memcpy(byps_fw_info,"                                                                                ",80);
+					}
+				if(NUMPHASE==3)
+					{
+					tree_up(iByps3f,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+					memcpy(byps_fw_info,"                                                                                ",80);
+					}
 		    	}
 		else if((sub_ind>(2+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))&&(sub_ind<=(2+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)))))
 		    	{
 		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+				memcpy(byps_fw_info,"                                                                                ",80);
 		    	}
 
 		else if(sub_ind==(3+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))

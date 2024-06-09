@@ -53,8 +53,9 @@ extern unsigned short rotor_can[6];
 // FullCAN Message List
 //extern FULLCAN_MSG volatile gFullCANList[MAX_FILTERS];
 
+extern char _rxbuff_[8];
 extern char bR;
-extern char RXBUFF[40],TXBUFF[40];
+/*extern char RXBUFF[40],TXBUFF[40];*/
 extern char bIN,bIN2;
 extern char bd_dumm[25];
 extern char bd[25];
@@ -76,6 +77,7 @@ extern char bOUT_FREE;
 extern char can_rotor[10];
 extern char plazma_can;
 extern short plazma_can1,plazma_can2,plazma_can3,plazma_can4;
+extern short plazma_can_gl[33], plazma_can_time;
 
 
 

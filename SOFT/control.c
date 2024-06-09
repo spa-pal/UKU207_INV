@@ -1106,7 +1106,7 @@ if (NUMINV)
 	/*0502*/
 		for(i=0;i<NUMINV;i++)
 		{
-		if(inv[i]._cnt<5)
+		if((inv[i]._cnt<5)  && (i!=4))
      		{
 			unsigned short temp_SS1;
 			unsigned short temp_SS2;

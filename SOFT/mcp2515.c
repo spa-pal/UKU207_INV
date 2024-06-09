@@ -187,12 +187,27 @@ mcp2515_eflg=mcp2515_read(EFLG);
 
 if(mcp2515_can_st&0x02/*0b00000010*/)
 	{
-	
+
 	for(j=0;j<8;j++)
 		{
-		/*MCP2515_*/RXBUFF[j]=mcp2515_read(RXB1D0+j);
+		_rxbuff_[j]=mcp2515_read(RXB1D0+j);
 		}
+
+	if((_rxbuff_[0]&0x3f)==24)	plazma_5++;
+	if((_rxbuff_[0]&0x3f)==47)	plazma_28++;
+	if((_rxbuff_[0]&0x3f)==20)	plazma_1++;
 	
+	for(j=0; j<=32; j++)
+		{
+		if(((_rxbuff_[0]&0x3f)==20+j) && (!plazma_stop)) plazma_can_gl[j]++;
+		}
+//	if((_rxbuff_[0]&0x3f)!=24)
+		{
+	//	for(j=0;j<8;j++)
+	//		{
+//		/*MCP2515_*/RXBUFF[j]=_rxbuff_[j];
+	//		}
+		}
 	mcp2515_bit_modify(CANINTF,0x02 /*0b00000010*/ ,0x00);
      bMCP2515_IN=1;
 	}

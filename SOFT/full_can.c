@@ -34,6 +34,7 @@ unsigned short rotor_can[6];
 FULLCAN_MSG volatile gFullCANList[MAX_FILTERS];
 
 char _rxbuff_[8];
+char _rxbuff__[8];
 char bR;
 /*char RXBUFF[40],TXBUFF[40];*/
 char bIN,bIN2;
@@ -104,6 +105,7 @@ char plazma_can;
 short plazma_can1,plazma_can2,plazma_can3,plazma_can4;
 short can2_tx_cnt;
 short plazma_can_gl[33], plazma_can_time;
+short plazma_can_can[10];
 
 //-----------------------------------------------
 char CRC1_in(void)
@@ -604,6 +606,12 @@ memcpy(__RXBUFF,_rxbuff_,8);
 //can_debug_plazma[1][2]++;
 can_rotor[1]++;
 
+//if((__RXBUFF[0]&0x3f)==24) return;
+//if(((__RXBUFF[0]&0x3f)==24)&&(__RXBUFF[1]==PUTTM3INV2)) return;
+
+
+#ifdef PLPLAZMA
+
 if((__RXBUFF[0]==sub_ind1)&&(__RXBUFF[1]==PUTID)&&(__RXBUFF[2]==0xdd)&&(__RXBUFF[3]==0xdd)&&(sub_ind==6))
 	{
 	mess_send(MESS2IND_HNDL,PARAM_U_AVT_GOOD,0,10);
@@ -660,7 +668,7 @@ if((RXBUFF[1]==PUTTM2)&&((RXBUFF[0]&0x1f)>=0)&&((RXBUFF[0]&0x1f)<12))
 	can_reset_cnt=0;
    	}  0502*/
 
-if((__RXBUFF[1]==PUTTM1INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV))
+if((__RXBUFF[1]==PUTTM1INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF[0]&0x3f)<MINIM_INV_ADRESS+NUMINV) /*&& (slave_num!=24)*/)
     {
     slave_num=__RXBUFF[0]&0x3f;
 	/*0502*/
@@ -685,6 +693,7 @@ if((__RXBUFF[1]==PUTTM1INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 
 	/*0502*/
 	//if(inv_num!=4) {
+	/*if(inv_num==27)*/ {
 	inv[inv_num]._buff[0]=__RXBUFF[2]; 
 	inv[inv_num]._buff[1]=__RXBUFF[3];
 	inv[inv_num]._buff[2]=__RXBUFF[4];
@@ -695,6 +704,7 @@ if((__RXBUFF[1]==PUTTM1INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 	inv[inv_num]._cnt=0;
 	inv[inv_num]._is_on_cnt=10;
 	inv[inv_num]._valid=1;
+	}
 	/*0502*/
 
  	//if((bps[slave_num]._cnt==0)&&(bps[slave_num]._av&(1<<3))) avar_bps_hndl(slave_num,3,0);
@@ -725,6 +735,7 @@ if((__RXBUFF[1]==PUTTM2INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 
 	/*0502*/
 	//if(inv_num!=4) {
+	/*if(inv_num==27)*/ {
 	inv[inv_num]._buff[6]=__RXBUFF[2]; 
 	inv[inv_num]._buff[7]=__RXBUFF[3];
 	inv[inv_num]._buff[8]=__RXBUFF[4];
@@ -737,7 +748,8 @@ if((__RXBUFF[1]==PUTTM2INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 	inv[inv_num]._valid=1; 
 	/*0502*/
 
-	can_reset_cnt=0;   //}
+	can_reset_cnt=0;   //
+	}
 
    	}
 
@@ -764,6 +776,7 @@ if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 
 	/*0502*/
 	//	if(inv_num!=4) {
+	/*if(inv_num==27)*/ {
 	inv[inv_num]._buff[12]=__RXBUFF[2]; 
 	inv[inv_num]._buff[13]=__RXBUFF[3];
 	inv[inv_num]._buff[14]=__RXBUFF[4];
@@ -774,6 +787,7 @@ if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 	inv[inv_num]._cnt=0;
 	inv[inv_num]._is_on_cnt=10;
 	inv[inv_num]._valid=1; 
+	}
 	/*0502*/
 /*	if((RXBUFF[6]>=0)&&(RXBUFF[6]<=79))
 		{
@@ -790,6 +804,7 @@ if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 //	}
    	}
 
+
 if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)==0x3d))
  	{
 	if(!(__RXBUFF[4]&0x04))f_out_byps=500+(signed char)__RXBUFF[5];
@@ -797,6 +812,9 @@ if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)==0x3d))
 	f_out_byps_cnt=20;
 	
    	}
+
+
+
 
 if((__RXBUFF[1]==PUTTM1BYPS))
 	{
@@ -1030,11 +1048,19 @@ if((__RXBUFF[1]==PUTTM2BYPS))
 		}
 		}
    	}
+
+#endif
+
 if((__RXBUFF[1]==PUTTM3BYPS))
  	{
 	char bypass_adress;
 	//can_debug_plazma[1][2]++;
+
+	plazma_can_can[0]++;
+
 	bypass_adress=__RXBUFF[0]&0x3f;
+
+	plazma_can_can[1]=bypass_adress;
 
 	if((bypass_adress==61))
 		{
@@ -1075,103 +1101,9 @@ if((__RXBUFF[1]==PUTTM3BYPS))
 		else B5_=0;	*/
 	byps[bypass_adress-61]._cnt=0;
 	if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
-	byps[bypass_adress-61]._valid=1;
+	//byps[bypass_adress-61]._valid=1;
    	}
-
-/*
-if((__RXBUFF[1]==PUTTM2BYPS))
- 	{
-	char bypass_adress;
-	//can_debug_plazma[1][2]++;
-	bypass_adress=__RXBUFF[0]&0x3f;
-
-	if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
-		{
-		byps[bypass_adress-61]._T=(char)__RXBUFF[2];
-		byps[bypass_adress-61]._flags=(char)__RXBUFF[3];
-		byps[bypass_adress-61]._UinACprim=(signed short)__RXBUFF[4]+(((signed short)__RXBUFF[5])*256);
-		byps[bypass_adress-61]._UinACinvbus=(signed short)__RXBUFF[6]+(((signed short)__RXBUFF[7])*256);
-
-		byps[bypass_adress-61]._cnt=0;
-		byps[bypass_adress-61]._valid=1;
-		}
-	else 
-		{
-		byps[0]._T=(char)__RXBUFF[2];
-		byps[0]._flags=(char)__RXBUFF[3];
-		byps[0]._UinACprim=(signed short)__RXBUFF[4]+(((signed short)__RXBUFF[5])*256);
-		byps[0]._UinACinvbus=(signed short)__RXBUFF[6]+(((signed short)__RXBUFF[7])*256);
-
-		byps[0]._cnt=0;
-		byps[0]._valid=1;
-		}
-   	}*/
-
-/*0502
-if((__RXBUFF[1]==PUTTM_IBATMETER)&&((__RXBUFF[0]&0x1f)>=0)&&((__RXBUFF[0]&0x1f)<12))
- 	{
-    slave_num=__RXBUFF[0]&0x1f;  
-
-    bps[slave_num]._device=dIBAT_METR;
-         
-	bps[slave_num]._buff[0]=__RXBUFF[2]; 
-	bps[slave_num]._buff[1]=__RXBUFF[3];
-	bps[slave_num]._buff[2]=__RXBUFF[4];
-	bps[slave_num]._buff[3]=__RXBUFF[5];
-	bps[slave_num]._buff[4]=__RXBUFF[6];
-	bps[slave_num]._buff[5]=__RXBUFF[7];	
-
-
-
-	
-	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10; 
-
-   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
-	can_reset_cnt=0;
-   	}  0502*/
-/*0502
-if((__RXBUFF[1]==PUTTM_NET)&&((__RXBUFF[0]&0x1f)>=0)&&((__RXBUFF[0]&0x1f)<12))
- 	{
-    slave_num=__RXBUFF[0]&0x1f;  
-
-    bps[slave_num]._device=dNET_METR;
-         
-	bps[slave_num]._buff[0]=__RXBUFF[2]; 
-	bps[slave_num]._buff[1]=__RXBUFF[3];
-	bps[slave_num]._buff[2]=__RXBUFF[4];
-	bps[slave_num]._buff[3]=__RXBUFF[5];
-	bps[slave_num]._buff[4]=__RXBUFF[6];
-	bps[slave_num]._buff[5]=__RXBUFF[7];	
-
-
-	
-	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10; 
-
-   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
-	can_reset_cnt=0;
-   	} 0502*/
-
-/*0502
-if((__RXBUFF[1]==PUTTM_NET1)&&((__RXBUFF[0]&0x1f)>=0)&&((__RXBUFF[0]&0x1f)<12))
- 	{
-    slave_num=__RXBUFF[0]&0x1f;  
-
-    bps[slave_num]._device=dNET_METR;
-         
-	bps[slave_num]._buff[6]=__RXBUFF[2]; 
-	bps[slave_num]._buff[7]=__RXBUFF[3];
-	
-	//net_F= __RXBUFF[2]+ (__RXBUFF[3]*256);
-
-	bps[slave_num]._cnt=0;
-	bps[slave_num]._is_on_cnt=10; 
-
-   	//if((src[slave_num]._cnt==0)&&(src[slave_num]._av_net)) avar_s_hndl(slave_num,3,0); 
-	can_reset_cnt=0;
-   	} 0502*/
-
+#ifdef PLPLAZMA
 
 if( ((__RXBUFF[0]&0x1f)==8)&&((__RXBUFF[1])==PUTTM) )
      {
@@ -1204,115 +1136,7 @@ if( ((__RXBUFF[0]&0x1f)==10)&&((__RXBUFF[1])==PUTTM) )
 	can_reset_cnt=0;
      }
 
-/*0502
-if( ((__RXBUFF[0]&0x1f)==20)&&((__RXBUFF[1])==PUTTM) )
-     {
-     eb2_data[0]=__RXBUFF[2];
-	eb2_data[1]=__RXBUFF[3];
-     eb2_data[2]=__RXBUFF[4];
-	eb2_data[3]=__RXBUFF[5];
-	eb2_data[4]=__RXBUFF[6];
-	eb2_data[5]=__RXBUFF[7];
-     power_current=*((signed short*)&__RXBUFF[2]);
-     power_summary=*((signed long*)&__RXBUFF[4]);
-
-	 can_reset_cnt=0;
-     }
-
-if( ((__RXBUFF[0]&0x1f)==21)&&((__RXBUFF[1])==PUTTM) )
-     {
-     eb2_data[6]=__RXBUFF[2];
-	eb2_data[7]=__RXBUFF[3];
-     eb2_data[8]=__RXBUFF[4];
-	eb2_data[9]=__RXBUFF[5];
-	eb2_data[10]=__RXBUFF[6];
-	eb2_data[11]=__RXBUFF[7];
-	eb2_data_short[6]=*((short*)&eb2_data[6]);
-
-	can_reset_cnt=0;
-     }
-
-if( ((__RXBUFF[0]&0x1f)==22)&&((__RXBUFF[1])==PUTTM) )
-     {
-     eb2_data[12]=__RXBUFF[2];
-	eb2_data[13]=__RXBUFF[3];
-     eb2_data[14]=__RXBUFF[4];
-	eb2_data[15]=__RXBUFF[5];
-	eb2_data[16]=__RXBUFF[6];
-	eb2_data[17]=__RXBUFF[7];
-	eb2_data_short[0]=*((short*)&eb2_data[12]);
-	eb2_data_short[1]=*((short*)&eb2_data[14]);
-	eb2_data_short[2]=*((short*)&eb2_data[16]);
-
-	can_reset_cnt=0;
-     }
-
-if( ((__RXBUFF[0]&0x1f)==23)&&((__RXBUFF[1])==PUTTM) )
-     {
-     eb2_data[18]=__RXBUFF[2];
-	eb2_data[19]=__RXBUFF[3];
-     eb2_data[20]=__RXBUFF[4];
-	eb2_data[21]=__RXBUFF[5];
-	eb2_data[22]=__RXBUFF[6];
-	eb2_data[23]=__RXBUFF[7];
-	eb2_data_short[3]=*((short*)&eb2_data[18]);
-	eb2_data_short[4]=*((short*)&eb2_data[20]);
-	eb2_data_short[5]=*((short*)&eb2_data[22]);
-
-	can_reset_cnt=0;
-     }	0502*/
-/*
-if( (__RXBUFF[1]==PUTTM_MAKB1)&&(__RXBUFF[0]>=0)&&(__RXBUFF[0]<=3))
-     {
-	makb[__RXBUFF[0]]._U[0]=*((short*)&__RXBUFF[2]);
-	makb[__RXBUFF[0]]._U[1]=*((short*)&__RXBUFF[4]);
-	makb[__RXBUFF[0]]._U[2]=*((short*)&__RXBUFF[6]);
-
-	makb[__RXBUFF[0]]._Ub[0]=makb[__RXBUFF[0]]._U[0];
-	if(makb[__RXBUFF[0]]._Ub[0]<0)makb[__RXBUFF[0]]._Ub[0]=0;
-	makb[__RXBUFF[0]]._Ub[1]=makb[__RXBUFF[0]]._U[1]-makb[__RXBUFF[0]]._U[0];
-	if(makb[__RXBUFF[0]]._Ub[1]<0)makb[__RXBUFF[0]]._Ub[1]=0;
-	makb[__RXBUFF[0]]._Ub[2]=makb[__RXBUFF[0]]._U[2]-makb[__RXBUFF[0]]._U[1];
-	if(makb[__RXBUFF[0]]._Ub[2]<0)makb[__RXBUFF[0]]._Ub[2]=0;
-
-	makb[__RXBUFF[0]]._cnt=0;
-     }
-
-if( (__RXBUFF[1]==PUTTM_MAKB2)&&(__RXBUFF[0]>=0)&&(__RXBUFF[0]<=3))
-     {
-	makb[__RXBUFF[0]]._U[3]=*((short*)&__RXBUFF[2]);
-	makb[__RXBUFF[0]]._U[4]=*((short*)&__RXBUFF[4]);
-	makb[__RXBUFF[0]]._T[0]=(signed short)(*((signed char*)&__RXBUFF[6]));
-	makb[__RXBUFF[0]]._T[1]=(signed short)(*((signed char*)&__RXBUFF[7]));
-
-	makb[__RXBUFF[0]]._Ub[3]=makb[__RXBUFF[0]]._U[3]-makb[__RXBUFF[0]]._U[2];
-	if(makb[__RXBUFF[0]]._Ub[3]<0)makb[__RXBUFF[0]]._Ub[3]=0;
-	makb[__RXBUFF[0]]._Ub[4]=makb[__RXBUFF[0]]._U[4]-makb[__RXBUFF[0]]._U[3];
-	if(makb[__RXBUFF[0]]._Ub[4]<0)makb[__RXBUFF[0]]._Ub[4]=0;
-
-	makb[__RXBUFF[0]]._cnt=0;
-     }
-
-if( (__RXBUFF[1]==PUTTM_MAKB3)&&(__RXBUFF[0]>=0)&&(__RXBUFF[0]<=3))
-     {
-	makb[__RXBUFF[0]]._T[2]=(signed short)(*((signed char*)&__RXBUFF[2]));
-	makb[__RXBUFF[0]]._T[3]=(signed short)(*((signed char*)&__RXBUFF[3]));
-	makb[__RXBUFF[0]]._T[4]=(signed short)(*((signed char*)&__RXBUFF[4]));
-
-	if(__RXBUFF[5]&0x01)makb[__RXBUFF[0]]._T_nd[0]=1;
-	else makb[__RXBUFF[0]]._T_nd[0]=0;
-	if(__RXBUFF[5]&0x02)makb[__RXBUFF[0]]._T_nd[1]=1;
-	else makb[__RXBUFF[0]]._T_nd[1]=0;
-	if(__RXBUFF[5]&0x04)makb[__RXBUFF[0]]._T_nd[2]=1;
-	else makb[__RXBUFF[0]]._T_nd[2]=0;
-	if(__RXBUFF[5]&0x08)makb[__RXBUFF[0]]._T_nd[3]=1;
-	else makb[__RXBUFF[0]]._T_nd[3]=0;
-	if(__RXBUFF[5]&0x10)makb[__RXBUFF[0]]._T_nd[4]=1;
-	else makb[__RXBUFF[0]]._T_nd[4]=0;
-
-	makb[__RXBUFF[0]]._cnt=0;
-     }
-*/
+#endif
 CAN_IN_AN1_end:
 bIN2=0;
 }
@@ -1378,7 +1202,7 @@ rotor_can[0]++;
 //		RXBUFF[j]=*ptr;
 		ptr++;
 		}
-	can_in_an1();
+	//can_in_an1();
 	    
     
   }

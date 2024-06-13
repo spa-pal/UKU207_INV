@@ -9475,7 +9475,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\EXE\</OutputDirectory>
-          <OutputName>UKU2071x_INV_WG12232L3</OutputName>
+          <OutputName>INV_DEB</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>

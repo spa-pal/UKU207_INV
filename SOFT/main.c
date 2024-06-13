@@ -10697,11 +10697,14 @@ if(ind==iDeb)
      	}		    
     else if(sub_ind==10)
      	{
-     	bgnd_par(	"MR                  ",
+     	bgnd_par(	"GL                  ",
      		    	"                    ",
      		    	"                    ",
      		    	"                    ");
      	
+		int2lcdyx(plazma_can_can[0],1,4,0);
+		int2lcdyx(plazma_can_can[1],1,9,0);
+
 		/*char2lcdhyx(modbus_an_buffer[0],0,2);
 		char2lcdhyx(modbus_an_buffer[1],1,2);
 		char2lcdhyx(modbus_an_buffer[2],2,2);
@@ -10716,7 +10719,7 @@ if(ind==iDeb)
 		char2lcdhyx(modbus_an_buffer[11],3,8);*/
 
 
-		int2lcdyx(modbus_rtu_plazma[0],1,4,0);
+/*		int2lcdyx(modbus_rtu_plazma[0],1,4,0);
 		int2lcdyx(modbus_rtu_plazma[1],2,4,0);
 		int2lcdyx(modbus_rtu_plazma[2],3,4,0);
 		int2lcdyx(modbus_rtu_plazma[3],0,8,0);
@@ -10735,7 +10738,7 @@ if(ind==iDeb)
 		//int2lcdyx(modbus_tcp_plazma[1],0,15,0);
 		int2lcdyx(modbus_rx_buffer_ptr,3,17,0);
 		int2lcdhyx(modbus_crc_plazma[0],1,17);
-		int2lcdhyx(modbus_crc_plazma[1],2,17);
+		int2lcdhyx(modbus_crc_plazma[1],2,17); */
      	}
     else if(sub_ind==11)
      	{
@@ -10750,6 +10753,9 @@ if(ind==iDeb)
 
 		int2lcdyx(inv[4]._cnt,3,5,0);
 		int2lcdyx(inv[27]._cnt,3,15,0);
+
+		int2lcdyx(plazma_can_can[0],2,4,0);
+		int2lcdyx(plazma_can_can[1],2,9,0);
      	
 /*		int2lcdyx(socket_udp,0,10,0);
 		int2lcdyx(udp_callback_cnt,0,15,0);

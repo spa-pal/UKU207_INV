@@ -4,6 +4,7 @@
 #include "main.h"
 #include "full_can.h"
 #include "eeprom_map.h"
+#include "cmd.h"
 
 char mcp2515_can_st,mcp2515_can_st_old;
 char MCP2515_RXBUFF[40];
@@ -190,9 +191,17 @@ if(mcp2515_can_st&0x02/*0b00000010*/)
 
 	for(j=0;j<8;j++)
 		{
-		_rxbuff_[j]=mcp2515_read(RXB1D0+j);
+		_rxbuff__[j]=mcp2515_read(RXB1D0+j);
 		}
 
+
+	//if(((_rxbuff__[0]&0x3f)==47) ||  (((_rxbuff__[0]&0x3f)==24) && (_rxbuff__[1]==PUTTM3INV2)))			/*	((_rxbuff__[0]&0x3f)==24) ||((_rxbuff__[0]&0x3f)==20)	*/
+		{
+		for(j=0;j<8;j++)
+			{
+			_rxbuff_[j]=_rxbuff__[j];
+			}
+		}
 	if((_rxbuff_[0]&0x3f)==24)	plazma_5++;
 	if((_rxbuff_[0]&0x3f)==47)	plazma_28++;
 	if((_rxbuff_[0]&0x3f)==20)	plazma_1++;

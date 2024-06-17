@@ -1235,6 +1235,7 @@ extern signed short f_out_byps;
 extern signed short f_out_byps_cnt;
 
 extern char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_,B4_4;
+extern char A0__[3],A1__[3],A2__[3],F1__[3],F2__[3], B4__, B5__, B4_4_;
 extern char B5_ff;
 extern char B5_ff_cnt;
 

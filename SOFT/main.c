@@ -624,6 +624,7 @@ signed short f_out_inv;
 signed short f_out_byps;
 signed short f_out_byps_cnt;
 
+char A0__[3],A1__[3],A2__[3],F1__[3],F2__[3], B4__, B5__, B4_4_;
 char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_, B4_4;
 char B5_ff;
 char B5_ff_cnt;
@@ -10535,9 +10536,10 @@ if(ind==iDeb)
      		    	"                    ",
      		    	"                    ");
 
-		int2lcdyx(B4_,0,6,0);
-		int2lcdyx(B5_,0,10,0);
-		int2lcdyx(B4_4,0,16,0);
+		int2lcdyx(B4__,0,6,0);
+		int2lcdyx(B5__,0,10,0);
+		int2lcdyx(B4_4_,0,16,0);
+		char2lcdhyx(byps[0]._flags_,0,19);
 		int2lcdyx(byps[0]._unet_av_cnt,1,16,0);
 		int2lcdyx(byps[0]._unet_av_stat,1,19,0);     		    
 		int2lcdyx(byps[1]._unet_av_cnt,2,16,0);
@@ -10545,23 +10547,23 @@ if(ind==iDeb)
 		int2lcdyx(byps[2]._unet_av_cnt,3,16,0);
 		int2lcdyx(byps[2]._unet_av_stat,3,19,0);
 
-		int2lcdyx(A0_[0],1,2,0);
-		int2lcdyx(A1_[0],1,6,0);
-		int2lcdyx(F1_[0],1,8,0);
-		int2lcdyx(A2_[0],1,10,0);
-		int2lcdyx(F2_[0],1,12,0);
+		int2lcdyx(A0__[0],1,2,0);
+		int2lcdyx(A1__[0],1,6,0);
+		int2lcdyx(F1__[0],1,8,0);
+		int2lcdyx(A2__[0],1,10,0);
+		int2lcdyx(F2__[0],1,12,0);
 
-		int2lcdyx(A0_[1],2,2,0);
-		int2lcdyx(A1_[1],2,6,0);
-		int2lcdyx(F1_[1],2,8,0);
-		int2lcdyx(A2_[1],2,10,0);
-		int2lcdyx(F2_[1],2,12,0);
+		int2lcdyx(A0__[1],2,2,0);
+		int2lcdyx(A1__[1],2,6,0);
+		int2lcdyx(F1__[1],2,8,0);
+		int2lcdyx(A2__[1],2,10,0);
+		int2lcdyx(F2__[1],2,12,0);
 
-		int2lcdyx(A0_[2],3,2,0);
-		int2lcdyx(A1_[2],3,6,0);
-		int2lcdyx(F1_[2],3,8,0);
-		int2lcdyx(A2_[2],3,10,0);
-		int2lcdyx(F2_[2],3,12,0);
+		int2lcdyx(A0__[2],3,2,0);
+		int2lcdyx(A1__[2],3,6,0);
+		int2lcdyx(F1__[2],3,8,0);
+		int2lcdyx(A2__[2],3,10,0);
+		int2lcdyx(F2__[2],3,12,0);
      	
 
     	}
@@ -10756,6 +10758,7 @@ if(ind==iDeb)
 
 		int2lcdyx(plazma_can_can[0],2,4,0);
 		int2lcdyx(plazma_can_can[1],2,9,0);
+		int2lcdyx(plazma_can_can[2],2,14,0);
      	
 /*		int2lcdyx(socket_udp,0,10,0);
 		int2lcdyx(udp_callback_cnt,0,15,0);

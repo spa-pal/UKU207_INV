@@ -191,12 +191,12 @@ if(mcp2515_can_st&0x02/*0b00000010*/)
 
 	for(j=0;j<8;j++)
 		{
-		_rxbuff__[j]=mcp2515_read(RXB1D0+j);
+		_rxbuff_[j]=mcp2515_read(RXB1D0+j);
 		}
 
 
 	//if(((_rxbuff__[0]&0x3f)==47) ||  (((_rxbuff__[0]&0x3f)==24) && (_rxbuff__[1]==PUTTM3INV2)))			/*	((_rxbuff__[0]&0x3f)==24) ||((_rxbuff__[0]&0x3f)==20)	*/
-		{
+/*		{
 		for(j=0;j<8;j++)
 			{
 			_rxbuff_[j]=_rxbuff__[j];
@@ -209,7 +209,7 @@ if(mcp2515_can_st&0x02/*0b00000010*/)
 	for(j=0; j<=32; j++)
 		{
 		if(((_rxbuff_[0]&0x3f)==20+j) && (!plazma_stop)) plazma_can_gl[j]++;
-		}
+		}	*/
 //	if((_rxbuff_[0]&0x3f)!=24)
 		{
 	//	for(j=0;j<8;j++)

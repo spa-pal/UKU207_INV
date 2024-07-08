@@ -688,8 +688,13 @@ char* aaa_="abc";
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_OUTPUT_SET, 0},					MIB_INT(snmp_u_set),			snmp_u_set_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_OUTPUT_MAX, 0},					MIB_INT(snmp_u_max),			snmp_u_max_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_OUTPUT_MIN, 0},					MIB_INT(snmp_u_min),			snmp_u_min_write},		//номер первого бпса 
-	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_ON, 0},						MIB_INT(snmp_u_net_on),			snmp_u_net_on_write},		//номер первого бпса 
-	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_OFF, 0},					MIB_INT(snmp_u_net_off),		snmp_u_net_off_write},		//номер первого бпса 
+//	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_ON, 0},						MIB_INT(snmp_u_net_on),			snmp_u_net_on_write},		//номер первого бпса 
+//	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_OFF, 0},					MIB_INT(snmp_u_net_off),		snmp_u_net_off_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_ON_MIN, 0},					MIB_INT(snmp_u_net_on_low),			snmp_u_net_on_low_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_OFF_MIN, 0},				MIB_INT(snmp_u_net_off_low),		snmp_u_net_off_low_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_ON_MAX, 0},					MIB_INT(snmp_u_net_on_high),		snmp_u_net_on_high_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_NET_OFF_MAX, 0},				MIB_INT(snmp_u_net_off_high),		snmp_u_net_off_high_write},		//номер первого бпса 
+
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_BAT_ON, 0},						MIB_INT(snmp_u_bat_on),			snmp_u_bat_on_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_U_BAT_OFF, 0},					MIB_INT(snmp_u_bat_off),		snmp_u_bat_off_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_MAX_AC_OUTPUT_VOLTAGE_ALARM_LEVEL, 0},			MIB_INT(snmp_bypass_max_ac_output_voltage_alarm_level),		snmp_bypass_max_ac_output_voltage_alarm_level_write},		//номер первого бпса 
@@ -698,6 +703,8 @@ char* aaa_="abc";
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_MIN_AC_INTPUT_VOLTAGE_ALARM_LEVEL, 0},			MIB_INT(snmp_bypass_min_ac_input_voltage_alarm_level),		snmp_bypass_min_ac_input_voltage_alarm_level_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_MAX_DC_INPUT_VOLTAGE_ALARM_LEVEL, 0},			MIB_INT(snmp_bypass_max_dc_input_voltage_alarm_level),		snmp_bypass_max_dc_input_voltage_alarm_level_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_MIN_DC_INPUT_VOLTAGE_ALARM_LEVEL, 0},			MIB_INT(snmp_bypass_min_dc_input_voltage_alarm_level),		snmp_bypass_min_dc_input_voltage_alarm_level_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_RELAY1_EVENT_MASK, 0},			MIB_INT(snmp_rele_set_mask[0]),		snmp_rele1_set_mask_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_RELAY2_EVENT_MASK, 0},			MIB_INT(snmp_rele_set_mask[1]),		snmp_rele2_set_mask_write},		//номер первого бпса 
 
 
 	{ MIB_INTEGER | MIB_ATR_RO,  	13, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_SK, DISPLAY_SK_ENTRY_NUMBER, 1},  			MIB_INT(snmp_sk_number[0]),  	NULL},	//Номер БПСа

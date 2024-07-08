@@ -32,6 +32,21 @@ LPC_SPI->SPCR=0x20;
 }
 
 //----------------------------------------------- 
+//o_16	 Запись с массива
+void sc16is700_wr_buff_ptr(char reg_num, unsigned char *buff, char num)
+{
+short i;
+sc16is700_spi_init();
+delay_us(2);
+sc16is700_CS_ON 
+spi1((reg_num&0x0f)<<3);
+for (i=0;i<num;i++)spi1(*(buff+i));
+sc16is700_CS_OFF
+}
+//o_16
+
+
+//----------------------------------------------- 
 //Отправка num байт из программного буфера передачи в sc16is700
 void sc16is700_wr_buff(char reg_num,char num)
 {

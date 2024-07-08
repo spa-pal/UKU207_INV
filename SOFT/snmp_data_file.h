@@ -140,6 +140,10 @@ extern signed short snmp_alarm_auto_disable;
 extern signed short snmp_u_set;
 extern signed short snmp_u_max;
 extern signed short snmp_u_min;
+extern signed short snmp_u_net_off_high;
+extern signed short snmp_u_net_off_low;
+extern signed short snmp_u_net_on_high;
+extern signed short snmp_u_net_on_low;
 extern signed short snmp_u_net_on;
 extern signed short snmp_u_net_off;
 extern signed short snmp_u_bat_on;
@@ -186,6 +190,9 @@ extern signed short snmp_klimat_settings_batt_off;
 extern signed short snmp_dt_ext;
 extern signed short snmp_dt_msan;
 extern signed short snmp_dt_epu;
+
+//Настройка событий реле
+extern signed short snmp_rele_set_mask[2];
   
 //-----------------------------------------------
 void snmp_data (void);
@@ -195,6 +202,10 @@ void snmp_command_execute (int mode);
 void event2snmp(char num);
 void snmp_main_bps_write (int mode);
 void snmp_zv_on_write (int mode);
+void snmp_u_net_on_low_write (int mode);
+void snmp_u_net_off_low_write (int mode);
+void snmp_u_net_on_high_write (int mode);
+void snmp_u_net_off_high_write (int mode);
 void snmp_alarm_auto_disable_write (int mode);
 void snmp_u_set_write (int mode);
 void snmp_u_max_write (int mode);
@@ -240,6 +251,8 @@ void snmp_bypass_max_ac_input_voltage_alarm_level_write(int mode);
 void snmp_bypass_min_ac_input_voltage_alarm_level_write(int mode);
 void snmp_bypass_max_dc_input_voltage_alarm_level_write(int mode);
 void snmp_bypass_min_dc_input_voltage_alarm_level_write(int mode);
+void snmp_rele1_set_mask_write (int mode);	  
+void snmp_rele2_set_mask_write (int mode);
 
 
 

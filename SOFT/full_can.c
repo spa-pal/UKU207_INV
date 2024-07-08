@@ -869,11 +869,29 @@ if((__RXBUFF[1]==PUTTM1BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 				byps[bypass_adress-61]._Uout=((unsigned short)__RXBUFF[6]+(((unsigned short)__RXBUFF[7])*256))&0x3fff;
 				}
 
-			if(byps[bypass_adress-61]._flags1_&0x80) A0__[bypass_adress-61]=1;
+/*			if(__RXBUFF[7]&0x80) A0__[bypass_adress-61]=1;
 			else A0__[bypass_adress-61]=0;
 		
 			if(__RXBUFF[7]&0x80) A0_[bypass_adress-61]=1;
-			else A0_[bypass_adress-61]=0;
+			else A0_[bypass_adress-61]=0;*/
+
+	 		if(((char)__RXBUFF[7]&0x80)!=byps[bypass_adress-61]._flags1_)
+				{
+				byps[bypass_adress-61]._flags1_cnt=0;
+				}
+			else 
+				{
+				if(byps[bypass_adress-61]._flags1_cnt<10) byps[bypass_adress-61]._flags1_cnt++;
+				}
+			if(byps[bypass_adress-61]._flags1_cnt>2)	byps[bypass_adress-61]._flags1=byps[bypass_adress-61]._flags1_;
+	
+			byps[bypass_adress-61]._flags1_=((char)__RXBUFF[7]&0x80);
+
+			if(byps[bypass_adress-61]._flags1_&0x80) A0__[bypass_adress-61]=1;
+			else A0__[bypass_adress-61]=0;
+
+			if(byps[bypass_adress-61]._flags1&0x80) A0_[bypass_adress-61]=1;
+			else A0_[bypass_adress-61]=0;	
 				
 			byps[bypass_adress-61]._cnt=0;
 			if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);

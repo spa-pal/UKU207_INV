@@ -1490,21 +1490,21 @@ if(fBypsInvAvIsOn)
 	sub_cnt_max++;	
 	}
 
-if((!byps[0]._valid) && (NUMBYPASS))
+if((!byps[0]._valid) && (NUMBYPASS) && (NUMBYPASS!=10))
 	{
 	if(language) 	sub_ptrs[i++]=	"Байпас разрыв связи "; //o_2
 	else 			sub_ptrs[i++]=	"Bypass not connected"; //o_2
 	sub_cnt_max++;	
 	}
 
-if((!byps[1]._valid) && (NUMBYPASS>1))
+if((!byps[1]._valid) && (NUMBYPASS>1) && (NUMBYPASS!=10))
 	{
 	if(language) 	sub_ptrs[i++]=	"Байпас разрыв связи "; //o_2
 	else 			sub_ptrs[i++]=	"Bypass not connected"; //o_2
 	sub_cnt_max++;	
 	}
 
-if((!byps[2]._valid) && (NUMBYPASS>2))
+if((!byps[2]._valid) && (NUMBYPASS>2) && (NUMBYPASS!=10))
 	{
 	if(language) 	sub_ptrs[i++]=	"Байпас разрыв связи "; //o_2
 	else 			sub_ptrs[i++]=	"Bypass not connected"; //o_2
@@ -3427,75 +3427,92 @@ if(sub_cnt1>=20)
 if(ind==iMn_INV)
 	{
 	char flfl=0;
-	if((NUMBYPASS>3)||(NUMBYPASS<0))
+	char NUMBYPASS__,NUMPHASE__;
+
+	NUMBYPASS__=NUMBYPASS;
+	NUMPHASE__=NUMPHASE;
+
+	if(NUMBYPASS__==10)
 		{
-		//NUMBYPASS=1;
+		NUMBYPASS__=0;
+		NUMPHASE__=1;
+		}
+
+	if((NUMBYPASS__>3)||(NUMBYPASS__<0))
+		{
+		//NUMBYPASS__=1;
 		//NUMPHASE=1;
 		flfl=1;
 		}
 if(language){//o_2
 	ptrs[0]	=	"  неопределенность  ";
 
-	if((NUMBYPASS==0)&&(NUMPHASE==1))	
+	if((NUMBYPASS__==0)&&(NUMPHASE__==1))	
 		{
 		ptrs[0]	=	"  В работе    kинв. ";
 
  		ptrs[1]="Uвых=  [В Iвых=   ]А";
      	ptrs[2]="    Pвых=     @Вт   ";
+
+		if((NUMBYPASS==10)&&((inv[0]._flags_tm&0x80)==0x80))
+			{
+			ptrs[1]="     Uвых=  [В      ";
+     		ptrs[2]=" P и I НЕ ИЗМЕРЯЮТСЯ";
+			}
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
 		ptrs[5]="    Fвых.     yГц   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Байпас             ";     
-		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Байпас N1          ";
+		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[6+(F_IND_EN==1)]=  					" Байпас N2          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Байпас N3          ";
  		ptrs[8+(F_IND_EN==1)]=  					" Байпас N4          ";
  		ptrs[9+(F_IND_EN==1)]=  					" Байпас N5          ";
-	    ptrs[5+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
-		ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
-		ptrs[5+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
-	    ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
-		ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+	    ptrs[5+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[5+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
 
 		}
 
-	else if((NUMBYPASS==0)&&(NUMPHASE==2))	
+	else if((NUMBYPASS__==0)&&(NUMPHASE__==2))	
 		{
 		ptrs[0]	=	"  В работе    kинв. ";
 
@@ -3509,53 +3526,53 @@ if(language){//o_2
 		ptrs[6]="    Fвых.     yГц   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Байпас             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Байпас N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Байпас N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
 
 		}
 
-	else if((NUMBYPASS==0)&&(NUMPHASE==3))	
+	else if((NUMBYPASS__==0)&&(NUMPHASE__==3))	
 		{
 		ptrs[0]	=	"  В работе    kинв. ";
 
@@ -3569,53 +3586,53 @@ if(language){//o_2
 		ptrs[6]="    Fвых.     yГц   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Байпас             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Байпас N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Байпас N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
 
 		}
 
-	else if((NUMBYPASS==1)&&(NUMPHASE==1))
+	else if((NUMBYPASS__==1)&&(NUMPHASE__==1))
 		{
 
 		ptrs[0]	=	"  В работе    kинв. ";
@@ -3627,52 +3644,52 @@ if(language){//o_2
 	   	ptrs[5]="    Fвых.     yГц   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Байпас             ";     
-		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Байпас N1          ";
+		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[6+(F_IND_EN==1)]=  					" Байпас N2          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Байпас N3          ";
-	    ptrs[5+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
-		ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
-		ptrs[5+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
-	    ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
-		ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+	    ptrs[5+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[5+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
 		}
 	 
- 	else if((NUMBYPASS==1)&&(NUMPHASE==3))
+ 	else if((NUMBYPASS__==1)&&(NUMPHASE__==3))
 		{
 
 		ptrs[0]	=	"  В работе    kинв. ";
@@ -3687,49 +3704,49 @@ if(language){//o_2
 		ptrs[6]="    Fвых.     yГц   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Байпас             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Байпас N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Байпас N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Инвертор N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Инвертор N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Таблица инверторов ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Внешние датчики    ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Установки          "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Журнал событий     "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Выход              "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Версия ПО          ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" tшкаф.        s°С  ";;
 
 		}
 
@@ -3746,9 +3763,37 @@ if(language){//o_2
 
 
 	int2lcd(num_of_wrks_inv,'k',0);
-	if((NUMPHASE==3)||(NUMPHASE==2))
+	if(NUMBYPASS==10)
 		{
-		if(NUMBYPASS)
+		if((inv[0]._flags_tm&0x80)==0x80)
+			{
+			int2lcd(inv[0]._Uacin/10,'[',0);	      
+			}
+		else 
+			{
+			int2lcd(inv[0]._Uload/10,'[',0);	      
+			}			
+
+			/*0702		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
+     		else int2lcd(byps[0]._Iout,']',1);  
+   			//int2lcd_mmm(byps._T,'[',0);	0702*/
+
+			//if(byps[0]._Iout>99)int2lcd(byps[0]._Iout/10,'}',0);
+		    //else int2lcd(byps[0]._Iout,'}',1); 
+			//if(byps[1]._Iout>99)int2lcd(byps[1]._Iout/10,'}',0);
+		    //else int2lcd(byps[1]._Iout,'}',1); 
+			//if(byps[2]._Iout>99)int2lcd(byps[2]._Iout/10,'}',0);
+		   // else int2lcd(byps[2]._Iout,'}',1); 
+		int2lcd(inv[0]._Iout,']',1);  
+   		//int2lcd_mmm(inv[sub_ind1]._T,'[',0); 
+		//int2lcd_mmm(inv[sub_ind1]._Pout,']',0);
+
+		int2lcd_mmm(inv[0]._Pout,'@',0);
+
+		}
+	else if((NUMPHASE__==3)||(NUMPHASE__==2))
+		{
+		if(NUMBYPASS__)
 			{
 			int2lcd(byps[0]._Uout/10,'[',0);
 			int2lcd(byps[1]._Uout/10,'z',0);
@@ -3788,10 +3833,11 @@ if(language){//o_2
 		if(byps[1]._Pout>65000)byps[1]._Pout=0;
 		if(byps[2]._Pout>65000)byps[2]._Pout=0;
 
-/*0702		if(NUMPHASE==3)long2lcd_mmm((unsigned short)(byps[0]._Pout+byps[1]._Pout+byps[2]._Pout),'@',0);	  0702*/
-/*0702*/if((NUMPHASE==3)||(NUMPHASE==2))
+/*0702		if(NUMPHASE__==3)long2lcd_mmm((unsigned short)(byps[0]._Pout+byps[1]._Pout+byps[2]._Pout),'@',0);	  0702*/
+/*0702*/
+		if((NUMPHASE__==3)||(NUMPHASE__==2))
 			{
-			if(NUMBYPASS)
+			if(NUMBYPASS__)
 				{
 				if(byps[0]._Pout>10000)	long2lcd_mmm((unsigned short)(byps[0]._Pout/1000),']',0);
 				else 					long2lcd_mmm((unsigned short)(byps[0]._Pout/100),']',1);
@@ -3863,7 +3909,7 @@ if(language){//o_2
 	//int2lcdyx(dcin_av_cnt,0,5,0);
 	//int2lcdyx(inv[0]._conn_av_stat,0,10,0);
 	//int2lcdyx(inv[0]._flags_tm,0,3,0);	
- 	//int2lcdyx(NUMPHASE,0,10,0);
+ 	//int2lcdyx(NUMPHASE__,0,10,0);
 /*	int2lcdyx(modbus_plazma,0,3,0);
 	int2lcdyx(U_OUT_SET,0,8,0);
 
@@ -3881,66 +3927,73 @@ if(language){//o_2
 	else {  //английский 
 	ptrs[0]	=	"  Uncertain state   ";
 
-	if((NUMBYPASS==0)&&(NUMPHASE==1))	
+	if((NUMBYPASS__==0)&&(NUMPHASE__==1))	
 		{
 		ptrs[0]=" In operation   лinv";
 
  		ptrs[1]="Uout=  [V Iout=   ]A";
      	ptrs[2]="    Pout=      @W   ";
+
+		if((NUMBYPASS==10)&&((inv[0]._flags_tm&0x80)==0x80))
+			{
+			ptrs[1]="     Uout=  [V      ";
+     		ptrs[2]=" P & I NOT MEASURED ";
+			}
+
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.in.   #V    ";
 		ptrs[5]="    Fout.     нHz   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Bypass             ";     
-		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Bypass N1          ";
+		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Bypass N1          ";
 		ptrs[6+(F_IND_EN==1)]=  					" Bypass N2          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Bypass N3          ";
  		ptrs[8+(F_IND_EN==1)]=  					" Bypass N4          ";
  		ptrs[9+(F_IND_EN==1)]=  					" Bypass N5          ";
-	    ptrs[5+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N1        ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N2        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N3        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N4        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N5        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N6        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N7        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N8        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N9        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N10       ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N11       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N12       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N13       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N14       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N15       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N16       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N17       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N18       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N19       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N20       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N21       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N22       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N23       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N24       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N25       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N26       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N27       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N28       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N29       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N30       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N31       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N32       ";
-		ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N33       ";
-		ptrs[5+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
-	    ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
-		ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
+	    ptrs[5+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N1        ";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N2        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N3        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N4        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N5        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N6        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N7        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N8        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N9        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N10       ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N11       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N12       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N13       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N14       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N15       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N16       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N17       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N18       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N19       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N20       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N21       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N22       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N23       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N24       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N25       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N26       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N27       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N28       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N29       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N30       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N31       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N32       ";
+		ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N33       ";
+		ptrs[5+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
+	    ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
+		ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
 
 		}
 
-	else if((NUMBYPASS==0)&&(NUMPHASE==2))	
+	else if((NUMBYPASS__==0)&&(NUMPHASE__==2))	
 		{
 		ptrs[0]	=	" In operation   лinv";
 
@@ -3954,53 +4007,53 @@ if(language){//o_2
 		ptrs[6]="    Fout.     нHz   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Bypass             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Bypass N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Bypass N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
 
 		}
 
-	else if((NUMBYPASS==0)&&(NUMPHASE==3))	
+	else if((NUMBYPASS__==0)&&(NUMPHASE__==3))	
 		{
 		ptrs[0]	=	" In operation   лinv";
 
@@ -4014,53 +4067,53 @@ if(language){//o_2
 		ptrs[6]="    Fout.     нHz   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Bypass             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Bypass N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Bypass N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
 
 		}
 
-	else if((NUMBYPASS==1)&&(NUMPHASE==1))
+	else if((NUMBYPASS__==1)&&(NUMPHASE__==1))
 		{
 
 		ptrs[0]	=	" In operation   лinv";
@@ -4072,52 +4125,52 @@ if(language){//o_2
 	   	ptrs[5]="    Fout.     нHz   ";
 
 		ptrs[5+(F_IND_EN==1)]=  					" Bypass             ";     
-		if(NUMBYPASS>1) ptrs[5+(F_IND_EN==1)]=  	" Bypass N1          ";
+		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Bypass N1          ";
 		ptrs[6+(F_IND_EN==1)]=  					" Bypass N2          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Bypass N3          ";
-	    ptrs[5+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N1        ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N2        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N3        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N4        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N5        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N6        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N7        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N8        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N9        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N10       ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N11       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N12       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N13       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N14       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N15       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N16       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N17       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N18       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N19       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N20       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N21       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N22       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N23       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N24       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N25       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N26       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N27       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N28       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N29       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N30       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N31       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N32       ";
-		ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N33       ";
-		ptrs[5+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
-	    ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
-		ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
+	    ptrs[5+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N1        ";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N2        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N3        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N4        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N5        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N6        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N7        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N8        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N9        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N10       ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N11       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N12       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N13       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N14       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N15       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N16       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N17       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N18       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N19       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N20       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N21       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N22       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N23       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N24       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N25       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N26       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N27       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N28       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N29       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N30       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N31       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N32       ";
+		ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N33       ";
+		ptrs[5+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
+	    ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
+		ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
 		}
 	 
- 	else if((NUMBYPASS==1)&&(NUMPHASE==3))
+ 	else if((NUMBYPASS__==1)&&(NUMPHASE__==3))
 		{
 
 		ptrs[0]	=	" In operation   лinv";
@@ -4130,49 +4183,49 @@ if(language){//o_2
 		ptrs[6]="    Fout.     нHz   ";
 
 		ptrs[6+(F_IND_EN==1)]=						" Bypass             ";     
-		if(NUMBYPASS>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
+		if(NUMBYPASS__>1) ptrs[6+(F_IND_EN==1)]=  	" Bypass N1          ";
 		ptrs[7+(F_IND_EN==1)]=  					" Bypass N2          ";
 		ptrs[8+(F_IND_EN==1)]=  					" Bypass N3          ";
-	    ptrs[6+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N1        ";
-	    ptrs[7+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N2        ";
-	    ptrs[8+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N3        ";
-	    ptrs[9+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N4        ";
-	    ptrs[10+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N5        ";
-	    ptrs[11+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N6        ";
-	    ptrs[12+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N7        ";
-	    ptrs[13+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N8        ";
-	    ptrs[14+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N9        ";
-	    ptrs[15+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N10       ";
-	    ptrs[16+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N11       ";
-	    ptrs[17+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N12       ";
-	    ptrs[18+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N13       ";
-	    ptrs[19+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N14       ";
-	    ptrs[20+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N15       ";
-	    ptrs[21+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N16       ";
-	    ptrs[22+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N17       ";
-	    ptrs[23+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N18       ";
-	    ptrs[24+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N19       ";
-	    ptrs[25+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N20       ";
-	    ptrs[26+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N21       ";
-	    ptrs[27+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N22       ";
-	    ptrs[28+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N23       ";
-	    ptrs[29+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N24       ";
-	    ptrs[30+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N25       ";
-	    ptrs[31+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N26       ";
-	    ptrs[32+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N27       ";
-	    ptrs[33+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N28       ";
-	    ptrs[34+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N29       ";
-	    ptrs[35+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N30       ";
-	    ptrs[36+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N31       ";
-	    ptrs[37+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N32       ";
-		ptrs[38+NUMBYPASS+(F_IND_EN==1)]=  			" Inverter N33       ";
-		ptrs[6+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
-		ptrs[7+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
-	    ptrs[8+NUMBYPASS+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
-	    ptrs[9+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
-	    ptrs[10+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
-		ptrs[11+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
-		ptrs[12+NUMBYPASS+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
+	    ptrs[6+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N1        ";
+	    ptrs[7+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N2        ";
+	    ptrs[8+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N3        ";
+	    ptrs[9+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N4        ";
+	    ptrs[10+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N5        ";
+	    ptrs[11+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N6        ";
+	    ptrs[12+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N7        ";
+	    ptrs[13+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N8        ";
+	    ptrs[14+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N9        ";
+	    ptrs[15+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N10       ";
+	    ptrs[16+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N11       ";
+	    ptrs[17+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N12       ";
+	    ptrs[18+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N13       ";
+	    ptrs[19+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N14       ";
+	    ptrs[20+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N15       ";
+	    ptrs[21+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N16       ";
+	    ptrs[22+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N17       ";
+	    ptrs[23+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N18       ";
+	    ptrs[24+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N19       ";
+	    ptrs[25+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N20       ";
+	    ptrs[26+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N21       ";
+	    ptrs[27+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N22       ";
+	    ptrs[28+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N23       ";
+	    ptrs[29+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N24       ";
+	    ptrs[30+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N25       ";
+	    ptrs[31+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N26       ";
+	    ptrs[32+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N27       ";
+	    ptrs[33+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N28       ";
+	    ptrs[34+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N29       ";
+	    ptrs[35+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N30       ";
+	    ptrs[36+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N31       ";
+	    ptrs[37+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N32       ";
+		ptrs[38+NUMBYPASS__+(F_IND_EN==1)]=  			" Inverter N33       ";
+		ptrs[6+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Inverter table     ";
+		ptrs[7+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Sensors            ";
+	    ptrs[8+NUMBYPASS__+NUMINV+(F_IND_EN==1)]= 	" Settings           "; 
+	    ptrs[9+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Event log          "; 
+	    ptrs[10+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Exit               "; 
+		ptrs[11+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" Software version   ";
+		ptrs[12+NUMBYPASS__+NUMINV+(F_IND_EN==1)]=  	" t systems       ы°С";
 
 		}
 
@@ -4186,9 +4239,38 @@ if(language){//o_2
 	else bgnd_par(sub_ptrs[sub_cnt-5],ptrs[index_set+1],ptrs[index_set+2],ptrs[index_set+3]);
 
 	int2lcd(num_of_wrks_inv,'л',0);
-	if((NUMPHASE==3)||(NUMPHASE==2))
+
+	if(NUMBYPASS==10)
 		{
-		if(NUMBYPASS)
+		if((inv[0]._flags_tm&0x80)==0x80)
+			{
+			int2lcd(inv[0]._Uacin/10,'[',0);	      
+			}
+		else 
+			{
+			int2lcd(inv[0]._Uload/10,'[',0);	      
+			}			
+
+			/*0702		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
+     		else int2lcd(byps[0]._Iout,']',1);  
+   			//int2lcd_mmm(byps._T,'[',0);	0702*/
+
+			//if(byps[0]._Iout>99)int2lcd(byps[0]._Iout/10,'}',0);
+		    //else int2lcd(byps[0]._Iout,'}',1); 
+			//if(byps[1]._Iout>99)int2lcd(byps[1]._Iout/10,'}',0);
+		    //else int2lcd(byps[1]._Iout,'}',1); 
+			//if(byps[2]._Iout>99)int2lcd(byps[2]._Iout/10,'}',0);
+		   // else int2lcd(byps[2]._Iout,'}',1); 
+		int2lcd(inv[0]._Iout,']',1);  
+   		//int2lcd_mmm(inv[sub_ind1]._T,'[',0); 
+		//int2lcd_mmm(inv[sub_ind1]._Pout,']',0);
+
+		int2lcd_mmm(inv[0]._Pout,'@',0);
+
+		}
+	else if((NUMPHASE__==3)||(NUMPHASE__==2))
+		{
+		if(NUMBYPASS__)
 			{
 			int2lcd(byps[0]._Uout/10,'[',0);
 			int2lcd(byps[1]._Uout/10,'я',0);
@@ -4220,9 +4302,9 @@ if(language){//o_2
 		if(byps[1]._Pout>65000)byps[1]._Pout=0;
 		if(byps[2]._Pout>65000)byps[2]._Pout=0;
 
-	if((NUMPHASE==3)||(NUMPHASE==2))
+	if((NUMPHASE__==3)||(NUMPHASE__==2))
 			{
-			if(NUMBYPASS)
+			if(NUMBYPASS__)
 				{
 				if(byps[0]._Pout>10000)	long2lcd_mmm((unsigned short)(byps[0]._Pout/1000),']',0);
 				else 					long2lcd_mmm((unsigned short)(byps[0]._Pout/100),']',1);
@@ -7684,7 +7766,7 @@ else if(ind==iStr_INV)
 if(language){//o_2
 	ptrs[0]=" Инверторов        ^";	
 	ptrs[1]=" Байпасов          [";
-	if(NUMBYPASS==1) ptrs[1]=" Байпас            [";
+	if((NUMBYPASS==1) || (NUMBYPASS==10) )ptrs[1]=" Байпас            [";
 	if(NUMBYPASS!=0)
 		{
 		ptrs[2]=" Сухих контактов   $";
@@ -7693,7 +7775,7 @@ if(language){//o_2
 	else
 		{
 		ptrs[2]=" Выходных фаз      <";
-		ptrs[3]=" Вход AC         >  ";
+		ptrs[3]=" (DC-AC)/AC       > ";
 		ptrs[4]=" Сухих контактов   $";
 		ptrs[5]=" Выход              ";
 		}
@@ -7706,10 +7788,11 @@ if(language){//o_2
 	 
 	int2lcd(NUMINV,'^',0);
 	if(NUMBYPASS==0) int2lcd(NUMBYPASS,'[',0);
-	else if(NUMPHASE==1) sub_bgnd("1ф.",'[',-2);
-	else if(NUMPHASE==3) sub_bgnd("3ф.",'[',-2); 
+	else if(NUMBYPASS==10) sub_bgnd("ВСТР.",'[',-4);
+	else if(NUMPHASE==1) sub_bgnd("1ф с CAN",'[',-7);
+	else if(NUMPHASE==3) sub_bgnd("3ф с CAN",'[',-7); 
 	int2lcd(NUMPHASE,'<',0);
-	if(NUMINAC==1)	sub_bgnd("есть",'>',-1);
+	if(NUMINAC==1)	sub_bgnd("да",'>',0);
 	else 			sub_bgnd("нет",'>',-1);
 	int2lcd(NUMSK,'$',0);
 //o_2_s
@@ -7725,7 +7808,7 @@ if(language){//o_2
 	else
 		{
 		ptrs[2]=" Output phases     <";
-		ptrs[3]=" Input AC        >  ";
+		ptrs[3]=" (DC-AC)/AC       > ";
 		ptrs[4]=" Dry contacts      $";
 		ptrs[5]=" Exit               ";
 		}
@@ -7738,11 +7821,12 @@ if(language){//o_2
 	 
 	int2lcd(NUMINV,'^',0);
 	if(NUMBYPASS==0) int2lcd(NUMBYPASS,'[',0);
+	else if(NUMBYPASS==10) sub_bgnd("intern.",'[',-6);
 	else if(NUMPHASE==1) sub_bgnd("1ph.",'[',-3);
 	else if(NUMPHASE==3) sub_bgnd("3ph.",'[',-3); 
 	int2lcd(NUMPHASE,'<',0);
 	if(NUMINAC==1)	sub_bgnd("YES",'>',-1);
-	else 			sub_bgnd("NO",'>',-1);
+	else 			sub_bgnd("NO",'>',0);
 	int2lcd(NUMSK,'$',0);
 }//o_2_e
 
@@ -12233,21 +12317,33 @@ else if(ind==iDeb)
 
 else if(ind==iMn_INV)
 	{
+
+	char NUMBYPASS__,NUMPHASE__;
+
+	NUMBYPASS__=NUMBYPASS;
+	NUMPHASE__=NUMPHASE;
+
+	if(NUMBYPASS__==10)
+		{
+		NUMBYPASS__=0;
+		NUMPHASE__=1;
+		}
+
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS__+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)));
 		}
 		
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+		gran_char(&sub_ind,0,9+NUMINV+NUMBYPASS__+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)));
 		}	
 	else if(but==butD_)
 		{
 		//tree_up(iLog,0,0,0);
-		sub_ind=9+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1));
+		sub_ind=9+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1));
 		ret(1000);
 		}
 	else if(but==butE_)
@@ -12256,8 +12352,8 @@ else if(ind==iMn_INV)
 		//FullCAN_SetFilter(0,0x18e);
      	//NUMINV=1;
      	//lc640_write_int(EE_NUMINV,NUMINV);
-     	//NUMBYPASS=0;
-     	//lc640_write_int(EE_NUMBYPASS,NUMBYPASS);
+     	//NUMBYPASS__=0;
+     	//lc640_write_int(EE_NUMBYPASS__,NUMBYPASS__);
 		}
 	else if(but==butDR_)
 		{
@@ -12306,53 +12402,53 @@ else if(ind==iMn_INV)
 					}
 				}																							
 			}
-		else if((sub_ind>(2+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))&&(sub_ind<=(2+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)))))
+		else if((sub_ind>(2+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))&&(sub_ind<=(2+NUMBYPASS__+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)))))
 		    	{
-		    	if(NUMPHASE==1)
+		    	if(NUMPHASE__==1)
 					{
-					tree_up(iByps,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+					tree_up(iByps,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)));
 					memcpy(byps_fw_info,"                                                                                ",80);
 					}
-				if(NUMPHASE==3)
+				if(NUMPHASE__==3)
 					{
-					tree_up(iByps3f,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+					tree_up(iByps3f,0,0,sub_ind-3-(F_IND_EN==1)+(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)));
 					memcpy(byps_fw_info,"                                                                                ",80);
 					}
 		    	}
-		else if((sub_ind>(2+NUMBYPASS+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))&&(sub_ind<=(2+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)))))
+		else if((sub_ind>(2+NUMBYPASS__+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))&&(sub_ind<=(2+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)))))
 		    	{
-		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS-3-(F_IND_EN==1)+(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)));
+		    	tree_up(iInv_v3,0,0,sub_ind-NUMBYPASS__-3-(F_IND_EN==1)+(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)));
 				memcpy(byps_fw_info,"                                                                                ",80);
 		    	}
 
-		else if(sub_ind==(3+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))
+		else if(sub_ind==(3+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))
 			{
 			tree_up(iInv_tabl,0,0,0);
 		     ret(0);
 		     
 			} 			
-		else if(sub_ind==(4+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))
+		else if(sub_ind==(4+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))
 			{
 			tree_up(iExtern,0,0,0);
 		    ret(1000);
 			}
 
-		else if(sub_ind==(5+NUMBYPASS+NUMINV+(F_IND_EN==1-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1)))))
+		else if(sub_ind==(5+NUMBYPASS__+NUMINV+(F_IND_EN==1-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1)))))
 			{
 			tree_up(iSet_prl,0,0,0);
 		     ret(50);
 		     parol_init();
 			}
-		else if(sub_ind==(6+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))
+		else if(sub_ind==(6+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))
 			{
 			tree_up(iLog,0,0,0);
 		     ret(1000);
 			}
-		else if(sub_ind==(7+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))
+		else if(sub_ind==(7+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))
 			{
 			sub_ind=0;
 			}
-		else if(sub_ind==(8+NUMBYPASS+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS==1)&&*/(NUMPHASE==1))))
+		else if(sub_ind==(8+NUMBYPASS__+NUMINV+(F_IND_EN==1)-(/*(NUMBYPASS__==1)&&*/(NUMPHASE__==1))))
 			{
 			tree_up(iFWabout,0,0,0);
 		    ret(1000);
@@ -14908,6 +15004,11 @@ else if(ind==iStr_INV)
 				NUMBYPASS=1;
 	     		NUMPHASE=3;
 				}
+			else if((NUMBYPASS==1)&&(NUMPHASE==3))
+				{
+				NUMBYPASS=10;
+	     		NUMPHASE=3;
+				}
 			else
 				{
 				NUMBYPASS=0;
@@ -14920,6 +15021,11 @@ else if(ind==iStr_INV)
 	     else if((but==butL)||(but==butL_))
 	     	{
 			if(NUMBYPASS==0)
+				{
+				NUMBYPASS=10;
+	     		NUMPHASE=3;
+				}
+			else if((NUMBYPASS==10)&&(NUMPHASE==3))
 				{
 				NUMBYPASS=1;
 	     		NUMPHASE=3;

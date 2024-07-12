@@ -1133,7 +1133,7 @@ if (NUMINV)
 				(temp_SS4<3000) && 
 				(temp_SS5<4000) && 
 				(temp_SS6<2800) && 
-				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0))) && 
+				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0)) || (NUMBYPASS==10)) && 
 				(temp_SS7 != 0x0120) &&
 				((temp_SS5<50) || (temp_SS5>160))
 				)
@@ -1444,7 +1444,7 @@ if(NUMBYPASS)
 	}
 
 
-if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS)) 
+if(((NUMBYPASS>=1)&&(NUMBYPASS!=10)&&(byps[0]._cnt>=10))||(!NUMBYPASS)) 
 	{
 	if(byps[0]._valid==1) avar_byps_hndl(1,'C',1,0);
 	byps[0]._Iout=0;
@@ -1477,7 +1477,7 @@ if((NUMBYPASS>=1&&(byps[0]._cnt>=10))||(!NUMBYPASS))
 	F2_[2]=0;
 	}
 
-if(((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3)))
+if((((NUMBYPASS>=2)&&(NUMBYPASS!=10)&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3)))
 	{
 	if(byps[1]._valid==1) avar_byps_hndl(2,'C',1,0);
 	byps[1]._Iout=0;
@@ -1509,7 +1509,7 @@ if(((NUMBYPASS>=2&&(byps[1]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && 
 	F2_[2]=0;
 	}
 
-if(((NUMBYPASS>=3&&(byps[2]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3))) 
+if((((NUMBYPASS>=3)&&(NUMBYPASS!=10)&&(byps[2]._cnt>=10))||(!NUMBYPASS)) || ((byps[0]._cnt>=10) && (NUMPHASE==3))) 
 	{
 	if(byps[2]._valid==1) avar_byps_hndl(3,'C',1,0);
 	byps[2]._Iout=0;
@@ -2763,6 +2763,23 @@ if(NUMBYPASS==0)
 	wrkFromNet1Inv0=0;
 	priorFromNet1Inv0=0;
 	}
+else if(NUMBYPASS==10)
+	{
+	if(inv[0]._flags_tm&0x80) wrkFromNet1Inv0=1;
+	else wrkFromNet1Inv0=0;
+
+/*	temp=0;
+	for(ii=0;ii<NUMBYPASS;ii++)
+		{
+		if(!(byps[ii]._flags&0x40))
+			{
+			temp=1;
+			break;
+			}
+		}
+	priorFromNet1Inv0=temp;	 */
+	}
+
 else
 	{
 	temp=0;

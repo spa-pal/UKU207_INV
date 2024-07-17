@@ -1247,7 +1247,7 @@ extern char B5_ff_cnt;
 
 extern char snmp_plazma;
 extern char plazma_bypas;
-extern short plazma_5, plazma_28, plazma_1, plazma_stop;
+extern short plazma_5, plazma_28, plazma_1, plazma_stop, plazma_av_bypas;
 
 extern char ips_bat_av_vzvod;
 extern char ips_bat_av_stat;

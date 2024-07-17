@@ -630,7 +630,7 @@ char B5_ff;
 char B5_ff_cnt;
 
 
-short plazma_5, plazma_28, plazma_1, plazma_stop=0;
+short plazma_5, plazma_28, plazma_1, plazma_stop=0, plazma_av_bypas;
 
 //o_2_s
 //------  английский язык -----------------------
@@ -3462,7 +3462,10 @@ if(language){//o_2
      	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
 		ptrs[4]="    Udc.вх.   #В    ";
 		ptrs[5]="    Fвых.     yГц   ";
-
+		if((NUMBYPASS==10)&&((inv[0]._flags_tm&0xA0)==0x80))
+			{
+			ptrs[5]="    Fвых. НЕ ИЗМЕР. ";
+			}
 		ptrs[5+(F_IND_EN==1)]=  					" Байпас             ";     
 		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Байпас N1          ";
 		ptrs[6+(F_IND_EN==1)]=  					" Байпас N2          ";
@@ -3771,7 +3774,7 @@ if(language){//o_2
 			}
 		else 
 			{
-			int2lcd(inv[0]._Uload/10,'[',0);	      
+			int2lcd(load_U_inv/*inv[0]._Uload/10*/,'[',0);	      
 			}			
 
 			/*0702		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
@@ -3784,11 +3787,11 @@ if(language){//o_2
 		    //else int2lcd(byps[1]._Iout,'}',1); 
 			//if(byps[2]._Iout>99)int2lcd(byps[2]._Iout/10,'}',0);
 		   // else int2lcd(byps[2]._Iout,'}',1); 
-		int2lcd(inv[0]._Iout,']',1);  
+		int2lcd(load_I_inv/*inv[0]._Iout*/,']',1);  
    		//int2lcd_mmm(inv[sub_ind1]._T,'[',0); 
 		//int2lcd_mmm(inv[sub_ind1]._Pout,']',0);
 
-		int2lcd_mmm(inv[0]._Pout,'@',0);
+		int2lcd_mmm(load_P_inv/*inv[0]._Pout*/,'@',0);
 
 		}
 	else if((NUMPHASE__==3)||(NUMPHASE__==2))
@@ -3921,7 +3924,7 @@ if(language){//o_2
 	//int2lcdyx(f_out_byps,0,4,0);
 	//int2lcdyx(lc640_read_int(EE_LC640_WDT),0,19,0);
 
-
+	//int2lcdyx(plazma_av_bypas,0,4,0);
 //o_2_s
 	}
 	else {  //английский 
@@ -3940,9 +3943,14 @@ if(language){//o_2
      		ptrs[2]=" P & I NOT MEASURED ";
 			}
 
-     	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
+     	ptrs[3]=" 0%:0^:0ь 0</>  /0{ ";
 		ptrs[4]="    Udc.in.   #V    ";
 		ptrs[5]="    Fout.     нHz   ";
+
+		if((NUMBYPASS==10)&&((inv[0]._flags_tm&0xA0)==0x80))
+			{
+			ptrs[5]="    Fout. NOT MEAS. ";
+			}
 
 		ptrs[5+(F_IND_EN==1)]=  					" Bypass             ";     
 		if(NUMBYPASS__>1) ptrs[5+(F_IND_EN==1)]=  	" Bypass N1          ";
@@ -4002,7 +4010,7 @@ if(language){//o_2
  		ptrs[2]="Uout=  [V/  яV      ";
 		ptrs[3]="Iout=  }A/  }A      ";
      //	ptrs[2]="    Pвых=     @Вт   ";
-     	ptrs[4]=" 0%:0^:0& 0</>  /0{ ";
+     	ptrs[4]=" 0%:0^:0ь 0</>  /0{ ";
 		ptrs[5]="    Udc.in.   #V    ";
 		ptrs[6]="    Fout.     нHz   ";
 
@@ -4062,7 +4070,7 @@ if(language){//o_2
  		ptrs[2]="Uout=  [V/  яV/  ЯVВ ";
 		ptrs[3]="Iout=  }A/  }A/  }A ";
      //	ptrs[2]="    Pвых=     @Вт   ";
-     	ptrs[4]=" 0%:0^:0& 0</>  /0{ ";
+     	ptrs[4]=" 0%:0^:0ь 0</>  /0{ ";
 		ptrs[5]="    Udc.in.   #V    ";
 		ptrs[6]="    Fout.     нHz   ";
 
@@ -4120,7 +4128,7 @@ if(language){//o_2
 
  		ptrs[1]="Uout=  [V Iout=   ]A";
      	ptrs[2]="    Pout=     @W    ";
-     	ptrs[3]=" 0%:0^:0& 0</>  /0{ ";
+     	ptrs[3]=" 0%:0^:0ь 0</>  /0{ ";
 		ptrs[4]="    Udc.in.   #V    ";
 	   	ptrs[5]="    Fout.     нHz   ";
 
@@ -4178,7 +4186,7 @@ if(language){//o_2
 		ptrs[1]="Pout=   ]/  ]/  ]кW ";
  		ptrs[2]="Uout=  [V/  яV/  ЯV ";
 		ptrs[3]="Iout=  }A/  }A/  }A ";
-     	ptrs[4]=" 0%:0^:0& 0</>  /0{ ";
+     	ptrs[4]=" 0%:0^:0ь 0</>  /0{ ";
 		ptrs[5]="    Udc.in.   #V    ";
 		ptrs[6]="    Fout.     нHz   ";
 
@@ -4337,7 +4345,7 @@ if(language){//o_2
  	
 	int2lcd(LPC_RTC->HOUR,'%',0);
 	int2lcd(LPC_RTC->MIN,'^',0);
-	int2lcd(LPC_RTC->SEC,'&',0);
+	int2lcd(LPC_RTC->SEC,'ь',0);
 	int2lcd(LPC_RTC->DOM,'<',0);
 	int2lcd(LPC_RTC->YEAR,'{',0); 
 	sub_bgnd(sm_mont_en[LPC_RTC->MONTH],'>',0);
@@ -4604,7 +4612,13 @@ if(language){//o_2
 
 
 	ptr[0]=		"                    ";
-	
+
+/*	if((NUMBYPASS==10) && (sub_ind1==0) && ((inv[0]._flags_tm&0x80)==0x80))
+		{
+		ptr[2]=			" Iвых    НЕ ИЗМЕР.  ";
+		ptr[4]=			" Pвых    НЕ ИЗМЕР.  ";
+		}  */
+
 	if(inv[sub_ind1]._cnt>5)
 	 	{
 		ptr[0]=		"    не подключен    ";	
@@ -4668,6 +4682,12 @@ if(language){//o_2
 
 
 	ptr[0]=		"                    ";
+
+/*	if((NUMBYPASS==10) && (sub_ind1==0) && ((inv[0]._flags_tm&0x80)==0x80))
+		{
+		ptr[2]=			" Iout  NOT MEASURED ";
+		ptr[4]=			" Pout  NOT MEASURED ";
+		}*/
 	
 	if(inv[sub_ind1]._cnt>5)
 	 	{
@@ -4767,7 +4787,10 @@ if(language){//o_2
 //	int2lcdyx(plazma_5,0,3,0);
 //	int2lcdyx(plazma_28,0,8,0);
 //	int2lcdyx(plazma_1,0,13,0);
-//	int2lcdyx(plazma_stop,0,19,0);
+//	int2lcdyx(fBypsInAvIsOn,0,4,0);
+//	int2lcdyx(fBypsInvAvIsOn,0,9,0);
+//	int2lcdyx(byps[0]._unet_av_cnt,0,19,0);
+//	int2lcdyx(byps[0]._unet_av_stat,1,2,0);
 
     }
 
@@ -7799,7 +7822,7 @@ if(language){//o_2
 }else{	
 	ptrs[0]=" Invertors         ^";	
 	ptrs[1]=" Bypasses          [";
-	if(NUMBYPASS==1) ptrs[1]=" Bypass            [";
+	if((NUMBYPASS==1)|| (NUMBYPASS==10)) ptrs[1]=" Bypass            [";
 	if(NUMBYPASS!=0)
 		{
 		ptrs[2]=" Dry contacts      $";

@@ -1126,7 +1126,8 @@ if (NUMINV)
 
 			/*if((i==0) || (i==32)) temp_SS7|=0x0020;*/
 
-			if(
+			if	(
+				(
 				(temp_SS1<3000) && 
 				(temp_SS2<1000) && 
 				(temp_SS3<120) && 
@@ -1136,6 +1137,8 @@ if (NUMINV)
 				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0)) || (NUMBYPASS==10)) && 
 				(temp_SS7 != 0x0120) &&
 				((temp_SS5<50) || (temp_SS5>160))
+				)
+				|| (CAN_FILTR_EN==0)
 				)
 				{
 

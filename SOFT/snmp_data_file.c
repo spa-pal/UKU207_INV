@@ -99,6 +99,9 @@ signed short snmp_bat_capacity[2];
 signed short snmp_bat_charge[2];
 signed short snmp_bat_status[2]; 
 
+signed short snmpBPIntegrU;
+signed short snmpBPIntegrI;
+signed short snmpBPIntegrP;
 
 //Спецфункции
 signed short snmp_spc_stat;
@@ -321,6 +324,18 @@ snmp_numofoutputphase=NUMPHASE;
 //snmp_numofdt=NUMDT;
 //snmp_numofsk=NUMSK;
 snmp_numofevents=lc640_read_int(CNT_EVENT_LOG);
+
+snmpBPIntegrU = load_U_inv;
+snmpBPIntegrI = load_I_inv;
+snmpBPIntegrP = load_P_inv;
+//	f_out_RTU = f_out;
+if((NUMBYPASS==10)&&((inv[0]._flags_tm&0x80)==0x80))
+	{
+	snmpBPIntegrI = 22222;
+	snmpBPIntegrP = 22222;
+	f_out_RTU = 22222;
+	snmp_load_frequency=22222;
+	}
 
 snmp_energy_vvod_phase_a=Uvv_eb2[0];
 snmp_energy_vvod_phase_b=Uvv_eb2[1];

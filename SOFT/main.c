@@ -142,7 +142,7 @@ signed short U_NET_ON_MIN;
 signed short U_NET_OFF_MIN;
 signed short U_BAT_MAX;
 signed short U_BAT_MIN;
-
+signed short WORK_FROM_MAIN;
 
 signed short U_OUT_AC_MAX_AV;
 signed short U_OUT_AC_MIN_AV;
@@ -164,6 +164,8 @@ signed short NUMMAKB;
 signed short NUMBYPASS;
 signed short NUMPHASE;
 signed short NUMINAC;
+signed short CAN_FILTR_EN;
+signed short SET_BLOCK;
 	
 
 enum_apv_on APV_ON1,APV_ON2;
@@ -315,6 +317,9 @@ signed long load_P_inv;
 signed short load_U_inv_3F[3];
 signed short load_I_inv_3F[3];
 signed long load_P_inv_3F[3];
+signed short load_U_inv_RTU;
+signed short load_I_inv_RTU;
+signed short load_P_inv_RTU;
 
 signed short dcin_U;
 
@@ -623,6 +628,7 @@ signed short f_out;
 signed short f_out_inv;
 signed short f_out_byps;
 signed short f_out_byps_cnt;
+signed short f_out_RTU;
 
 char A0__[3],A1__[3],A2__[3],F1__[3],F2__[3], B4__, B5__, B4_4_;
 char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_, B4_4;
@@ -748,7 +754,7 @@ lc640_write_int(EE_PAR,1);
 lc640_write_int(EE_TBAT,60);
 lc640_write_int(EE_UMAX,umax__);
 lc640_write_int(EE_DU,ub20__/2);
-lc640_write_int(EE_UB0,ub0__);
+//lc640_write_int(EE_UB0,ub0__);
 lc640_write_int(EE_UB20,ub20__);
 lc640_write_int(EE_TSIGN,70);
 lc640_write_int(EE_TMAX,80);
@@ -951,7 +957,7 @@ if((++cnt_net_drv>max_net_slot)&&(kan_aktivity_cnt))
 	cnt_net_drv=0;
 	//if(!plazma_stop)   {
 	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_OFF_MIN,(char)U_NET_ON_MIN,(char)U_BAT_MIN,(char)U_BAT_MAX);
-	mcp2515_transmit(0xf2,0,(char)U_NET_ON_MIN,(char)U_NET_OFF_MIN,(char)(U_NET_ON_MAX-50),(char)(U_NET_OFF_MAX-50),0,0);
+	mcp2515_transmit(0xf2,(WORK_FROM_MAIN==1) ? 1 : 0,(char)U_NET_ON_MIN,(char)U_NET_OFF_MIN,(char)(U_NET_ON_MAX-50),(char)(U_NET_OFF_MAX-50),0,0);
 	//}
 	} 
 	
@@ -3774,7 +3780,7 @@ if(language){//o_2
 			}
 		else 
 			{
-			int2lcd(load_U_inv/*inv[0]._Uload/10*/,'[',0);	      
+			int2lcd(load_U_inv/10/*inv[0]._Uload/10*/,'[',0);	      
 			}			
 
 			/*0702		if(byps[0]._Iout>999)int2lcd(byps[0]._Iout/10,']',0);
@@ -8178,7 +8184,9 @@ if(language){//o_2
 	ptrs[5]=		"                 #В ";
 	ptrs[6]=		" Uac откл (заниж)   ";
 	ptrs[7]=		"                 {В ";
-	ptrs[8]=		" Выход              ";
+	ptrs[8]=		" Uинв=0 -> работа от";
+	ptrs[9]=		" сети             } ";
+	ptrs[10]=		" Выход              ";
 
  	if(sub_ind<index_set) index_set=sub_ind;
 	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
@@ -8187,7 +8195,8 @@ if(language){//o_2
 			ptrs[index_set],
 			ptrs[index_set+1],
 			ptrs[index_set+2]);
-	
+	if(WORK_FROM_MAIN==1)	sub_bgnd("ВКЛ.",'}',-3);
+	else 					sub_bgnd("ВЫКЛ.",'}',-4);	
 	pointer_set(1);
 //o_2_s
 }else{
@@ -8199,6 +8208,8 @@ if(language){//o_2
 	ptrs[5]=		"                 #V ";
 	ptrs[6]=		" Uac turn-off (low) ";
 	ptrs[7]=		"                 {V ";
+	ptrs[8]=		" Uinv=0 -> works    ";
+	ptrs[9]=		" from main        } ";
 	ptrs[8]=		" Exit               ";
 
  	if(sub_ind<index_set) index_set=sub_ind;
@@ -8208,7 +8219,8 @@ if(language){//o_2
 			ptrs[index_set],
 			ptrs[index_set+1],
 			ptrs[index_set+2]);
-	
+	if(WORK_FROM_MAIN==1)	sub_bgnd("ON",'}',-1);
+	else 					sub_bgnd("OFF",'}',-2);	
 	pointer_set(1);
 	
 //				ptrs[14]=		" Turn-on mains      ";
@@ -8826,6 +8838,8 @@ if(language){
 	ptrs[i++]=  " tшкаф.        >°С  ";
     ptrs[i++]=" Выход              ";
 	ptrs[i++]=" Кварц RS485   !МГЦ ";
+	ptrs[i++]=" Фильтр CAN       % ";
+	ptrs[i++]=" Блок.уст.        ^ ";
 	ptrs[i++]="                    ";
 	ptrs[i++]="                    ";
 	ptrs[i++]="                    ";
@@ -8841,6 +8855,10 @@ if(language){
 	int2lcd(dcin_U,'#',1);
      if(ND_EXT[0])sub_bgnd("неиспр.",'>',-3);
      else int2lcd_mmm(t_ext[0],'>',0);
+	 if(CAN_FILTR_EN)sub_bgnd("ВКЛ.",'%',-3);
+	 else sub_bgnd("ВЫКЛ.",'%',-4);
+	 if(SET_BLOCK==1)sub_bgnd("ВКЛ.",'^',-3);
+	 else sub_bgnd("ВЫКЛ.",'^',-4);
 }else{//o_2_s
 	if(NUMINV)
     ptrs[i++]=" Invertors          ";
@@ -8853,6 +8871,8 @@ if(language){
 	ptrs[i++]=" t systems     >°С  ";
     ptrs[i++]=" Exit               ";
 	ptrs[i++]=" Quartz RS485   !MHz";
+	ptrs[i++]=" CAN Filter       % ";
+	ptrs[i++]=" Setblocking      ^ ";
 	ptrs[i++]="                    ";
 	ptrs[i++]="                    ";
 	ptrs[i++]="                    ";
@@ -8868,6 +8888,10 @@ if(language){
 	int2lcd(dcin_U,'#',1);
      if(ND_EXT[0])sub_bgnd("error",'>',-2);
      else int2lcd_mmm(t_ext[0],'>',0);
+	 if(CAN_FILTR_EN)sub_bgnd("ON",'%',-1);
+	 else sub_bgnd("OFF",'%',-2);
+	 if((SET_BLOCK==1))sub_bgnd("ON",'^',-1);
+	 else sub_bgnd("OFF",'%',-2);
 }//o_2_e
 	pointer_set(1);
 
@@ -13901,7 +13925,7 @@ else if(ind==iSet_INV)
 		{
 		if(but==butE)
 	     	{
-			if(systemIsWrk)
+			if((systemIsWrk)&&(SET_BLOCK==1))
 			 	{
 				mess_set_inv();//o_2 заменить на функцию
 				}
@@ -13970,7 +13994,7 @@ else if(ind==iSet_INV)
 
    	else if(sub_ind==8)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -13984,7 +14008,7 @@ else if(ind==iSet_INV)
 
    	else if(sub_ind==9)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -14395,7 +14419,7 @@ else if(ind==iSet_INV)
 		}				 //o_2_e
      else if(sub_ind==21)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16192,7 +16216,7 @@ else if (ind==iInv_sets)
 		
 	else if(sub_ind==0)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16222,7 +16246,7 @@ else if (ind==iInv_sets)
 
 	else if(sub_ind==2)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16250,7 +16274,7 @@ else if (ind==iInv_sets)
 
      else if(sub_ind==4)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16279,7 +16303,7 @@ else if (ind==iInv_sets)
      else if(sub_ind==6)
 	     {
 		 short temp_min=0,temp_max=300,temp_d=1;
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16325,7 +16349,7 @@ else if (ind==iInv_sets)
      else if(sub_ind==8)
 	     {
 		 short temp_min=0,temp_max=300,temp_d=1;
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16382,7 +16406,7 @@ else if (ind==iByps_sets)
 	char si_max;
 	ret(1000);
 
-	si_max=8;
+	si_max=10;
 	
 	if(but==butD)
 		{
@@ -16413,6 +16437,12 @@ else if (ind==iByps_sets)
 		if(sub_ind==7) 
 			{
 			sub_ind=8;
+			index_set=7;
+			//sub_ind1=0;
+			}
+		if(sub_ind==9) 
+			{
+			sub_ind=10;
 			//index_set=7;
 			//sub_ind1=0;
 			}
@@ -16514,6 +16544,10 @@ else if (ind==iByps_sets)
 			{
 			sub_ind--;
 			}*/
+		if(sub_ind==9) 
+			{
+			sub_ind--;
+			}
 		if(sub_ind==7) 
 			{
 			sub_ind--;
@@ -16538,7 +16572,7 @@ else if (ind==iByps_sets)
 		
      else if(sub_ind==0)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16564,7 +16598,7 @@ else if (ind==iByps_sets)
 
      else if(sub_ind==2)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16595,7 +16629,7 @@ else if (ind==iByps_sets)
 		}
      else if(sub_ind==4)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16621,7 +16655,7 @@ else if (ind==iByps_sets)
 
      else if(sub_ind==6)
 	     {
-		 if(systemIsWrk)
+		 if((systemIsWrk)&&(SET_BLOCK==1))
 		 	{
 			mess_set_inv();//o_2 заменить на функцию
 			}
@@ -16651,7 +16685,28 @@ else if (ind==iByps_sets)
           }
 		}
 
- 												          
+     else if(sub_ind==8)
+	     {
+		 if((systemIsWrk)&&(SET_BLOCK==1))
+		 	{
+			mess_set_inv();//o_2 заменить на функцию
+			}
+		 else
+		 	{
+		     if((but==butR)||(but==butR_))
+		     	{
+		     	WORK_FROM_MAIN=1; 
+				lc640_write_int(EE_WORK_FROM_MAIN,WORK_FROM_MAIN);
+				}
+		     
+		     else if((but==butL)||(but==butL_))
+		     	{
+		     	WORK_FROM_MAIN=0; 
+				lc640_write_int(EE_WORK_FROM_MAIN,WORK_FROM_MAIN);
+				}
+        	}
+		}
+		 												          
     else if(sub_ind==si_max)
 	     {
 	     if(but==butE)
@@ -17661,17 +17716,49 @@ else if(ind==iK_INV)
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,3+(NUMBYPASS!=0)+(NUMINV!=0));
+		gran_char(&sub_ind,0,5+(NUMBYPASS!=0)+(NUMINV!=0));
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
-		gran_char(&sub_ind,0,3+(NUMBYPASS!=0)+(NUMINV!=0));
+		gran_char(&sub_ind,0,5+(NUMBYPASS!=0)+(NUMINV!=0));
 		}
 	else if(but==butD_)
 		{
 		sub_ind=1+(NUMBYPASS!=0)+(NUMINV!=0);
 		}
+	else if(sub_ind==(5+(NUMBYPASS!=0)+(NUMINV!=0)))
+			{
+			if((but==butR)||(but==butR_))
+				{
+				if(SET_BLOCK==1)SET_BLOCK=0;
+				else SET_BLOCK=1;
+				}
+			else if((but==butL)||(but==butL_))
+				{
+				if(SET_BLOCK==1)SET_BLOCK=0;
+				else SET_BLOCK=1;
+				}
+			gran(&SET_BLOCK,0,1);
+			lc640_write_int(EE_SET_BLOCK,SET_BLOCK);
+			speed=0;
+			}
+	else if(sub_ind==(4+(NUMBYPASS!=0)+(NUMINV!=0)))
+			{
+			if((but==butR)||(but==butR_))
+				{
+				if(CAN_FILTR_EN==1)CAN_FILTR_EN=0;
+				else CAN_FILTR_EN=1;
+				}
+			else if((but==butL)||(but==butL_))
+				{
+				if(CAN_FILTR_EN==1)CAN_FILTR_EN=0;
+				else CAN_FILTR_EN=1;
+				}
+			gran(&CAN_FILTR_EN,0,1);
+			lc640_write_int(EE_CAN_FILTR_EN,CAN_FILTR_EN);
+			speed=0;
+			}
 	else if(sub_ind==(3+(NUMBYPASS!=0)+(NUMINV!=0)))
 			{
 			if((but==butR)||(but==butR_))
@@ -17733,7 +17820,7 @@ else if(ind==iK_INV)
 	     	{
 	     	temp_SS-=2;
 	     	}
-	     gran(&temp_SS,1700,2000);
+	     gran(&temp_SS,1700,2500);
 		lc640_write_int(KT_EXT0,temp_SS);					
 		speed=1;	
 					

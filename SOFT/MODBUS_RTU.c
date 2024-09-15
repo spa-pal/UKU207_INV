@@ -236,7 +236,10 @@ void analiz_func6(unsigned short mbadr, unsigned short mbdat){
 			//	gran(&mbdat,20,300);
 				lc640_write_int(EE_RELE_SET_MASK1,mbdat);
 				}
-
+			else if(mbadr==48)		
+				{
+				modbus_log_ptr = mbdat;
+				}
 
 }
 

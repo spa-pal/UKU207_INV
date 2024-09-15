@@ -91,6 +91,10 @@ extern signed short snmp_bat_capacity[2];
 extern signed short snmp_bat_charge[2];
 extern signed short snmp_bat_status[2];
 
+extern signed short snmpBPIntegrU;
+extern signed short snmpBPIntegrI;
+extern signed short snmpBPIntegrP;
+
 
 //Спецфункции
 //Спецфункции

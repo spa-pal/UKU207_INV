@@ -840,7 +840,8 @@ if((__RXBUFF[1]==PUTTM1BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 		}
 	temp_SS2=(unsigned short)__RXBUFF[2]+(((unsigned short)__RXBUFF[3])*256);
 
-	if(
+	if	(
+		(
 		(temp_SS1<3000) && 
 		(temp_SS2<5000) /*&& 
 			(temp_SS3<120) && 
@@ -850,6 +851,8 @@ if((__RXBUFF[1]==PUTTM1BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 			((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0))) && 
 			(temp_SS7 != 0x0120) &&
 			((temp_SS5<50) || (temp_SS5>160))*/
+		)
+		||(CAN_FILTR_EN==0)
 		)
 	    {
 		if((bypass_adress==61)||(bypass_adress==62)||(bypass_adress==63))
@@ -869,11 +872,29 @@ if((__RXBUFF[1]==PUTTM1BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 				byps[bypass_adress-61]._Uout=((unsigned short)__RXBUFF[6]+(((unsigned short)__RXBUFF[7])*256))&0x3fff;
 				}
 
-			if(byps[bypass_adress-61]._flags1_&0x80) A0__[bypass_adress-61]=1;
+/*			if(__RXBUFF[7]&0x80) A0__[bypass_adress-61]=1;
 			else A0__[bypass_adress-61]=0;
 		
 			if(__RXBUFF[7]&0x80) A0_[bypass_adress-61]=1;
-			else A0_[bypass_adress-61]=0;
+			else A0_[bypass_adress-61]=0;*/
+
+	 		if(((char)__RXBUFF[7]&0x80)!=byps[bypass_adress-61]._flags1_)
+				{
+				byps[bypass_adress-61]._flags1_cnt=0;
+				}
+			else 
+				{
+				if(byps[bypass_adress-61]._flags1_cnt<10) byps[bypass_adress-61]._flags1_cnt++;
+				}
+			if((byps[bypass_adress-61]._flags1_cnt>2) || (CAN_FILTR_EN==0))	byps[bypass_adress-61]._flags1=byps[bypass_adress-61]._flags1_;
+	
+			byps[bypass_adress-61]._flags1_=((char)__RXBUFF[7]&0x80);
+
+			if(byps[bypass_adress-61]._flags1_&0x80) A0__[bypass_adress-61]=1;
+			else A0__[bypass_adress-61]=0;
+
+			if(byps[bypass_adress-61]._flags1&0x80) A0_[bypass_adress-61]=1;
+			else A0_[bypass_adress-61]=0;	
 				
 			byps[bypass_adress-61]._cnt=0;
 			if(byps[bypass_adress-61]._valid==0) avar_byps_hndl(bypass_adress-60,'C',0,0);
@@ -906,7 +927,7 @@ if((__RXBUFF[1]==PUTTM1BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 				{
 				if(byps[bypass_adress-61]._flags1_cnt<10) byps[bypass_adress-61]._flags1_cnt++;
 				}
-			if(byps[bypass_adress-61]._flags1_cnt>2)	byps[bypass_adress-61]._flags1=byps[bypass_adress-61]._flags1_;
+			if((byps[bypass_adress-61]._flags1_cnt>2) || (CAN_FILTR_EN==0))	byps[bypass_adress-61]._flags1=byps[bypass_adress-61]._flags1_;
 	
 			byps[bypass_adress-61]._flags1_=((char)__RXBUFF[7]&0x80);
 
@@ -957,7 +978,8 @@ if((__RXBUFF[1]==PUTTM2BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 
 			/*if((i==0) || (i==32)) temp_SS7|=0x0020;*/
 
-		if(
+		if	(
+			(
 			(temp_SS1<3000) && 
 			(temp_SS2<3000) /*&& 
 				(temp_SS3<120) && 
@@ -967,6 +989,8 @@ if((__RXBUFF[1]==PUTTM2BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0))) && 
 				(temp_SS7 != 0x0120) &&
 				((temp_SS5<50) || (temp_SS5>160))*/
+			)
+			|| (CAN_FILTR_EN==0)
 			)
 			{
 
@@ -980,7 +1004,7 @@ if((__RXBUFF[1]==PUTTM2BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 			{
 			if(byps[bypass_adress-61]._flags_cnt<10) byps[bypass_adress-61]._flags_cnt++;
 			}
-		if(byps[bypass_adress-61]._flags_cnt>2)	byps[bypass_adress-61]._flags=byps[bypass_adress-61]._flags_;
+		if((byps[bypass_adress-61]._flags_cnt>2) || (CAN_FILTR_EN==0)) byps[bypass_adress-61]._flags=byps[bypass_adress-61]._flags_;
 
 		byps[bypass_adress-61]._flags_=(char)__RXBUFF[3];
 
@@ -1006,7 +1030,7 @@ if((__RXBUFF[1]==PUTTM2BYPS)&&((__RXBUFF[0]&0x3f)>=61)&&((__RXBUFF[0]&0x3f)<=63)
 			{
 			if(byps[bypass_adress-61]._flags_dop_cnt<10) byps[bypass_adress-61]._flags_dop_cnt++;
 			}
-		if(byps[bypass_adress-61]._flags_dop_cnt>2)	byps[bypass_adress-61]._flags_dop=byps[bypass_adress-61]._flags_dop_;
+		if((byps[bypass_adress-61]._flags_dop_cnt>2) || (CAN_FILTR_EN==0))	byps[bypass_adress-61]._flags_dop=byps[bypass_adress-61]._flags_dop_;
 
 		byps[bypass_adress-61]._flags_dop_=((((char)__RXBUFF[5]&0xc0)>>2)|((char)__RXBUFF[7]&0xc0));
 
@@ -1100,7 +1124,7 @@ if( (__RXBUFF[1]==PUTTM3BYPS) && ((__RXBUFF[0]&0x3f)==61) )
 			{
 			if(byps0_flags3_cnt<10) byps0_flags3_cnt++;
 			}
-		if(byps0_flags3_cnt>2)	byps0_flags3=byps0_flags3_;
+		if((byps0_flags3_cnt>2) || (CAN_FILTR_EN==0))	byps0_flags3=byps0_flags3_;
 
 		byps0_flags3_=(char)__RXBUFF[4];
 

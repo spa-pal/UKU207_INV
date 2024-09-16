@@ -40,6 +40,8 @@ extern char sc16is700RecieveDisableFlag; //o_1
 void sc16is700_init(uint32_t baudrate);
 void sc16is700_wr_byte(char reg_num,char data);
 char sc16is700_rd_byte(char reg_num);
+void sc16is700_wr_buff_ptr(char reg_num, unsigned char *buff, char num);
+
 //----------------------------------------------- 
 //Отправка num байт из программного буфера передачи в sc16is700
 void sc16is700_wr_buff(char reg_num,char num);

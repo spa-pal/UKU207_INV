@@ -47,6 +47,17 @@ void wr_reg_func4(void){ //Заполнение регистров для функции 4 перед их отправкой
 	if(sk_stat[3]==ssON) sk4_stat_mb|=0x0001;
 	if(sk_av_stat[3]==sasON) sk4_stat_mb|=0x0002;
 
+	load_U_inv_RTU = load_U_inv;
+	load_I_inv_RTU = load_I_inv;
+	load_P_inv_RTU = load_P_inv;
+	f_out_RTU = f_out;
+	if((NUMBYPASS==10)&&((inv[0]._flags_tm&0x80)==0x80))
+		{
+		load_I_inv_RTU = 22222;
+		load_P_inv_RTU = 22222;
+		f_out_RTU = 22222;
+		}
+
 }
 
 
@@ -886,8 +897,8 @@ unsigned char *const reg_func4 []={
 &NULL_0,
 &NULL_0,
 &NULL_0,
-(unsigned char*)&f_out+1,//400
-(unsigned char*)&f_out,//400
+(unsigned char*)&f_out_RTU+1,//400
+(unsigned char*)&f_out_RTU,//400
 (unsigned char*)&byps[0]._Uout+1,//401
 (unsigned char*)&byps[0]._Uout,//401
 (unsigned char*)&byps[1]._Uout+1,//402
@@ -934,12 +945,12 @@ unsigned char *const reg_func4 []={
 //   0100000 приоритет инверторы (0 - сеть)
 //	 0000100 температура больше 80 Г.ц.
 //	 0000010 температура больше 70 Г.ц.
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+(unsigned char*)&load_U_inv_RTU+1,	//422
+(unsigned char*)&load_U_inv_RTU,	//422
+(unsigned char*)&load_I_inv_RTU+1,	//423
+(unsigned char*)&load_I_inv_RTU,	//423
+(unsigned char*)&load_P_inv_RTU+1,	//424
+(unsigned char*)&load_P_inv_RTU,	//424
 &NULL_0,
 &NULL_0,
 &NULL_0,

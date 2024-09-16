@@ -99,6 +99,9 @@ signed short snmp_bat_capacity[2];
 signed short snmp_bat_charge[2];
 signed short snmp_bat_status[2]; 
 
+signed short snmpBPIntegrU;
+signed short snmpBPIntegrI;
+signed short snmpBPIntegrP;
 
 //Спецфункции
 signed short snmp_spc_stat;
@@ -179,6 +182,10 @@ signed short snmp_alarm_auto_disable;
 signed short snmp_u_set;
 signed short snmp_u_max;
 signed short snmp_u_min;
+signed short snmp_u_net_off_high;
+signed short snmp_u_net_off_low;
+signed short snmp_u_net_on_high;
+signed short snmp_u_net_on_low;
 signed short snmp_u_net_on;
 signed short snmp_u_net_off;
 signed short snmp_u_bat_on;
@@ -225,6 +232,9 @@ signed short snmp_klimat_settings_batt_off;
 signed short snmp_dt_ext;
 signed short snmp_dt_msan;
 signed short snmp_dt_epu;
+
+//Настройка событий реле
+signed short snmp_rele_set_mask[2];
 
 
 U16 obj[10];
@@ -314,6 +324,18 @@ snmp_numofoutputphase=NUMPHASE;
 //snmp_numofdt=NUMDT;
 //snmp_numofsk=NUMSK;
 snmp_numofevents=lc640_read_int(CNT_EVENT_LOG);
+
+snmpBPIntegrU = load_U_inv;
+snmpBPIntegrI = load_I_inv;
+snmpBPIntegrP = load_P_inv;
+//	f_out_RTU = f_out;
+if((NUMBYPASS==10)&&((inv[0]._flags_tm&0x80)==0x80))
+	{
+	snmpBPIntegrI = 22222;
+	snmpBPIntegrP = 22222;
+	f_out_RTU = 22222;
+	snmp_load_frequency=22222;
+	}
 
 snmp_energy_vvod_phase_a=Uvv_eb2[0];
 snmp_energy_vvod_phase_b=Uvv_eb2[1];
@@ -686,6 +708,11 @@ snmp_alarm_auto_disable=AV_OFF_AVT;
 snmp_u_set=U_OUT_SET;
 snmp_u_max=U_OUT_MAX;
 snmp_u_min=U_OUT_MIN;
+snmp_u_net_off_high=U_NET_OFF_MAX;
+snmp_u_net_off_low=U_NET_OFF_MIN;
+snmp_u_net_on_high=U_NET_ON_MAX;
+snmp_u_net_on_low=U_NET_ON_MIN;
+
 snmp_u_net_on=U_NET_ON_MAX;
 snmp_u_net_off=U_NET_ON_MIN;
 snmp_u_bat_on=U_BAT_MAX;
@@ -716,6 +743,9 @@ for(i=0;i<12;i++)
 snmp_dt_temper[0]=t_ext[0];
 snmp_dt_temper[1]=t_ext[1];
 snmp_dt_temper[2]=t_ext[2];
+
+snmp_rele_set_mask[0] = RELE_SET_MASK[0];
+snmp_rele_set_mask[1] = RELE_SET_MASK[1];
 }
 
 //-----------------------------------------------
@@ -824,6 +854,49 @@ if((mode==MIB_WRITE)&&(!systemIsWrk))
 	}
 }
 
+//-----------------------------------------------
+void snmp_u_net_on_low_write (int mode)
+{
+if((mode==MIB_WRITE)&&(!systemIsWrk))
+	{
+	gran(&snmp_u_net_on_low,0,300);
+	//gran(&snmp_u_net_on_low,snmp_u_net_off_low+5,205);
+	lc640_write_int(EE_U_NET_ON_MIN,snmp_u_net_on_low);
+	}
+}
+
+//-----------------------------------------------
+void snmp_u_net_off_low_write (int mode)
+{
+if((mode==MIB_WRITE)&&(!systemIsWrk))
+	{
+	gran(&snmp_u_net_off_low,0,300);
+	//gran(&snmp_u_net_off_low,105,snmp_u_net_on_low-5);
+	lc640_write_int(EE_U_NET_OFF_MIN,snmp_u_net_off_low);
+	}
+}
+
+//-----------------------------------------------
+void snmp_u_net_on_high_write (int mode)
+{
+if((mode==MIB_WRITE)&&(!systemIsWrk))
+	{
+	gran(&snmp_u_net_on_high,0,300);
+	//gran(&snmp_u_net_on_low,snmp_u_net_off_low+5,205);
+	lc640_write_int(EE_U_NET_ON_MAX,snmp_u_net_on_high);
+	}
+}
+
+//-----------------------------------------------
+void snmp_u_net_off_high_write (int mode)
+{
+if((mode==MIB_WRITE)&&(!systemIsWrk))
+	{
+	gran(&snmp_u_net_off_high,0,300);
+	//gran(&snmp_u_net_off_low,105,snmp_u_net_on_low-5);
+	lc640_write_int(EE_U_NET_OFF_MAX,snmp_u_net_off_high);
+	}
+}
 
 //-----------------------------------------------
 void snmp_u_net_on_write (int mode)
@@ -854,7 +927,25 @@ if(mode==MIB_WRITE)
 	gran(&snmp_bypass_max_ac_output_voltage_alarm_level,20,300);
 	lc640_write_int(EE_U_OUT_AC_MAX_AV,snmp_bypass_max_ac_output_voltage_alarm_level);
 	}
+}
+
+//-----------------------------------------------
+void snmp_rele1_set_mask_write (int mode)	  
+{
+if(mode==MIB_WRITE)
+	{
+ 	lc640_write_int(EE_RELE_SET_MASK0,snmp_rele_set_mask[0]);
+	}
 } 
+
+//-----------------------------------------------
+void snmp_rele2_set_mask_write (int mode)	  
+{
+if(mode==MIB_WRITE)
+	{
+ 	lc640_write_int(EE_RELE_SET_MASK1,snmp_rele_set_mask[1]);
+	}
+}
 
 //-----------------------------------------------
 void snmp_bypass_min_ac_output_voltage_alarm_level_write(int mode)

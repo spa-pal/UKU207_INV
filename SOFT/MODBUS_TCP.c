@@ -6,6 +6,8 @@
 #include "eeprom_map.h"
 #include "25lc640.h"
 #include "MODBUS_func4.h" //o_1
+#include "MODBUS_func3.h" //o_1
+#include "MODBUS_RTU.h" //o_1
 
 char plazma_modbus_tcp[20];
 char modbus_tcp_plazma[20];
@@ -95,7 +97,7 @@ switch (evt)
 
 			//o_1_s
 			// если появятся регистры записи, то ниже разремировать и создать таблицу адресов регистров reg_func3
-			/*unsigned char io;
+			unsigned char io;
 			U8 *sendbuf;
 			sendbuf = tcp_get_buf(start_num_tcp_mb+9);
 			sendbuf[0]=ptr[0];
@@ -110,7 +112,7 @@ switch (evt)
 			wr_reg_func3(start_adr_tcp_mb, start_adr_tcp_mb+start_num_tcp_mb);
 			for(io=0;io<sendbuf[8];++io) sendbuf[9+io]=*reg_func3[start_adr_tcp_mb+io];	 
 	 		tcp_send (socket_tcp, sendbuf, (start_num_tcp_mb+9));
-			*/
+			
 			//o_1_e
 
 			//modbus_tcp_tx_buff[4]=0;
@@ -183,7 +185,7 @@ switch (evt)
 			{ //o_1_s   обработку 6 функции заменить полностью
 				U8 *sendbuf;
 				//если будут команды записи-разремировать строку ниже и сделать анализ в функции analiz_func6 для TCP и UDP одинаково
-				//analiz_func6(modbus_tcp_rx_arg0, modbus_tcp_rx_arg1);
+				analiz_func6(modbus_tcp_rx_arg0, modbus_tcp_rx_arg1);
 				sendbuf = tcp_get_buf(12);
 				sendbuf[0]=ptr[0];
 				sendbuf[1]=ptr[1];

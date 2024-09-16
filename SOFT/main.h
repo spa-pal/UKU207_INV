@@ -109,16 +109,22 @@
 #define SYSPARAMS_U_OUTPUT_SET				5
 #define SYSPARAMS_U_OUTPUT_MAX				6
 #define SYSPARAMS_U_OUTPUT_MIN				7
-#define SYSPARAMS_U_NET_ON					8 
-#define SYSPARAMS_U_NET_OFF					9
-#define SYSPARAMS_U_BAT_ON					10
-#define SYSPARAMS_U_BAT_OFF					11
-#define SYSPARAMS_BYPASS_MAX_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					12
-#define SYSPARAMS_BYPASS_MIN_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					13
-#define SYSPARAMS_BYPASS_MAX_AC_INPUT_VOLTAGE_ALARM_LEVEL					14
-#define SYSPARAMS_BYPASS_MIN_AC_INTPUT_VOLTAGE_ALARM_LEVEL					15
-#define SYSPARAMS_BYPASS_MAX_DC_INPUT_VOLTAGE_ALARM_LEVEL					16
-#define SYSPARAMS_BYPASS_MIN_DC_INPUT_VOLTAGE_ALARM_LEVEL					17
+//#define SYSPARAMS_U_NET_ON					8 
+//#define SYSPARAMS_U_NET_OFF					9
+#define SYSPARAMS_U_NET_ON_MIN					8 
+#define SYSPARAMS_U_NET_OFF_MIN					9
+#define SYSPARAMS_U_NET_ON_MAX					10 
+#define SYSPARAMS_U_NET_OFF_MAX					11
+#define SYSPARAMS_U_BAT_ON					12
+#define SYSPARAMS_U_BAT_OFF					13
+#define SYSPARAMS_BYPASS_MAX_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					14
+#define SYSPARAMS_BYPASS_MIN_AC_OUTPUT_VOLTAGE_ALARM_LEVEL					15
+#define SYSPARAMS_BYPASS_MAX_AC_INPUT_VOLTAGE_ALARM_LEVEL					16
+#define SYSPARAMS_BYPASS_MIN_AC_INTPUT_VOLTAGE_ALARM_LEVEL					17
+#define SYSPARAMS_BYPASS_MAX_DC_INPUT_VOLTAGE_ALARM_LEVEL					18
+#define SYSPARAMS_BYPASS_MIN_DC_INPUT_VOLTAGE_ALARM_LEVEL					19
+#define SYSPARAMS_BYPASS_RELAY1_EVENT_MASK									20
+#define SYSPARAMS_BYPASS_RELAY2_EVENT_MASK									21
 
 #define DISPLAY_AVT					11
 #define DISPLAY_AVT_ENTRY_NUMBER			1,1
@@ -184,6 +190,9 @@
 #define DISPLAY_U_LOAD_PHASE_B_2PH			16
 #define DISPLAY_I_LOAD_PHASE_B_2PH			17
 #define DISPLAY_P_LOAD_PHASE_B_2PH			18
+#define DISPLAY_U_LOAD_BPINTEGR				19
+#define DISPLAY_I_LOAD_BPINTEGR				20
+#define DISPLAY_P_LOAD_BPINTEGR				21
 
 #define DISPLAY_BYPASS				19
 #define DISPLAY_BYPASS_U_LOAD				1
@@ -721,6 +730,9 @@ extern signed short U_NET_ON_MIN;
 extern signed short U_NET_OFF_MIN;
 extern signed short U_BAT_MAX;
 extern signed short U_BAT_MIN;
+extern signed short WORK_FROM_MAIN;
+extern signed short SET_BLOCK;
+
 extern signed short U_OUT_AC_MAX_AV;
 extern signed short U_OUT_AC_MIN_AV;
 extern signed short U_IN_AC_MAX_AV;
@@ -740,6 +752,7 @@ extern signed short NUMMAKB;
 extern signed short NUMBYPASS;
 extern signed short NUMPHASE;
 extern signed short NUMINAC;
+extern signed short CAN_FILTR_EN;
 
 typedef enum {apvON=0x01,apvOFF=0x00}enum_apv_on;
 extern enum_apv_on APV_ON1,APV_ON2;
@@ -1077,6 +1090,9 @@ extern signed long load_P_inv;
 extern signed short load_U_inv_3F[3];
 extern signed short load_I_inv_3F[3];
 extern signed long load_P_inv_3F[3];
+extern signed short load_U_inv_RTU;
+extern signed short load_I_inv_RTU;
+extern signed short load_P_inv_RTU;
 
 extern signed short dcin_U;
 
@@ -1233,6 +1249,7 @@ extern signed short f_out;
 extern signed short f_out_inv;
 extern signed short f_out_byps;
 extern signed short f_out_byps_cnt;
+extern signed short f_out_RTU;
 
 extern char A0_[3],A1_[3],A2_[3],F1_[3],F2_[3], B4_, B5_,B4_4;
 extern char A0__[3],A1__[3],A2__[3],F1__[3],F2__[3], B4__, B5__, B4_4_;
@@ -1241,7 +1258,7 @@ extern char B5_ff_cnt;
 
 extern char snmp_plazma;
 extern char plazma_bypas;
-extern short plazma_5, plazma_28, plazma_1, plazma_stop;
+extern short plazma_5, plazma_28, plazma_1, plazma_stop, plazma_av_bypas;
 
 extern char ips_bat_av_vzvod;
 extern char ips_bat_av_stat;

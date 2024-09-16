@@ -122,6 +122,8 @@ U_BAT_MAX=lc640_read_int(EE_U_BAT_MAX);
 U_BAT_MIN=lc640_read_int(EE_U_BAT_MIN); 
 U_OUT_MAX=lc640_read_int(EE_U_OUT_MAX);
 U_OUT_MIN=lc640_read_int(EE_U_OUT_MIN);
+WORK_FROM_MAIN=lc640_read_int(EE_WORK_FROM_MAIN);
+SET_BLOCK=lc640_read_int(EE_SET_BLOCK);
 RS485_QWARZ_DIGIT=lc640_read_int(EE_RS485_QWARZ_DIGIT);
 SNTP_ENABLE=lc640_read_int(EE_SNTP_ENABLE);
 SNTP_GMT=lc640_read_int(EE_SNTP_GMT);
@@ -135,6 +137,7 @@ U_IN_DC_MIN_AV=lc640_read_int(EE_U_IN_DC_MIN_AV);
 //U_AC_2=lc640_read_int(EE_U_AC_2);
 
 F_IND_EN=lc640_read_int(EE_F_IND_EN);
+CAN_FILTR_EN=lc640_read_int(EE_CAN_FILTR_EN);
 
 //BAT_IS_ON[0]=(enum_bat_is_on)lc640_read_int(EE_BAT1_IS_ON);
 //BAT_IS_ON[1]=(enum_bat_is_on)lc640_read_int(EE_BAT2_IS_ON);
@@ -277,7 +280,7 @@ __ee_spc_phase=lc640_read_int(EE_SPC_PHASE);
 
 //NUMBYPASS=-1;
 //NUMPHASE=-1;
-if((NUMBYPASS>5)||(NUMBYPASS<0)) NUMBYPASS=5;
+if((NUMBYPASS>10)||(NUMBYPASS<0)) NUMBYPASS=10;
 if((NUMPHASE!=3)&&(NUMPHASE!=2)&&(NUMPHASE!=1))NUMPHASE=1;
 language=lc640_read_int(EE_LANGUAGE);//o_2
 }

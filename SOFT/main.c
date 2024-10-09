@@ -956,9 +956,16 @@ if((++cnt_net_drv>max_net_slot)&&(kan_aktivity_cnt))
 	{
 	cnt_net_drv=0;
 	//if(!plazma_stop)   {
-	mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_OFF_MIN,(char)U_NET_ON_MIN,(char)U_BAT_MIN,(char)U_BAT_MAX);
-	mcp2515_transmit(0xf2,(WORK_FROM_MAIN==1) ? 1 : 0,(char)U_NET_ON_MIN,(char)U_NET_OFF_MIN,(char)(U_NET_ON_MAX-50),(char)(U_NET_OFF_MAX-50),0,0);
-	//}
+	if(KAN_BR==62)
+		{
+		mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50),(char)U_NET_OFF_MIN,(char)U_NET_ON_MIN,(char)U_BAT_MIN,(char)U_BAT_MAX);
+		mcp2515_transmit(0xf2,(WORK_FROM_MAIN==1) ? 1 : 0,(char)U_NET_ON_MIN,(char)U_NET_OFF_MIN,(char)(U_NET_ON_MAX-50),(char)(U_NET_OFF_MAX-50),0,0);
+		}
+	else
+		{
+		mcp2515_transmit(0xf1,(char)U_OUT_SET,(char)U_OUT_MIN,(char)(U_OUT_MAX-50), (char)U_NET_ON_MIN, (char)U_NET_OFF_MIN,(char)U_BAT_MIN,(char)U_BAT_MAX);
+		mcp2515_transmit(0xf2,(WORK_FROM_MAIN==1) ? 1 : 0,(char)U_NET_OFF_MIN,(char)U_NET_ON_MIN,(char)(U_NET_ON_MAX-50),(char)(U_NET_OFF_MAX-50),0,0);
+		}
 	} 
 	
 if((cnt_net_drv>=MINIM_INV_ADRESS)&&(cnt_net_drv<MINIM_INV_ADRESS+NUMINV))
@@ -7585,11 +7592,15 @@ else if (ind==iDef)
 
 	{	
 if(language){  //o_2 
-	ptrs[0]=" Èíâåðòîð 24Â       ";
-	ptrs[1]=" Èíâåðòîð 48(60)Â   ";
-	ptrs[2]=" Èíâåðòîð 110Â      ";
-	ptrs[3]=" Èíâåðòîð 220Â      ";
-	ptrs[4]=sm_exit;
+	ptrs[0]=" Èíâ 24Â     CAN125 ";
+	ptrs[1]=" Èíâ 48(60)Â CAN125 ";
+	ptrs[2]=" Èíâ 110Â    CAN125 ";
+	ptrs[3]=" Èíâ 220Â    CAN125 ";
+	ptrs[4]=" Èíâ 24Â     CAN62.5";
+	ptrs[5]=" Èíâ 48(60)Â CAN62.5";
+	ptrs[6]=" Èíâ 110Â    CAN62.5";
+	ptrs[7]=" Èíâ 220Â    CAN62.5";
+	ptrs[8]=sm_exit;
 	if(bFL5)ptrs[default_temp]=sm_;
 	
 	if(sub_ind<index_set) index_set=sub_ind;
@@ -7599,11 +7610,15 @@ if(language){  //o_2
 //o_2_s
 	}
 	else {  //àíãëèéñêèé 
-	ptrs[0]=" Inverter 24V       ";
-	ptrs[1]=" Inverter 48(60)V   ";
-	ptrs[2]=" Inverter 110V      ";
-	ptrs[3]=" Inverter 220V      ";
-	ptrs[4]=" Exit               ";
+	ptrs[0]=" Inv 24V     CAN125 ";
+	ptrs[1]=" Inv 48(60)V CAN125 ";
+	ptrs[2]=" Inv 110V    CAN125 ";
+	ptrs[3]=" Inv 220V    CAN125 ";
+	ptrs[4]=" Inv 24V     CAN62.5";
+	ptrs[5]=" Inv 48(60)V CAN62.5";
+	ptrs[2]=" Inv 110V    CAN62.5";
+	ptrs[7]=" Inv 220V    CAN62.5";
+	ptrs[8]=" Exit               ";
 	if(bFL5)ptrs[default_temp]=sm_;
 	
 	if(sub_ind<index_set) index_set=sub_ind;
@@ -14465,7 +14480,7 @@ else if(ind==iSet_INV)
 
 else if(ind==iDef)
 
-#define SIMAXIDEF 4
+#define SIMAXIDEF 8
 	{
 	ret(1000);
 	if(but==butD)
@@ -14510,6 +14525,9 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,195);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,30);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,20);
+
+			lc640_write_int(EE_KAN_BR,125);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
 			}
 		
 		else if(sub_ind==1)
@@ -14537,6 +14555,9 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,195);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,72);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,40);
+
+			lc640_write_int(EE_KAN_BR,125);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
 			} 
 
 		else if(sub_ind==2)
@@ -14564,6 +14585,9 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,195);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,150);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,90);
+
+			lc640_write_int(EE_KAN_BR,125);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
 			} 
 		else if(sub_ind==3)
 			{
@@ -14590,10 +14614,129 @@ else if(ind==iDef)
 	     	lc640_write_int(EE_U_IN_AC_MIN_AV,195);
 	     	lc640_write_int(EE_U_IN_DC_MAX_AV,260);
 	     	lc640_write_int(EE_U_IN_DC_MIN_AV,170);
-			} /*
 
+			lc640_write_int(EE_KAN_BR,125);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
+			}
+		else if(sub_ind==4)
+			{
+			lc640_write_int(EE_ZV_ON,0);
+			lc640_write_int(EE_AV_OFF_AVT,1);
+			lc640_write_int(EE_U_OUT_SET,220);
+			lc640_write_int(EE_U_OUT_MAX,253);
+			lc640_write_int(EE_U_OUT_MIN,187);
+			lc640_write_int(EE_U_BAT_MAX,23);
+			lc640_write_int(EE_U_BAT_MIN,20);
+			lc640_write_int(EE_U_NET_ON_MAX,248);
+			lc640_write_int(EE_U_NET_OFF_MAX,253);
+			lc640_write_int(EE_U_NET_ON_MIN,187);
+			lc640_write_int(EE_U_NET_OFF_MIN,182);
 
-		else */ if(sub_ind==SIMAXIDEF)
+			lc640_write_int(EE_AUSW_MAIN,24);
+
+			lc640_write_int(EE_RELE_SET_MASK0,0);
+			lc640_write_int(EE_RELE_SET_MASK1,0);
+
+	     	lc640_write_int(EE_U_OUT_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_OUT_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_DC_MAX_AV,30);
+	     	lc640_write_int(EE_U_IN_DC_MIN_AV,20);
+
+			lc640_write_int(EE_KAN_BR,62);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
+			}
+		
+		else if(sub_ind==5)
+			{
+			lc640_write_int(EE_ZV_ON,0);
+			lc640_write_int(EE_AV_OFF_AVT,1);
+			lc640_write_int(EE_U_OUT_SET,220);
+			lc640_write_int(EE_U_OUT_MAX,253);
+			lc640_write_int(EE_U_OUT_MIN,187);
+			lc640_write_int(EE_U_BAT_MAX,45);
+			lc640_write_int(EE_U_BAT_MIN,40);
+			lc640_write_int(EE_U_NET_ON_MAX,248);
+			lc640_write_int(EE_U_NET_OFF_MAX,253);
+			lc640_write_int(EE_U_NET_ON_MIN,187);
+			lc640_write_int(EE_U_NET_OFF_MIN,182);
+
+			lc640_write_int(EE_AUSW_MAIN,4860);
+
+			lc640_write_int(EE_RELE_SET_MASK0,0);
+			lc640_write_int(EE_RELE_SET_MASK1,0);
+
+	     	lc640_write_int(EE_U_OUT_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_OUT_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_DC_MAX_AV,72);
+	     	lc640_write_int(EE_U_IN_DC_MIN_AV,40);
+
+			lc640_write_int(EE_KAN_BR,62);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
+			} 
+
+		else if(sub_ind==6)
+			{
+			lc640_write_int(EE_ZV_ON,0);
+			lc640_write_int(EE_AV_OFF_AVT,1);
+			lc640_write_int(EE_U_OUT_SET,220);
+			lc640_write_int(EE_U_OUT_MAX,253);
+			lc640_write_int(EE_U_OUT_MIN,187);
+			lc640_write_int(EE_U_BAT_MAX,100);
+			lc640_write_int(EE_U_BAT_MIN,90);
+			lc640_write_int(EE_U_NET_ON_MAX,248);
+			lc640_write_int(EE_U_NET_OFF_MAX,253);
+			lc640_write_int(EE_U_NET_ON_MIN,187);
+			lc640_write_int(EE_U_NET_OFF_MIN,182);
+
+			lc640_write_int(EE_AUSW_MAIN,110);
+
+			lc640_write_int(EE_RELE_SET_MASK0,0);
+			lc640_write_int(EE_RELE_SET_MASK1,0);
+
+	     	lc640_write_int(EE_U_OUT_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_OUT_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_DC_MAX_AV,150);
+	     	lc640_write_int(EE_U_IN_DC_MIN_AV,90);
+
+			lc640_write_int(EE_KAN_BR,62);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
+			} 
+		else if(sub_ind==7)
+			{
+			lc640_write_int(EE_ZV_ON,0);
+			lc640_write_int(EE_AV_OFF_AVT,1);
+			lc640_write_int(EE_U_OUT_SET,220);
+			lc640_write_int(EE_U_OUT_MAX,253);
+			lc640_write_int(EE_U_OUT_MIN,187);
+			lc640_write_int(EE_U_BAT_MAX,180);
+			lc640_write_int(EE_U_BAT_MIN,170);
+			lc640_write_int(EE_U_NET_ON_MAX,248);
+			lc640_write_int(EE_U_NET_OFF_MAX,253);
+			lc640_write_int(EE_U_NET_ON_MIN,187);
+			lc640_write_int(EE_U_NET_OFF_MIN,182);
+
+			lc640_write_int(EE_AUSW_MAIN,220);
+
+			lc640_write_int(EE_RELE_SET_MASK0,0);
+			lc640_write_int(EE_RELE_SET_MASK1,0);
+
+	     	lc640_write_int(EE_U_OUT_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_OUT_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_AC_MAX_AV,253);
+	     	lc640_write_int(EE_U_IN_AC_MIN_AV,187);
+	     	lc640_write_int(EE_U_IN_DC_MAX_AV,260);
+	     	lc640_write_int(EE_U_IN_DC_MIN_AV,170);
+
+			lc640_write_int(EE_KAN_BR,62);
+			lc640_write_int(EE_WORK_FROM_MAIN,0);
+			}			
+		else if(sub_ind==SIMAXIDEF)
 			{
 			tree_down(0,0);
 			}

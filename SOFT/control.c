@@ -2347,7 +2347,7 @@ for(i=0;i<NUMINV;i++)
 
 	if( (!(inv[i]._flags_tm&0xbf)) && (!(inv[i]._flags_tm_dop&0x01)) && (inv[i]._cnt<5) )
 		{
-		if(inv[i]._inv_int_err_cnt<100)inv[i]._inv_int_err_cnt++;
+		if(inv[i]._inv_int_err_cnt<150)inv[i]._inv_int_err_cnt++;
 		} 
 	else inv[i]._inv_int_err_cnt=0;
 	}
@@ -2438,16 +2438,16 @@ for(ii=0;ii<NUMINV;ii++)
 	// Авария по внутреннему состянию инверторов
 	if( (!(inv[ii]._flags_tm&0xbf)) && (!(inv[ii]._flags_tm_dop&0x01)) && (inv[ii]._valid) )
 		{
-		if(inv[ii]._self_err_av_cnt<(3*CONST_AV_INV_HNDL_MAX_CNT))
+		if(inv[ii]._self_err_av_cnt<(4*CONST_AV_INV_HNDL_MAX_CNT))
 			{
 			inv[ii]._self_err_av_cnt++;
-			if((inv[ii]._self_err_av_cnt>=(3*CONST_AV_INV_HNDL_MAX_CNT))&&(!inv[ii]._self_err_av_stat))
+			if((inv[ii]._self_err_av_cnt>=(4*CONST_AV_INV_HNDL_MAX_CNT))&&(!inv[ii]._self_err_av_stat))
 				{
 				inv[ii]._self_err_av_stat=1;
 				avar_inv_hndl(ii,'S',1,0);
 				}  
 			}
-		else inv[ii]._self_err_av_cnt=3*CONST_AV_INV_HNDL_MAX_CNT;
+		else inv[ii]._self_err_av_cnt=4*CONST_AV_INV_HNDL_MAX_CNT;
 		}  
 	else if((!(!(inv[ii]._flags_tm&0xbf)) && (!(inv[ii]._flags_tm_dop&0x01))) &&  inv[ii]._valid)
 		{
@@ -2644,10 +2644,20 @@ for(ii=0;ii<NUMINV;ii++)
 		inv[ii]._self_err_av_stat ||
 		inv[ii]._overload_av_stat ||
 		inv[ii]._uin_av_stat
-		) temp=1;
+		) 
+		{
+		temp=1;
+		if(someInvAvIsOn_cnt<5)someInvAvIsOn_cnt++;
+		}
+	else 
+		{
+		someInvAvIsOn_cnt=0;
+		}
 	if((inv[ii]._cnt<5)&&(inv[ii]._flags_tm&0x20)) temp_=1;
 	}
-someInvAvIsOn = temp;
+
+someInvAvIsOn = 0;
+if(someInvAvIsOn_cnt>=5)someInvAvIsOn=1;
 
 if((temp_==0) && (NUMBYPASS!=10))
 	{

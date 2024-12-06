@@ -1232,6 +1232,7 @@ extern char avar_stat_temp[2];
 //-----------------------------------------------
 //Флаги состояния системы
 extern char someInvAvIsOn;		//авария какого-либо инвертора
+extern char someInvAvIsOn_cnt;
 extern char dcAvIsOn; 			//авария по входному напряжению DC
 extern char uOutAvIsOn;			//авария по выходному напряжению
 extern char uNetAvIsOn;			//авария по входному напряжению AC

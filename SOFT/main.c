@@ -607,6 +607,7 @@ char avar_stat_temp[2];
 //-----------------------------------------------
 //Флаги состояния системы
 char someInvAvIsOn;		//авария какого-либо инвертора
+char someInvAvIsOn_cnt;
 char dcAvIsOn; 			//авария по входному напряжению DC
 char uOutAvIsOn;		//авария по выходному напряжению
 char uNetAvIsOn;		//авария по входному напряжению AC
@@ -1531,7 +1532,7 @@ if(inv[0]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[0]._inv_int_err_cnt>99)
+if(inv[0]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№1 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№1 Defective.   "; //o_2
@@ -1587,7 +1588,7 @@ if(inv[1]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[1]._inv_int_err_cnt>99)
+if(inv[1]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№2 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№2 Defective.   "; //o_2
@@ -1644,7 +1645,7 @@ if(inv[2]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[2]._inv_int_err_cnt>99)
+if(inv[2]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№3 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№3 Defective.   "; //o_2
@@ -1701,7 +1702,7 @@ if(inv[3]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[3]._inv_int_err_cnt>99)
+if(inv[3]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№4 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№4 Defective.   "; //o_2
@@ -1758,7 +1759,7 @@ if(inv[4]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[4]._inv_int_err_cnt>99)
+if(inv[4]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№5 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№5 Defective.   "; //o_2
@@ -1815,7 +1816,7 @@ if(inv[5]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[5]._inv_int_err_cnt>99)
+if(inv[5]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№6 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№6 Defective.   "; //o_2
@@ -1872,7 +1873,7 @@ if(inv[6]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[6]._inv_int_err_cnt>99)
+if(inv[6]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№7 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№7 Defective.   "; //o_2
@@ -1930,7 +1931,7 @@ if(inv[7]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[7]._inv_int_err_cnt>99)
+if(inv[7]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№8 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№8 Defective.   "; //o_2
@@ -1988,7 +1989,7 @@ if(inv[8]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[8]._inv_int_err_cnt>99)
+if(inv[8]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№9 внутр.неиспр."; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№9 Defective.   "; //o_2
@@ -2045,7 +2046,7 @@ if(inv[9]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[9]._inv_int_err_cnt>99)
+if(inv[9]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№10 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№10 Defective.  "; //o_2
@@ -2103,7 +2104,7 @@ if(inv[10]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[10]._inv_int_err_cnt>99)
+if(inv[10]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№11 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№11 Defective.  "; //o_2
@@ -2160,7 +2161,7 @@ if(inv[11]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[11]._inv_int_err_cnt>99)
+if(inv[11]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№12 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№12 Defective.  "; //o_2
@@ -2217,7 +2218,7 @@ if(inv[12]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[12]._inv_int_err_cnt>99)
+if(inv[12]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№13 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№13 Defective.  "; //o_2
@@ -2274,7 +2275,7 @@ if(inv[13]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[13]._inv_int_err_cnt>99)
+if(inv[13]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№14 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№14 Defective.  "; //o_2
@@ -2331,7 +2332,7 @@ if(inv[14]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[14]._inv_int_err_cnt>99)
+if(inv[14]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№15 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№15 Defective.  "; //o_2
@@ -2388,7 +2389,7 @@ if(inv[15]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[15]._inv_int_err_cnt>99)
+if(inv[15]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№16 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№16 Defective.  "; //o_2
@@ -2445,7 +2446,7 @@ if(inv[16]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[16]._inv_int_err_cnt>99)
+if(inv[16]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№17 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№17 Defective.  "; //o_2
@@ -2502,7 +2503,7 @@ if(inv[17]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[17]._inv_int_err_cnt>99)
+if(inv[17]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№18 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№18 Defective.  "; //o_2
@@ -2559,7 +2560,7 @@ if(inv[18]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[18]._inv_int_err_cnt>99)
+if(inv[18]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№19 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№19 Defective.  "; //o_2
@@ -2616,7 +2617,7 @@ if(inv[19]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[19]._inv_int_err_cnt>99)
+if(inv[19]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№20 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№20 Defective.  "; //o_2
@@ -2673,7 +2674,7 @@ if(inv[20]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[20]._inv_int_err_cnt>99)
+if(inv[20]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№21 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№21 Defective.  "; //o_2
@@ -2730,7 +2731,7 @@ if(inv[21]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[21]._inv_int_err_cnt>99)
+if(inv[21]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№22 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№22 Defective.  "; //o_2
@@ -2787,7 +2788,7 @@ if(inv[22]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[22]._inv_int_err_cnt>99)
+if(inv[22]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№23 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№23 Defective.  "; //o_2
@@ -2844,7 +2845,7 @@ if(inv[23]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[23]._inv_int_err_cnt>99)
+if(inv[23]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№24 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№24 Defective.  "; //o_2
@@ -2901,7 +2902,7 @@ if(inv[24]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[24]._inv_int_err_cnt>99)
+if(inv[24]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№25 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№25 Defective.  "; //o_2
@@ -2958,7 +2959,7 @@ if(inv[25]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[25]._inv_int_err_cnt>99)
+if(inv[25]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№26 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№26 Defective.  "; //o_2
@@ -3015,7 +3016,7 @@ if(inv[26]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[26]._inv_int_err_cnt>99)
+if(inv[26]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№27 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№27 Defective.  "; //o_2
@@ -3072,7 +3073,7 @@ if(inv[27]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[27]._inv_int_err_cnt>99)
+if(inv[27]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№28 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№28 Defective.  "; //o_2
@@ -3129,7 +3130,7 @@ if(inv[28]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[28]._inv_int_err_cnt>99)
+if(inv[28]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№29 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№29 Defective.  "; //o_2
@@ -3186,7 +3187,7 @@ if(inv[29]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[29]._inv_int_err_cnt>99)
+if(inv[29]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№30 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№30 Defective.  "; //o_2
@@ -3243,7 +3244,7 @@ if(inv[30]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[30]._inv_int_err_cnt>99)
+if(inv[30]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№31 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№31 Defective.  "; //o_2
@@ -3300,7 +3301,7 @@ if(inv[31]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[31]._inv_int_err_cnt>99)
+if(inv[31]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№32 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№32 Defective.  "; //o_2
@@ -3357,7 +3358,7 @@ if(inv[32]._conn_av_stat)
 	sub_cnt_max++;	
 	}
 
-if(inv[32]._inv_int_err_cnt>99)
+if(inv[32]._inv_int_err_cnt>149)
 	{
 	if(language) 	sub_ptrs[i++]=	"Инв.№33 внутр.неиспр"; //o_2
 	else 			sub_ptrs[i++]=	"Inv.№33 Defective.  "; //o_2
@@ -4636,7 +4637,7 @@ if(language){//o_2
 	 	{
 		ptr[0]=		"    не подключен    ";	
 		}
-	else if(inv[sub_ind1]._inv_int_err_cnt>99)
+	else if(inv[sub_ind1]._inv_int_err_cnt>149)
 		{
 		ptr[0]=		"ОТКЛ. внутр. неиспр.";
 		}
@@ -4706,7 +4707,7 @@ if(language){//o_2
 	 	{
 		ptr[0]=		"    not connected   ";	
 		}
-	else if(inv[sub_ind1]._inv_int_err_cnt>99)
+	else if(inv[sub_ind1]._inv_int_err_cnt>149)
 		{
 		ptr[0]=		"Defective. Disabled.";
 		}
@@ -16454,19 +16455,19 @@ else if (ind==iInv_sets)
 		 	{
 		 if(AUSW_MAIN==24)
 		 	{
-			temp_min=22,temp_max=26,temp_d=1;
+			temp_min=17,temp_max=26,temp_d=1;
 			}
 		 else if(AUSW_MAIN==4860)
 		 	{
-			temp_min=42,temp_max=52,temp_d=3;
+			temp_min=37,temp_max=52,temp_d=3;
 			}
 		 else if(AUSW_MAIN==110)
 		 	{
-			temp_min=83,temp_max=113,temp_d=5;
+			temp_min=76,temp_max=113,temp_d=5;
 			}
 		else if(AUSW_MAIN==220)
 		 	{
-			temp_min=175,temp_max=300,temp_d=1;
+			temp_min=170,temp_max=300,temp_d=1;
 			}
 	     if((but==butR)||(but==butR_))
 	     	{
@@ -16500,19 +16501,19 @@ else if (ind==iInv_sets)
 		 	{
 		 if(AUSW_MAIN==24)
 		 	{
-			temp_min=20,temp_max=24,temp_d=1;
+			temp_min=15,temp_max=24,temp_d=1;
 			}
 		 else if(AUSW_MAIN==4860)
 		 	{
-			temp_min=40,temp_max=50,temp_d=3;
+			temp_min=35,temp_max=50,temp_d=3;
 			}
 		 else if(AUSW_MAIN==110)
 		 	{
-			temp_min=80,temp_max=110,temp_d=5;
+			temp_min=75,temp_max=110,temp_d=5;
 			}
 		else if(AUSW_MAIN==220)
 		 	{
-			temp_min=170,temp_max=300,temp_d=1;
+			temp_min=165,temp_max=300,temp_d=1;
 			}
 	     if((but==butR)||(but==butR_))
 	     	{

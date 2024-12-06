@@ -116,42 +116,50 @@ void analiz_func6(unsigned short mbadr, unsigned short mbdat){
 				}
 			else if(mbadr==23)		//Рег23 Уставка выходного напряжения,  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,220,230);
 				lc640_write_int(EE_U_OUT_SET,mbdat);			
 				}
 			else if(mbadr==24)		//Рег24 Уставка максимального (аварийного) выходного напряжения,  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,240,270);
 				lc640_write_int(EE_U_OUT_MAX,mbdat);			
 				}
 			else if(mbadr==25)		//Рег25 Уставка минимального (аварийного) выходного напряжения,  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,0,200);
 				lc640_write_int(EE_U_OUT_MIN,mbdat);			
 				}
 			else if(mbadr==26)		//Рег26 Уставка устранения фиксации заниженного напряжения по входу сеть или входу инв или выходу байпаса (активно только совместно с уставкой UacTurn...),  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,0,300);
 				lc640_write_int(EE_U_NET_ON_MIN,mbdat);			
 				}
 			else if(mbadr==27)		//Рег27 Уставка фиксации заниженного напряжения по входу сеть или входу инв или выходу байпаса (активно только совместно с уставкой UacTurn...),  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,0,300);
 				lc640_write_int(EE_U_NET_OFF_MIN,mbdat);			
 				}
 			else if(mbadr==28)		//Рег28 Уставка устранения фиксации завышенного напряжения по входу сеть или входу инв или выходу байпаса (активно только совместно с уставкой UacTurn... и только при скорости КАН 125кбит/с),  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,0,300);
 				lc640_write_int(EE_U_NET_ON_MAX,mbdat);			
 				}
 			else if(mbadr==29)		//Рег29 Уставка фиксации завышенного напряжения по входу сеть или входу инв или выходу байпаса (активно только совместно с уставкой UacTurn... и только при скорости КАН 125кбит/с),  1В
 				{
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				gran(&mbdat,0,300);
 				lc640_write_int(EE_U_NET_OFF_MAX,mbdat);			
 				}
 			else if(mbadr==30)		//Рег30	 Напряжение батареи включения,  1В
 				{
 				short temp_min=0,temp_max=300,temp_d=1;
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				if(AUSW_MAIN==24)
 				 	{
 					temp_min=22,temp_max=26,temp_d=1;
@@ -175,6 +183,7 @@ void analiz_func6(unsigned short mbadr, unsigned short mbdat){
 			else if(mbadr==31)		//Рег31	 Напряжение батареи выключения,  1В
 				{
 				short temp_min=0,temp_max=300,temp_d=1;
+				if((systemIsWrk)&&(SET_BLOCK==1)) return;
 				if(AUSW_MAIN==24)
 				 	{
 					temp_min=20,temp_max=24,temp_d=1;

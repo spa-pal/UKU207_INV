@@ -236,6 +236,11 @@ signed short snmp_dt_epu;
 //Настройка событий реле
 signed short snmp_rele_set_mask[2];
 
+//Время-дата
+signed short snmp_year, snmp_month, snmp_day, snmp_hour, snmp_minute, snmp_secunde;
+
+//Структура
+signed short snmp_numbypas, snmp_numinv, snmp_numphase, snmp_dcac, snmp_numsk; 
 
 U16 obj[10];
 U8 temp_ip[4];
@@ -746,6 +751,19 @@ snmp_dt_temper[2]=t_ext[2];
 
 snmp_rele_set_mask[0] = RELE_SET_MASK[0];
 snmp_rele_set_mask[1] = RELE_SET_MASK[1];
+
+snmp_year = LPC_RTC->YEAR;
+snmp_month = LPC_RTC->MONTH;
+snmp_day = LPC_RTC->DOM;
+snmp_hour = LPC_RTC->HOUR;
+snmp_secunde = LPC_RTC->SEC;
+snmp_minute = LPC_RTC->MIN;
+
+snmp_numbypas=NUMBYPASS;
+snmp_numinv=NUMINV;
+snmp_numphase=NUMPHASE;
+snmp_dcac=NUMINAC;
+snmp_numsk=NUMSK;
 }
 
 //-----------------------------------------------
@@ -1053,6 +1071,117 @@ if((mode==MIB_WRITE)&&(!systemIsWrk))
 	lc640_write_int(EE_U_BAT_MIN,snmp_u_bat_off);
 	}
 }
+
+//-----------------------------------------------
+void snmp_numinv_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_numinv,0,33);
+	lc640_write_int(EE_NUMINV,snmp_numinv);
+	}
+}
+
+//-----------------------------------------------
+void snmp_numbypas_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	if((snmp_numbypas!=0)&&(snmp_numbypas!=1)&&(snmp_numbypas!=10)) snmp_numbypas=0;
+	lc640_write_int(EE_NUMBYPASS,snmp_numbypas);
+	}
+}
+
+//-----------------------------------------------
+void snmp_numphase_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	if((snmp_numphase!=3)&&(snmp_numphase!=1)) snmp_numphase=1;
+	lc640_write_int(EE_NUMPHASE,snmp_numphase);
+	}
+}
+
+
+//-----------------------------------------------
+void snmp_dcac_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	if((snmp_dcac!=0)&&(snmp_dcac!=1)) snmp_dcac=0;
+	lc640_write_int(EE_NUMINAC,snmp_dcac);
+	}
+}
+
+//-----------------------------------------------
+void snmp_numsk_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_numsk,0,4);
+	lc640_write_int(EE_NUMSK,snmp_numsk);
+	}
+}
+//-----------------------------------------------
+void snmp_year_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_year,0,99);
+	LPC_RTC->YEAR=(uint16_t)snmp_year;
+	}
+}
+
+//-----------------------------------------------
+void snmp_month_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_month,1,12);
+	LPC_RTC->MONTH=(uint16_t)snmp_month;
+	}
+}
+
+//-----------------------------------------------
+void snmp_dom_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_day,1,31);
+	LPC_RTC->DOM=(uint16_t)snmp_day;
+	}
+}
+
+//-----------------------------------------------
+void snmp_hour_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_hour,0,23);
+	LPC_RTC->HOUR=(uint16_t)snmp_hour;
+	}
+}
+
+//-----------------------------------------------
+void snmp_min_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_minute,0,59);
+	LPC_RTC->MIN=(uint16_t)snmp_minute;
+	}
+}
+
+//-----------------------------------------------
+void snmp_sec_write (int mode)
+{
+if(mode==MIB_WRITE)
+	{
+	gran(&snmp_secunde,0,59);
+	LPC_RTC->SEC=(uint16_t)snmp_secunde;
+	}
+}
+
 //-----------------------------------------------
 void snmp_u_withouth_bat_write (int mode)
 {

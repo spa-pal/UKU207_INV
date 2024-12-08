@@ -708,6 +708,17 @@ char* aaa_="abc";
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_MIN_DC_INPUT_VOLTAGE_ALARM_LEVEL, 0},			MIB_INT(snmp_bypass_min_dc_input_voltage_alarm_level),		snmp_bypass_min_dc_input_voltage_alarm_level_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_RELAY1_EVENT_MASK, 0},			MIB_INT(snmp_rele_set_mask[0]),		snmp_rele1_set_mask_write},		//номер первого бпса 
 	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_BYPASS_RELAY2_EVENT_MASK, 0},			MIB_INT(snmp_rele_set_mask[1]),		snmp_rele2_set_mask_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_YEAR_OF_DATE, 0},		 				MIB_INT(snmp_year),			snmp_year_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_MONTH_OF_DATE, 0},		 			MIB_INT(snmp_month),		snmp_month_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_DAY_OF_DATE, 0},		 				MIB_INT(snmp_day),			snmp_dom_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_HOUR_OF_TIME, 0},		 				MIB_INT(snmp_hour),			snmp_hour_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_MINUTE_OF_TIME, 0},		 			MIB_INT(snmp_minute),		snmp_min_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_SECUNDE_OF_TIME, 0},		 			MIB_INT(snmp_secunde),		snmp_sec_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_NUMBER_OF_INVERTORS, 0},		 		MIB_INT(snmp_numinv),		snmp_numinv_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_NUMBER_OF_BYPASSES, 0},		 		MIB_INT(snmp_numbypas),		snmp_numbypas_write},	//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_NUMBER_OF_PHASES, 0},		 			MIB_INT(snmp_numphase),		snmp_numphase_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_DCAC, 0},		 						MIB_INT(snmp_dcac),			snmp_dcac_write},		//номер первого бпса 
+	{ MIB_INTEGER,  			12, {OID_ENTERPRISE, OID_DEVICE, SYSPARAMS, SYSPARAMS_NUMBER_OF_LOGICAL_INPUTS, 0},		 	MIB_INT(snmp_numsk),		snmp_numsk_write},		//номер первого бпса 
 
 
 	{ MIB_INTEGER | MIB_ATR_RO,  	13, {OID_ENTERPRISE, OID_DEVICE, DISPLAY_SK, DISPLAY_SK_ENTRY_NUMBER, 1},  			MIB_INT(snmp_sk_number[0]),  	NULL},	//Номер БПСа

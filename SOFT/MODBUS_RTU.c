@@ -250,6 +250,31 @@ void analiz_func6(unsigned short mbadr, unsigned short mbdat){
 				modbus_log_ptr = mbdat;
 				}
 
+			else if(mbadr==70)		
+				{
+				gran(&mbdat,0,33);
+	     		lc640_write_int(EE_NUMINV,mbdat);
+				}
+			else if(mbadr==71)		
+				{
+				if((mbdat!=0)&&(mbdat!=1)&&(mbdat!=10)) mbdat=0;
+				lc640_write_int(EE_NUMBYPASS,mbdat);
+				}
+			else if(mbadr==72)		
+				{
+				if((mbdat!=1)&&(mbdat!=3)) mbdat=1;
+				lc640_write_int(EE_NUMPHASE,mbdat);
+				}
+			else if(mbadr==73)		
+				{
+				gran(&mbdat,0,1);
+				lc640_write_int(EE_NUMINAC,mbdat);
+				}
+			else if(mbadr==74)		
+				{
+		     	gran(&mbdat,0,4);
+		     	lc640_write_int(EE_NUMSK,mbdat);				
+				}
 }
 
 //----------------------------------------------- 

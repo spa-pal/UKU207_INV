@@ -196,16 +196,16 @@ unsigned char *const reg_func3 []={
 &NULL_0,
 &NULL_0,
 &NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
-&NULL_0,
+(unsigned char*)&NUMINV+1,		//Рег70	 Количество инверторов в структуре
+(unsigned char*)&NUMINV,		//Рег70	 Количество инверторов в структуре
+(unsigned char*)&NUMBYPASS+1,	//Рег71	 Количество байпасов в структуре (10 - встроенный)
+(unsigned char*)&NUMBYPASS,		//Рег71	 Количество байпасов в структуре (10 - встроенный)
+(unsigned char*)&NUMPHASE+1,	//Рег72	 Количество фаз выходной сети в структуре (1 или 3)
+(unsigned char*)&NUMPHASE,		//Рег72	 Количество фаз выходной сети в структуре (1 или 3)
+(unsigned char*)&NUMINAC+1,		//Рег73	 (DC-AC)/AC 1 - Да  0 - Нет
+(unsigned char*)&NUMINAC,		//Рег73	 (DC-AC)/AC 1 - Да  0 - Нет
+(unsigned char*)&NUMSK+1,		//Рег74	 Количество сухих контактов в структуре
+(unsigned char*)&NUMSK,			//Рег74	 Количество сухих контактов в структуре
 &NULL_0,
 &NULL_0,
 &NULL_0,

@@ -197,6 +197,12 @@ extern signed short snmp_dt_epu;
 
 //Настройка событий реле
 extern signed short snmp_rele_set_mask[2];
+
+//Время-дата
+extern signed short snmp_year, snmp_month, snmp_day, snmp_hour, snmp_minute, snmp_secunde;
+
+//Структура
+extern signed short snmp_numbypas, snmp_numinv, snmp_numphase, snmp_dcac, snmp_numsk;
   
 //-----------------------------------------------
 void snmp_data (void);
@@ -257,6 +263,17 @@ void snmp_bypass_max_dc_input_voltage_alarm_level_write(int mode);
 void snmp_bypass_min_dc_input_voltage_alarm_level_write(int mode);
 void snmp_rele1_set_mask_write (int mode);	  
 void snmp_rele2_set_mask_write (int mode);
+void snmp_year_write (int mode);
+void snmp_month_write (int mode);
+void snmp_dom_write (int mode);
+void snmp_hour_write (int mode);
+void snmp_min_write (int mode);
+void snmp_sec_write (int mode);
+void snmp_numinv_write (int mode);
+void snmp_numbypas_write (int mode);
+void snmp_numphase_write (int mode);
+void snmp_dcac_write (int mode);
+void snmp_numsk_write (int mode);
 
 
 

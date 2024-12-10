@@ -1097,7 +1097,7 @@ void snmp_numphase_write (int mode)
 {
 if(mode==MIB_WRITE)
 	{
-	if((snmp_numphase!=3)&&(snmp_numphase!=1)) snmp_numphase=1;
+	if((snmp_numphase!=3)&&(snmp_numphase!=2)&&(snmp_numphase!=1)) snmp_numphase=1;
 	lc640_write_int(EE_NUMPHASE,snmp_numphase);
 	}
 }

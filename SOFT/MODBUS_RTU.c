@@ -262,7 +262,7 @@ void analiz_func6(unsigned short mbadr, unsigned short mbdat){
 				}
 			else if(mbadr==72)		
 				{
-				if((mbdat!=1)&&(mbdat!=3)) mbdat=1;
+				if((mbdat!=1)&&(mbdat!=2)&&(mbdat!=3)) mbdat=1;
 				lc640_write_int(EE_NUMPHASE,mbdat);
 				}
 			else if(mbadr==73)		

@@ -8226,7 +8226,7 @@ if(language){//o_2
 	ptrs[7]=		"                 {V ";
 	ptrs[8]=		" Uinv=0 -> works    ";
 	ptrs[9]=		" from main        } ";
-	ptrs[8]=		" Exit               ";
+	ptrs[10]=		" Exit               ";
 
  	if(sub_ind<index_set) index_set=sub_ind;
 	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
@@ -8907,7 +8907,7 @@ if(language){
 	 if(CAN_FILTR_EN)sub_bgnd("ON",'%',-1);
 	 else sub_bgnd("OFF",'%',-2);
 	 if((SET_BLOCK==1))sub_bgnd("ON",'^',-1);
-	 else sub_bgnd("OFF",'%',-2);
+	 else sub_bgnd("OFF",'^',-2);
 }//o_2_e
 	pointer_set(1);
 

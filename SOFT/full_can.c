@@ -782,8 +782,13 @@ if((__RXBUFF[1]==PUTTM3INV2)&&((__RXBUFF[0]&0x3f)>=MINIM_INV_ADRESS)&&((__RXBUFF
 	inv[inv_num]._buff[14]=__RXBUFF[4];
 	inv[inv_num]._buff[15]=__RXBUFF[5];
 	inv[inv_num]._buff[16]=__RXBUFF[6];
-	inv[inv_num]._buff[17]=__RXBUFF[7];	
+	inv[inv_num]._buff[17]=__RXBUFF[7];
 	
+/*	if(inv_num==0)
+		{
+		inv[inv_num]._buff[12]=0; 
+		inv[inv_num]._buff[13]=0;	
+		}*/
 	inv[inv_num]._cnt=0;
 	inv[inv_num]._is_on_cnt=10;
 	inv[inv_num]._valid=1; 

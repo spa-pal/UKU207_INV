@@ -1034,7 +1034,7 @@ else if(NUMBYPASS!=0)
 if (NUMINV)
 	{
 	char master_inv_ison=0;
-	f_out_inv=0;
+	//f_out_inv=0;
 	//someInvAvIsOn=0; 
 	/*0502
 	for(i=0;i<NUMINV;i++)
@@ -1135,9 +1135,19 @@ if (NUMINV)
 				(temp_SS5<4000) && 
 				(temp_SS6<2800) && 
 				((temp_SS6==0) || ((NUMINAC==1) && (NUMBYPASS==0)) || (NUMBYPASS==10)) && 
-				(temp_SS7 != 0x0120) &&
-				((temp_SS5<50) || (temp_SS5>160))
+				//(temp_SS7 != 0x0220) &&
+				(((temp_SS7&0x0020)&&(!(temp_SS7&0x0200))) || (!(temp_SS7&0x0020))) &&
+				(((U_BAT_MIN>160)&&(temp_SS5>1600)) || ((U_BAT_MIN<160)&&(temp_SS5>160)) || (temp_SS5==0)) &&
+
+				((!(temp_SS7 & (0x01<<5))) || ((temp_SS7 & (0x01<<5)) && ((temp_SS1-temp_SS4)>-100) && ((temp_SS1-temp_SS4)<100)))
+				
+								
+				//( ((temp_SS5==0)||(temp_SS5>160))/* && ((U_BAT_MIN<180) || (temp_SS5>1800)) ) */
+				//(  ((temp_SS5>160)&&(U_BAT_MIN<160)) || ((temp_SS5>1600)/*&&(U_BAT_MIN>160)*/) )
+				 //
+
 				)
+
 				|| (CAN_FILTR_EN==0)
 				)
 				{

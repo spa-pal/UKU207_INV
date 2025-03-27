@@ -1,4 +1,6 @@
 extern char snmp_community[10];
+extern char snmp_web_passw[10];
+extern char place_holder[70];
 
 //Информация об устройстве
 extern unsigned snmp_device_code;

@@ -10,6 +10,8 @@
 #include "common_func.h"
 
 char snmp_community[10];
+char place_holder[70]="Новосибирск.Новолуговое";
+char snmp_web_passw[10];
 
 //Информация об устройстве
 unsigned snmp_device_code;

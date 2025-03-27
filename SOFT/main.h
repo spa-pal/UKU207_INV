@@ -1298,6 +1298,17 @@ extern U8 tcp_connect_stat;
 extern signed short language;
 extern const char sm_mont_en[13][4];
 //o_2_e
+
+extern short pvlk;
+extern char web_plazma[5];
+extern short web_cnt_main;
+extern short web_cnt_2hz;
+extern const char* web_str;
+extern char uku_set_autorized;
+extern short uku_set_autorized_cnt;
+extern long web_param_input;
+extern short cntrl_stat_pwm;
+
 /*----------------------------------------------------------------------------
  * end of file
  *---------------------------------------------------------------------------*/

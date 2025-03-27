@@ -4,6 +4,7 @@
 #include "main.h"
 #include "snmp_data_file.h"
 #include "control.h"
+#include "http_data.h"
 
 //-----------------------------------------------
 void memo_read (void)
@@ -271,6 +272,16 @@ for(i=0;i<64;i++)
 for(i=0;i<10;i++)
 	{
 	snmp_community[i]=lc640_read(EE_COMMUNITY+(i*2));
+	}
+for(i=0;i<64;i++)
+	{
+	place_holder[i]=lc640_read(EE_HTTP_LOCATION+i);
+	}
+
+for(i=0;i<10;i++)
+	{
+	snmp_web_passw[i]=lc640_read(EE_WEB_PASSWORD+(i*2));
+	snmp_web_passw[8]=0;
 	}
 
 __ee_vz_cnt=lc640_read_int(EE_VZ_CNT);

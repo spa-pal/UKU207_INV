@@ -3493,7 +3493,7 @@ for(ii=0;ii<NUMPHASE;ii++)
 		}
 
 	// Авария по температуре байпаса
-	if((byps[ii]._flags&0x02) &&  byps[ii]._valid)
+	if((byps[ii]._flags&0x02) &&  (byps[ii]._valid) && (byps[0]._Uout<10))
 		{
 		if(byps[ii]._temper_av_cnt<CONST_AV_BYPS_HNDL_MAX_CNT)
 			{
@@ -3505,7 +3505,7 @@ for(ii=0;ii<NUMPHASE;ii++)
 				}  
 			}
 		}  
-	else if((!(byps[ii]._flags&0x02)) &&  byps[ii]._valid)
+	else if((!(byps[ii]._flags&0x02)) &&  (byps[ii]._valid)  && (byps[0]._Uout>10))
 		{
 		if(byps[ii]._temper_av_cnt)
 			{

@@ -36,6 +36,7 @@
 #include "curr_version.h"
 #include "sntp.h"
 #include "modbus_tcp.h"
+#include "http_data.h"
 
 extern U8 own_hw_adr[];
 extern U8  snmp_Community[];
@@ -658,6 +659,19 @@ void mess_set_inv (void){
 }
 
 //o_2_e
+
+short pvlk;
+char klbr_en;
+char plazma_pavlik;
+char web_plazma[5];
+short web_cnt_main;
+short web_cnt_2hz;
+const char* web_str= "plazma";
+char uku_set_autorized=0;
+short uku_set_autorized_cnt;
+long web_param_input;
+short cntrl_stat_pwm=500;
+
 //-----------------------------------------------
 void rtc_init (void) 
 {
@@ -4842,15 +4856,15 @@ if(language){//o_2
 		if(byps[sub_ind1]._flags&0x80)ptr[0]=		"Работа от инверторов";
 		else ptr[0]=								"Работа от сети      ";
 		}
-
-	if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5))
+	if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5) && (byps[0]._Uout<10))
+		{
+		ptr[0]=		" ПЕРЕГРЕВ!!!ВЫКЛ!!! ";	      
+		}
+	else if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5) && (byps[0]._Uout>10))
 		{
 		ptr[0]=		"  СИЛЬНЫЙ НАГРЕВ!!! ";	      
 		}
-	else if((byps[sub_ind1]._flags&0x02)&&(byps[sub_ind1]._cnt<5))
-		{
-		ptr[0]=		"отключился,перегрев ";	      
-		}
+	 
 	else if(byps[sub_ind1]._cnt>10)
 	 	{
 		ptr[0]=		"    не подключен    ";	
@@ -4897,13 +4911,21 @@ if(language){//o_2
 		else ptr[0]=								"In operate: mains   ";
 		}
 
-	if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5))
+/*	if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5))
 		{
 		ptr[0]=		"In operat. HIGH HEAT";	      
 		}
 	else if((byps[sub_ind1]._flags&0x02)&&(byps[sub_ind1]._cnt<5))
 		{
 		ptr[0]=		"Disabled. HIGH HEAT!";	      
+		}*/
+	if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5) && (byps[0]._Uout<10))
+		{
+		ptr[0]=		"Disabled. HIGH HEAT!";	      
+		}
+	else if((byps[sub_ind1]._flags&0x04)&&(byps[sub_ind1]._cnt<5) && (byps[0]._Uout>10))
+		{
+		ptr[0]=		"In operat. HIGH HEAT";	      
 		}
 	else if(byps[sub_ind1]._cnt>10)
 	 	{
@@ -4948,6 +4970,7 @@ if(language){//o_2
 
 	//int2lcdyx(sub_ind,0,2,0);
 	//int2lcdyx(index_set,1,2,0);
+	//char2lcdbyx(byps[sub_ind1]._flags,0,8);
 
     }
 else if(ind==iByps3f)
@@ -4985,13 +5008,21 @@ if(language){//o_2
 		else ptr[0]=								"Работа от сети      ";
 		}
 
-	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5))
+/*	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5))
 		{
 		ptr[0]=		"  СИЛЬНЫЙ НАГРЕВ!!! ";	      
 		}
 	else if((byps[0]._flags&0x02)&&(byps[0]._cnt<5))
 		{
 		ptr[0]=		"отключился,перегрев ";	      
+		}*/
+	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5) && (byps[0]._Uout<10))
+		{
+		ptr[0]=		" ПЕРЕГРЕВ!!!ВЫКЛ!!! ";	      
+		}
+	else if((byps[0]._flags&0x04)&&(byps[0]._cnt<5) && (byps[0]._Uout>10))
+		{
+		ptr[0]=		"  СИЛЬНЫЙ НАГРЕВ!!! ";	      
 		}
 	else if(byps[0]._cnt>10)
 	 	{
@@ -5029,14 +5060,23 @@ if(language){//o_2
 		else ptr[0]=								"In operate: mains   ";
 		}
 
-	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5))
+	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5) && (byps[0]._Uout<10))
+		{
+		ptr[0]=		"Disabled. HIGH HEAT!";	      
+		}
+	else if((byps[0]._flags&0x04)&&(byps[0]._cnt<5) && (byps[0]._Uout>10))
+		{
+		ptr[0]=		"In operat. HIGH HEAT";	      
+		}
+
+/*	if((byps[0]._flags&0x04)&&(byps[0]._cnt<5))
 		{
 		ptr[0]=		"In operat. HIGH HEAT";	      
 		}
 	else if((byps[0]._flags&0x02)&&(byps[0]._cnt<5))
 		{
 		ptr[0]=		"Disabled. HIGH HEAT!";	      
-		}
+		}  */
 	else if(byps[0]._cnt>10)
 	 	{
 		ptr[0]=		"    not connected   ";	
@@ -6931,7 +6971,7 @@ else		ptrs[3]="      resolved      ";//o_2
 		else 
 		{//o_2_s			
 			if(language)sub_bgnd(" байпас    ",'Z',-9);
-			else 		sub_bgnd(" bypass         ",'Z',-13);
+			else 		sub_bgnd(" bypass       ",'Z',-13);
 		}//o_2_e
 		
 		av_j_si_max=1;
@@ -7914,7 +7954,7 @@ else if (ind==iLan_set)
 	{
 	char sss[10]="abcdef";
 	char i/*,i_flag*/;
-if(language){//o_2		 
+if(language){//o_17		 
 	ptrs[0]=	" Ethernet         ! ";
 	ptrs[1]=	" DHCPклиент       @ ";
 	ptrs[2]=	" IPадрес            ";
@@ -7936,7 +7976,9 @@ if(language){//o_2
 	ptrs[18]=	"  000.000.000.00*   ";
 	ptrs[19]=	" Адресат для TRAP N5";
 	ptrs[20]=	"  000.000.000.00(   ";
-	ptrs[21]=	" Выход              ";
+	ptrs[21]=	" Пароль WEBинтер.-са";
+	ptrs[22]=	"       >            ";
+	ptrs[23]=	" Выход              ";
 
 	
 	if(!ETH_IS_ON)
@@ -7973,7 +8015,7 @@ if(language){//o_2
      	{
      	sub_bgnd("ВЫКЛ.",'@',-4);   
      	}
-//o_2_s
+//o_17_s
 }else{
 	ptrs[0]=	" Ethernet         ! ";
 	ptrs[1]=	" DHCP             @ ";
@@ -7996,7 +8038,10 @@ if(language){//o_2
 	ptrs[18]=	"  000.000.000.00*   ";
 	ptrs[19]=	" IP TRAP N5         ";
 	ptrs[20]=	"  000.000.000.00(   ";
-	ptrs[21]=	" Exit               ";
+	ptrs[21]=	" Password for WEB   ";
+	ptrs[22]=	"      >             ";
+	ptrs[23]=	" Exit               ";
+
 	
 	if(!ETH_IS_ON)
 		{
@@ -8004,6 +8049,7 @@ if(language){//o_2
 		ptrs[2]="                    ";
 		ptrs[3]="                    ";
 		}
+
 	
 	if(sub_ind<index_set) index_set=sub_ind;
 	else if((sub_ind-index_set)>2) index_set=sub_ind-2;
@@ -8032,7 +8078,7 @@ if(language){//o_2
      	sub_bgnd("OFF",'@',-2);   
      	}
 }
-//o_2_e		  
+//o_17_e		  
 	if(sub_ind==2)	ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',(sub_ind1+1));
 	else ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',0);
 	if(sub_ind==4)	ip2lcd(ETH_MASK_1,ETH_MASK_2,ETH_MASK_3,ETH_MASK_4,'$',(sub_ind1+1));
@@ -8116,7 +8162,16 @@ if(language){//o_2
 
 	if(sub_ind==10)community2lcd(sss,'<',sub_ind1,1);
 	else community2lcd(sss,'<',sub_ind1,0);
-	
+
+	for(i=0;i<8;i++)
+		{
+		sss[i]=snmp_web_passw[i];
+		}
+	sss[8]=0;		
+
+	if(sub_ind==21)community2lcd(sss,'>',sub_ind1,1);
+	else community2lcd(sss,'>',sub_ind1,0);
+		
 	//int2lcdyx(snmp_community[0],0,4,0);
 	//int2lcdyx(snmp_community[11],0,9,0);
 	//int2lcdyx(snmp_community[2],0,14,0);
@@ -13715,11 +13770,11 @@ else if(ind==iLog)
 		}
 	else if(but==butR_)
 		{
-	    	//avar_bat_hndl(0,0);	
+	    avar_inv_hndl(2,'S',1,0);	
 		}		
-	else if(but==butL)
+	else if(but==butL_)
 		{
-	    	//avar_s_hndl(1,0,1);	
+	    avar_inv_hndl(3,'O',1,1234);	
 		}
 				
 	else if(but==butL_)
@@ -15366,12 +15421,11 @@ else if (ind==iLan_set)
 	ret(1000);
 
 	si_max=1;
-	if(ETH_IS_ON!=0)si_max=21;
+	if(ETH_IS_ON!=0)si_max=23;
 
 	if(but==butD)
 		{
 		sub_ind++;
-		gran_char(&sub_ind,0,si_max);
 
 		if((sub_ind==2)&&(index_set==0))
 			{
@@ -15452,18 +15506,26 @@ else if (ind==iLan_set)
 			{
 			sub_ind++;
 			}
-	/*	if((sub_ind==4)&&(index_set==2))
+		if(sub_ind==21) 
 			{
-			index_set=3;
+			//sub_ind=6;
+			index_set=20;
 			sub_ind1=0;
-			}*/
-		
-		
+			}
+		if(sub_ind==22) 
+			{
+			sub_ind++;
+			}
+		gran_char(&sub_ind,0,si_max);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
 		gran_char(&sub_ind,0,si_max);
+		if(sub_ind==22) 
+			{
+			sub_ind--;
+			}
 		if(sub_ind==20) 
 			{
 			sub_ind--;
@@ -15504,11 +15566,14 @@ else if (ind==iLan_set)
 	else if(but==butLR_)
 		{
 		lc640_write_int(EE_ETH_IS_ON,1);
-		lc640_write_int(EE_ETH_DHCP_ON,0);
+		lc640_write_int(EE_ETH_DHCP_ON,1);
 		lc640_write_int(EE_ETH_IP_1,192);
 		lc640_write_int(EE_ETH_IP_2,168);
 		lc640_write_int(EE_ETH_IP_3,1);
 		lc640_write_int(EE_ETH_IP_4,251);
+		#ifdef UKU_KONTUR
+		lc640_write_int(EE_ETH_IP_4,230);
+		#endif
 		lc640_write_int(EE_ETH_MASK_1,255);
 		lc640_write_int(EE_ETH_MASK_2,255);
 		lc640_write_int(EE_ETH_MASK_3,255);
@@ -16189,7 +16254,39 @@ else if (ind==iLan_set)
 				}
 			speed=1;
 			}
-		}													          
+		}
+     else if(sub_ind==21)
+	     {
+		if(but==butE_)
+	     	{
+	     	sub_ind1++;
+			gran_ring_char(&sub_ind1,0,7);
+	     	}
+		if((but==butR)||(but==butR_))
+			{
+			snmp_web_passw[sub_ind1]++;
+			if((snmp_web_passw[sub_ind1]<32)&&(snmp_web_passw[sub_ind1]!=0)) snmp_web_passw[sub_ind1]=32;
+			else if ((snmp_web_passw[sub_ind1]>32)&&(snmp_web_passw[sub_ind1]<48)) snmp_web_passw[sub_ind1]=48;
+			else if ((snmp_web_passw[sub_ind1]>57)&&(snmp_web_passw[sub_ind1]<65)) snmp_web_passw[sub_ind1]=65;
+			else if ((snmp_web_passw[sub_ind1]>90)&&(snmp_web_passw[sub_ind1]<97)) snmp_web_passw[sub_ind1]=97;
+			else if (snmp_web_passw[sub_ind1]>122) snmp_web_passw[sub_ind1]=0;
+				//gran_ring(&ETH_GW_1,0,255);
+			lc640_write_int(EE_WEB_PASSWORD+(sub_ind1*2),snmp_web_passw[sub_ind1]);
+			speed=1;
+			}
+		if((but==butL)||(but==butL_))
+			{
+			snmp_web_passw[sub_ind1]--;
+			if((snmp_web_passw[sub_ind1]<32)&&(snmp_web_passw[sub_ind1]!=0)) snmp_web_passw[sub_ind1]=0;
+			else if ((snmp_web_passw[sub_ind1]>32)&&(snmp_web_passw[sub_ind1]<48)) snmp_web_passw[sub_ind1]=32;
+			else if ((snmp_web_passw[sub_ind1]>57)&&(snmp_web_passw[sub_ind1]<65)) snmp_web_passw[sub_ind1]=57;
+			else if ((snmp_web_passw[sub_ind1]>90)&&(snmp_web_passw[sub_ind1]<97)) snmp_web_passw[sub_ind1]=90;
+			else if (snmp_web_passw[sub_ind1]>122) snmp_web_passw[sub_ind1]=122;
+			//gran_ring(&ETH_GW_1,0,255);
+			lc640_write_int(EE_WEB_PASSWORD+(sub_ind1*2),snmp_web_passw[sub_ind1]);
+			speed=1;
+			}
+		}															          
     else if(sub_ind==si_max)
 	     {
 	     if(but==butE)
@@ -22367,7 +22464,7 @@ while (1)
 		{
 		b2Hz=0;
 
-				//uart_out_adr1(dig,150);
+		http_data();		//uart_out_adr1(dig,150);
 		
   		}
 
@@ -22430,6 +22527,8 @@ while (1)
 		system_status_hndl();
 		first_time_after_reset_hndl();
 		lc640_wdt_hndl();
+
+		if(uku_set_autorized_cnt)uku_set_autorized_cnt--;
 		}
 	if(b1min)
 		{

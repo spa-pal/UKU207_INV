@@ -1975,7 +1975,7 @@ while (*in)
 	lcd_buffer[temp]=*in++;
 	temp++;
     	}
-
+lcd_buffer[temp]='*';
 
 
 if((bFL2)&&(flash_on))

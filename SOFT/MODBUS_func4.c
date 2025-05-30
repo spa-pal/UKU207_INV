@@ -58,6 +58,10 @@ void wr_reg_func4(void){ //Заполнение регистров для функции 4 перед их отправкой
 		f_out_RTU = 22222;
 		}
 
+if(byps[0]._Pout>65000)	byps[0]._Pout=0;
+if(byps[1]._Pout>65000)	byps[1]._Pout=0;
+if(byps[2]._Pout>65000)	byps[2]._Pout=0;
+
 }
 
 

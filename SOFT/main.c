@@ -638,7 +638,7 @@ char B5_ff;
 char B5_ff_cnt;
 
 
-short plazma_5, plazma_28, plazma_1, plazma_stop=0, plazma_av_bypas;
+short plazma_5, plazma_28, plazma_1, plazma_stop=0, plazma_av_bypas, plazma_rxbuff4, plazma_rxbuff5;
 
 //o_2_s
 //------  английский язык -----------------------
@@ -3951,7 +3951,9 @@ if(language){//o_2
 	//int2lcdyx(f_out_inv,0,19,0);
 	//int2lcdyx(f_out_byps,0,4,0);
 	//int2lcdyx(lc640_read_int(EE_LC640_WDT),0,19,0);
-
+	//int2lcdyx(plazma_rxbuff4,0,4,0);
+	//int2lcdyx(plazma_rxbuff5,0,9,0);
+	//int2lcdyx(byps[0]._Pout,0,19,0);
 	//int2lcdyx(plazma_av_bypas,0,4,0);
 //o_2_s
 	}
@@ -7978,7 +7980,9 @@ if(language){//o_17
 	ptrs[20]=	"  000.000.000.00(   ";
 	ptrs[21]=	" Пароль WEBинтер.-са";
 	ptrs[22]=	"       >            ";
-	ptrs[23]=	" Выход              ";
+	ptrs[23]=	" MAC-адрес:         ";
+	ptrs[24]=	"    !: @: #: $: %: ^";
+	ptrs[25]=	" Выход              ";
 
 	
 	if(!ETH_IS_ON)
@@ -7998,23 +8002,27 @@ if(language){//o_17
 			ptrs[index_set+2]);
 	
 	pointer_set(1);
-     if(ETH_IS_ON)
-     	{
-     	sub_bgnd("ВКЛ.",'!',-3);   
-     	}
-     else 
-     	{
-     	sub_bgnd("ВЫКЛ.",'!',-4);   
-     	}
+	if(sub_ind<16)
+		{
+	     if(ETH_IS_ON)
+	     	{
+	     	sub_bgnd("ВКЛ.",'!',-3);   
+	     	}
+	     else 
+	     	{
+	     	sub_bgnd("ВЫКЛ.",'!',-4);   
+	     	}
+	
+	     if(ETH_DHCP_ON)
+	     	{
+	     	sub_bgnd("ВКЛ.",'@',-3);   
+	     	}
+	     else 
+	     	{
+	     	sub_bgnd("ВЫКЛ.",'@',-4);   
+	     	}
+		}
 
-     if(ETH_DHCP_ON)
-     	{
-     	sub_bgnd("ВКЛ.",'@',-3);   
-     	}
-     else 
-     	{
-     	sub_bgnd("ВЫКЛ.",'@',-4);   
-     	}
 //o_17_s
 }else{
 	ptrs[0]=	" Ethernet         ! ";
@@ -8040,7 +8048,9 @@ if(language){//o_17
 	ptrs[20]=	"  000.000.000.00(   ";
 	ptrs[21]=	" Password for WEB   ";
 	ptrs[22]=	"      >             ";
-	ptrs[23]=	" Exit               ";
+	ptrs[23]=	" MAC-address:       ";
+	ptrs[24]=	"    !: @: #: $: %: ^";
+	ptrs[25]=	" Exit               ";
 
 	
 	if(!ETH_IS_ON)
@@ -8060,48 +8070,60 @@ if(language){//o_17
 			ptrs[index_set+2]);
 	
 	pointer_set(1);
-     if(ETH_IS_ON)
-     	{
-     	sub_bgnd("ON",'!',-1);   
-     	}
-     else 
-     	{
-     	sub_bgnd("OFF",'!',-2);   
-     	}
-
-     if(ETH_DHCP_ON)
-     	{
-     	sub_bgnd("ON",'@',-1);   
-     	}
-     else 
-     	{
-     	sub_bgnd("OFF",'@',-2);   
-     	}
+	if(sub_ind<16)
+		{
+	     if(ETH_IS_ON)
+	     	{
+	     	sub_bgnd("ON",'!',-1);   
+	     	}
+	     else 
+	     	{
+	     	sub_bgnd("OFF",'!',-2);   
+	     	}
+	
+	     if(ETH_DHCP_ON)
+	     	{
+	     	sub_bgnd("ON",'@',-1);   
+	     	}
+	     else 
+	     	{
+	     	sub_bgnd("OFF",'@',-2);   
+	     	}
+		}
 }
-//o_17_e		  
-	if(sub_ind==2)	ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',(sub_ind1+1));
-	else ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',0);
-	if(sub_ind==4)	ip2lcd(ETH_MASK_1,ETH_MASK_2,ETH_MASK_3,ETH_MASK_4,'$',(sub_ind1+1));
-	else ip2lcd(ETH_MASK_1,ETH_MASK_2,ETH_MASK_3,ETH_MASK_4,'$',0);
+//o_17_e
+	if(sub_ind<16)
+		{		  
+		if(sub_ind==2)	ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',(sub_ind1+1));
+		else ip2lcd(ETH_IP_1,ETH_IP_2,ETH_IP_3,ETH_IP_4,'#',0);
+		
+		if(sub_ind==4)	ip2lcd(ETH_MASK_1,ETH_MASK_2,ETH_MASK_3,ETH_MASK_4,'$',(sub_ind1+1));
+		else ip2lcd(ETH_MASK_1,ETH_MASK_2,ETH_MASK_3,ETH_MASK_4,'$',0);	
+		
+		if( (ETH_TRAP1_IP_1==255) && (ETH_TRAP1_IP_2==255) && (ETH_TRAP1_IP_3==255) && (ETH_TRAP1_IP_4==255) ) sub_bgnd("    неактивен    ",'%',-14);
+		else
+			{
+			if(sub_ind==11)	ip2lcd(ETH_TRAP1_IP_1,ETH_TRAP1_IP_2,ETH_TRAP1_IP_3,ETH_TRAP1_IP_4,'%',(sub_ind1+1));
+			else ip2lcd(ETH_TRAP1_IP_1,ETH_TRAP1_IP_2,ETH_TRAP1_IP_3,ETH_TRAP1_IP_4,'%',0);
+			}
+			 
+		if( (ETH_TRAP2_IP_1==255) && (ETH_TRAP2_IP_2==255) && (ETH_TRAP2_IP_3==255) && (ETH_TRAP2_IP_4==255) ) sub_bgnd("    неактивен    ",'^',-14);
+		else
+			{
+			if(sub_ind==13)	ip2lcd(ETH_TRAP2_IP_1,ETH_TRAP2_IP_2,ETH_TRAP2_IP_3,ETH_TRAP2_IP_4,'^',(sub_ind1+1));
+			else ip2lcd(ETH_TRAP2_IP_1,ETH_TRAP2_IP_2,ETH_TRAP2_IP_3,ETH_TRAP2_IP_4,'^',0);
+			}
+
+		}
+	
 	if(sub_ind==6)	ip2lcd(ETH_GW_1,ETH_GW_2,ETH_GW_3,ETH_GW_4,')',(sub_ind1+1));
 	else ip2lcd(ETH_GW_1,ETH_GW_2,ETH_GW_3,ETH_GW_4,')',0);
-
+		
 	int2lcd(ETH_SNMP_PORT_READ,'[',0);
 	int2lcd(ETH_SNMP_PORT_WRITE,']',0);
 
-	if( (ETH_TRAP1_IP_1==255) && (ETH_TRAP1_IP_2==255) && (ETH_TRAP1_IP_3==255) && (ETH_TRAP1_IP_4==255) ) sub_bgnd("    неактивен    ",'%',-14);
-	else
-		{
-		if(sub_ind==11)	ip2lcd(ETH_TRAP1_IP_1,ETH_TRAP1_IP_2,ETH_TRAP1_IP_3,ETH_TRAP1_IP_4,'%',(sub_ind1+1));
-		else ip2lcd(ETH_TRAP1_IP_1,ETH_TRAP1_IP_2,ETH_TRAP1_IP_3,ETH_TRAP1_IP_4,'%',0);
-		}
 
-	if( (ETH_TRAP2_IP_1==255) && (ETH_TRAP2_IP_2==255) && (ETH_TRAP2_IP_3==255) && (ETH_TRAP2_IP_4==255) ) sub_bgnd("    неактивен    ",'^',-14);
-	else
-		{
-		if(sub_ind==13)	ip2lcd(ETH_TRAP2_IP_1,ETH_TRAP2_IP_2,ETH_TRAP2_IP_3,ETH_TRAP2_IP_4,'^',(sub_ind1+1));
-		else ip2lcd(ETH_TRAP2_IP_1,ETH_TRAP2_IP_2,ETH_TRAP2_IP_3,ETH_TRAP2_IP_4,'^',0);
-		}
+
 
 	if( (ETH_TRAP3_IP_1==255) && (ETH_TRAP3_IP_2==255) && (ETH_TRAP3_IP_3==255) && (ETH_TRAP3_IP_4==255) ) sub_bgnd("    неактивен    ",'&',-14);
 	else
@@ -8176,6 +8198,16 @@ if(language){//o_17
 	//int2lcdyx(snmp_community[11],0,9,0);
 	//int2lcdyx(snmp_community[2],0,14,0);
 	//int2lcdyx(snmp_community[sub_ind1],0,19,0);	
+
+	if(sub_ind>20)
+		{
+		char2lcdh(own_hw_adr[0],'!');
+		char2lcdh(own_hw_adr[1],'@');
+		char2lcdh(own_hw_adr[2],'#');
+		char2lcdh(own_hw_adr[3],'$');
+		char2lcdh(own_hw_adr[4],'%');
+		char2lcdh(own_hw_adr[5],'^');
+		}
 	}
 
 else if (ind==iInv_sets)
@@ -10980,7 +11012,48 @@ if(ind==iDeb)
 		int2lcdyx(udp_callback_plazma[9],3,13,0);
 		int2lcdyx(udp_callback_plazma[10],3,19,0);
 		int2lcdyx(sec_in_this_min,3,10,0); */
-     	}					 		  			
+     	}
+    else if(sub_ind==12)
+     	{
+     	bgnd_par(	"MAC                 ",
+     		    	"                    ",
+     		    	"                    ",
+     		    	"                    ");
+
+
+		int2lcdyx(own_hw_adr[0],1,3,0);
+		int2lcdyx(own_hw_adr[1],2,3,0);
+		int2lcdyx(own_hw_adr[2],3,3,0);
+		int2lcdyx(own_hw_adr[3],1,7,0);
+		int2lcdyx(own_hw_adr[4],2,7,0);
+		int2lcdyx(own_hw_adr[5],3,7,0);
+		
+		//int2lcdyx(mac_adr[0],1,11,0);
+		//int2lcdyx(mac_adr[1],2,11,0);
+		//int2lcdyx(mac_adr[2],3,11,0);
+		//int2lcdyx(mac_adr[3],1,15,0);
+		//int2lcdyx(mac_adr[4],2,15,0);
+		//int2lcdyx(mac_adr[5],3,15,0);
+     	
+/*		int2lcdyx(socket_udp,0,10,0);
+		int2lcdyx(udp_callback_cnt,0,15,0);
+		int2lcdyx(udp_callback_cnt1,0,19,0);
+		//int2lcdyx(udp_callback_plazma[0],1,3,0);
+		int2lcdyx((U16)full_days_since_2000_01_01,1,4,0);
+		int2lcdyx(this_year,1,7,0);
+		int2lcdyx(this_month,1,10,0);
+		int2lcdyx(day_of_month,1,13,0);
+		int2lcdyx(hour_in_this_day,1,16,0);
+		int2lcdyx(min_in_this_hour,1,19,0);
+		int2lcdyx(udp_callback_plazma[4],3,5,0);
+		int2lcdyx(udp_callback_plazma[5],2,3,0);
+		int2lcdyx(udp_callback_plazma[6],2,7,0);
+		int2lcdyx(udp_callback_plazma[7],2,11,0);
+		int2lcdyx(udp_callback_plazma[8],2,15,0);
+		int2lcdyx(udp_callback_plazma[9],3,13,0);
+		int2lcdyx(udp_callback_plazma[10],3,19,0);
+		int2lcdyx(sec_in_this_min,3,10,0); */
+     	}					 		  										 		  			
      }
 
 else if((ind==iAv_view)||(ind==iAv_view_avt))
@@ -12293,7 +12366,7 @@ if(but==butUD)
      if(ind!=iDeb)
           {
 		c_ind=a_ind;
-		tree_up(iDeb,11,0,0);
+		tree_up(iDeb,12,0,0);
 		
           }
      else 
@@ -12330,13 +12403,13 @@ else if(ind==iDeb)
 		{
 		sub_ind++;
 		index_set=0;
-		gran_ring_char(&sub_ind,0,11);
+		gran_ring_char(&sub_ind,0,12);
 		}
 	else if(but==butL)
 		{
 		sub_ind--;
 		index_set=0;
-		gran_ring_char(&sub_ind,0,11);
+		gran_ring_char(&sub_ind,0,12);
 		}
 		
 	else if(sub_ind==1)
@@ -15421,7 +15494,7 @@ else if (ind==iLan_set)
 	ret(1000);
 
 	si_max=1;
-	if(ETH_IS_ON!=0)si_max=23;
+	if(ETH_IS_ON!=0)si_max=25;
 
 	if(but==butD)
 		{
@@ -15516,12 +15589,26 @@ else if (ind==iLan_set)
 			{
 			sub_ind++;
 			}
+		if(sub_ind==23) 
+			{
+			//sub_ind=6;
+			index_set=22;
+			sub_ind1=0;
+			}
+		if(sub_ind==24) 
+			{
+			sub_ind++;
+			}
 		gran_char(&sub_ind,0,si_max);
 		}
 	else if(but==butU)
 		{
 		sub_ind--;
 		gran_char(&sub_ind,0,si_max);
+		if(sub_ind==24) 
+			{
+			sub_ind--;
+			}
 		if(sub_ind==22) 
 			{
 			sub_ind--;
@@ -21975,6 +22062,8 @@ if(++t0cnt>=10)
 	     {
 	     t0cnt3=0;
 	     b1Hz=1;
+		if(bFL)bFL=0;
+		else bFL=1;
 		 if(main_1Hz_cnt<10000) main_1Hz_cnt++;
 		 if(kan_aktivity_cnt)kan_aktivity_cnt--;
 

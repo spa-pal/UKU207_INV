@@ -969,6 +969,10 @@ else if(NUMMAKB==4)
 #endif
 0802*/
 
+if(byps[0]._Pout>65000)	byps[0]._Pout=0;
+if(byps[1]._Pout>65000)	byps[1]._Pout=0;
+if(byps[2]._Pout>65000)	byps[2]._Pout=0;
+
 if(B5_ff)
 	{
 	if(B5_ff_cnt<50)B5_ff_cnt++;
@@ -1599,6 +1603,8 @@ if((NUMBYPASS) && (NUMBYPASS!=10))
 	else 				f_out=0;
 	}
 else 				f_out=f_out_inv;
+
+//f_out=333;
 }
 
 //-----------------------------------------------

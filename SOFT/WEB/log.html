@@ -1,0 +1,472 @@
+<!DOCTYPE html >
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Журнал событий УКУ</title>
+	<link href="uku.css" rel="stylesheet">
+	<script src="jquery-1.7.min.js"></script>
+	<script src="dict.js"></script>
+	<script src="pal_decoder.js"></script>
+	<script>
+		var passwordFormIsPainted=0;
+		var passwordFormDeniedIsPainted=0;
+	  	var logTblIsPainted=0;
+		var logTblIsFilled=0;
+		var log_data= new Array(64);
+		var deepOfLog=0;
+		var dataOfRec="";
+		var alarmArray= new Array(3);
+		var offs=0;
+		var logReadIsStoped;
+		var log_text_to_file="  ";
+
+	  	$( function() {
+			console.log("Страница log загружена");
+	  	} );
+
+		function dataUpdate(num){
+			var data = {"num" : num};
+			$.getJSON( "log.cgx", data, success );
+		console.log("запрос записи журнала №", data);	
+		}
+
+		function dataUpdate_(num){
+			var data = {"num" : num};
+			$.getJSON( "log.cgx", data, success );
+		console.log("запрос_ записи журнала №", data);	
+		}
+
+		function palStr2HexDecoder(input) {
+			var output = "",i=0;
+			while (input[i*2]&&input[i*2+1]){
+				output+= String.fromCharCode("0x"+input.substr(i*2,2)); 
+				i++;
+			}
+			return output;
+		}
+		function pswrdEntry(input) {
+			$.post("but.cgx",{ parol: input },function(){console.log("Пришел ответ на пароль")});
+			console.log("Отправлен пароль");
+			setTimeout(dataUpdate,100);
+		}
+		function palAlarmDecoder(input) {
+			var mont_string=["   ","янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"]; 
+			var output = ["abc","def","Vfv","","",""];
+			var beg_time_y=input[8].charCodeAt(0);
+			var beg_time_mnth=input[9].charCodeAt(0);
+			var beg_time_d=input[10].charCodeAt(0);
+			var beg_time_h=input[12].charCodeAt(0);
+			var beg_time_m=input[13].charCodeAt(0);
+			var beg_time_s=input[14].charCodeAt(0);
+			var end_time_y=input[16].charCodeAt(0);
+			var end_time_mnth=input[17].charCodeAt(0);
+			var end_time_d=input[18].charCodeAt(0);
+			var end_time_h=input[20].charCodeAt(0);
+			var end_time_m=input[21].charCodeAt(0);
+			var end_time_s=input[22].charCodeAt(0);			
+
+			output[1]=pad(beg_time_h,2)+"-"+pad(beg_time_m,2)+"-"+pad(beg_time_s,2);
+			output[2]=pad(beg_time_d,2)+"-"+mont_string[beg_time_mnth]+"-"+pad(beg_time_y,2);
+
+			if(input.substr(16,16)=="AAAAAAAAAAAAAAAA"){
+				output[3]="Не";
+				output[4]="устранена";
+			}
+			else{
+				output[3]=pad(end_time_h,2)+"-"+pad(end_time_m,2)+"-"+pad(end_time_s,2);
+				output[4]=pad(end_time_d,2)+"-"+mont_string[end_time_mnth]+"-"+pad(end_time_y,2);
+			}
+
+
+			if(input.substr(0,4)=="XXXX"){
+				output[0]="DELETE_IT"
+			}
+			else if(input[0]=='U'){
+				if(input[2]=='R'){
+					output[0]="Перезагрузка или включение инверторной системы"	
+				}
+			output[3]=output[1];
+			output[4]=output[2];	
+			}
+			else if(input[0]=='W'){
+				if(input[2]=='N'){
+					output[0]="Переход работы байпаса с инверторов на сеть"	
+				}
+				if(input[2]=='I'){
+					output[0]="Переход работы байпаса с сети на инверторы "	
+				}
+			output[3]=output[1];
+			output[4]=output[2];
+			}
+			else if(input[0]=='T'){
+				if(input[2]=='N'){
+					output[0]="Смена приоритета работы байпаса с инверторов на сеть"	
+				}
+				if(input[2]=='I'){
+					output[0]="Смена приоритета  работы байпаса с сети на инверторы "	
+				}
+			output[3]=output[1];
+			output[4]=output[2];
+			}
+			else if(input[0]=='P'){
+				if(input[2]=='A'){
+					if(output[4]!="устранена") 	output[0]="Авария питающей сети.";
+					else 						output[0]="Авария питающей сети. Uмин.сети = "+((input[24].charCodeAt(0) + (input[25].charCodeAt(0)*256))) +"В\n";
+				}
+			}
+			else if(input[0]=='I'){
+				output[0]="Авария инвертора №";
+				output[0]+=(input[1].charCodeAt(0)+1)+". ";
+				if(input[2]=='S')output[0]+="Внутренняя неисправность";
+				else if(input[2]=='T')output[0]+="Перегрев (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "°С).";
+				else if(input[2]=='O')output[0]+="Завышено выходное напряжение (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))/10) + "В).";
+				else if(input[2]=='o')output[0]+="Занижено выходное напряжение (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))/10) + "В).";
+				else if(input[2]=='C')output[0]+="Разрыв связи";
+				else if(input[2]=='I')output[0]+="Udc не в норме";	
+				else if(input[2]=='L')output[0]+="Перегрузка по Pвых";				
+			}
+			else if(input[0]=='B'){
+				output[0]="Авария байпаса. ";
+				if(input[2]=='S')output[0]+="Внутренняя неисправность";
+				else if(input[2]=='N'){
+					output[0]+="Напряжение сети не в норме (Uсеть.";
+					if(input[1].charCodeAt(0)==1) output[0]+= "ф.A";
+					else if(input[1].charCodeAt(0)==2) output[0]+= "ф.B";
+					else if(input[1].charCodeAt(0)==3) output[0]+= "ф.C";
+					output[0]+= " = " + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) +"В)";
+				}
+				else if(input[2]=='F')output[0]+="Синхронизация с инверторами не в норме";
+				else if(input[2]=='M')output[0]="Ручное управление байпасом. Работа только от сети";
+				else if(input[2]=='m')output[0]="Ручное управление байпасом. Работа только от инверторов";
+				else if(input[2]=='f')output[0]+="Синхронизация с сетью не в норме";
+				else if(input[2]=='T')output[0]+="Перегрев (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "°С).";
+				else if(input[2]=='O'){
+					output[0]+="Выходное напряжение не в норме (Uвых."; 
+					if(input[1].charCodeAt(0)==1) output[0]+= "ф.A";
+					else if(input[1].charCodeAt(0)==2) output[0]+= "ф.B";
+					else if(input[1].charCodeAt(0)==3) output[0]+= "ф.C";
+					output[0]+= " = " + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) +"В)";	
+				}
+				else if(input[2]=='C')output[0]+="Разрыв связи";
+				else if(input[2]=='I'){
+					output[0]+="Напряжение инверторов не в норме (Uинв.";
+					if(input[1].charCodeAt(0)==1) output[0]+= "ф.A";
+					else if(input[1].charCodeAt(0)==2) output[0]+= "ф.B";
+					else if(input[1].charCodeAt(0)==3) output[0]+= "ф.C";
+					output[0]+= " = " + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) +"В)";	
+				}
+				else if(input[2]=='L')output[0]+="Перегрузка по Pвых";				
+			}			
+			else if((input[0]=='D')&&(input[2]=='U')){
+				output[0]="Авария входного напряжения DC (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "В). ";
+
+			}
+			else if((input[0]=='O')&&(input[2]=='U')){
+				output[0]="Авария выходного напряжения (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "В). ";
+				if(input[1].charCodeAt(0)=='1')output[0]="Авария выходного напряжения фазы A (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "В). ";
+				else if(input[1].charCodeAt(0)=='2')output[0]="Авария выходного напряжения фазы B (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "В). ";
+				else if(input[1].charCodeAt(0)=='3')output[0]="Авария выходного напряжения фазы C (" + ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))) + "В). ";
+			}
+			else if(input[2]=='Z'){
+				if(input[0]=='s')output[0]="Ускоренный заряд.";
+				else if(input[0]=='u')output[0]="Уравнительный заряд.";
+				else if(input[0]=='f')output[0]="Формовочный заряд.";
+
+				if(input.substr(16,2)=="AA")
+					{
+					output[3]="Не";
+					output[4]="завершен";
+					}
+				else if(input.substr(24,2)=="CC")
+					{
+					output[0]+="Завершен успешно.";	
+					}	
+				else if(input.substr(24,2)=="BB")
+					{
+					output[0]+="Прерван.";	
+					}						
+			}
+
+			else if(input[0]=='B'){
+				var batNum=(input[1].charCodeAt(0)+1);
+				if(input[2]=='C'){output[0]="Авария батареи №" + batNum + ". Батарея неопределена";}
+				else if(input[2]=='T')
+					{
+					output[0]="Авария батареи №" + batNum;
+					if(input[3]=='3') output[0]+="Сильный нагрев";
+					else output[0]+="Нагрев";
+					}
+				else if(input[2]=='S'){output[0]="Авария ассимметрии батареи №" + batNum + ".";}
+				else if(input[2]=='W'){
+					output[0]="Разряд батареи №" + batNum + ".";
+					output[5]="";
+					output[5]+="Начальное напряжение батареи   "+ ((input[11].charCodeAt(0) + (input[15].charCodeAt(0)*256))/10) +"В\n";
+					output[5]+="Конечное напряжение батареи    "+ ((input[6].charCodeAt(0) + (input[7].charCodeAt(0)*256))/10) +"В\n";
+					output[5]+="Отданный заряд                 "+ (((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))/10).toFixed() /10)+"А*ч\n";
+				}
+				else if(input[2]=='Z'){output[0]="Выравнивающий заряд батареи №" + batNum + ".";}
+				else if(input[2]=='K'){
+					output[0]="Контроль емкости батареи №" + batNum + ".";
+					if(input[19]=='E') output[0]+="Аварийное завершение.";
+					output[5]="";
+					output[5]+="Измеренная емкость батареи     "+ ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))/10) +"А*ч\n";
+					output[5]+="Начальное напряжение батареи   "+ ((input[11].charCodeAt(0) + (input[15].charCodeAt(0)*256))/10) +"В\n";
+					output[5]+="Конечное напряжение батареи    "+ ((input[6].charCodeAt(0) + (input[7].charCodeAt(0)*256))/10) +"В\n";
+				}
+				else if(input[2]=='M'){
+					var nmp=input[3].charCodeAt(0)>>4;
+					var bv=input[3].charCodeAt(0)%16;
+					if(bv>5)bv=5;
+					output[0]="Контроль емкости батареи №" + batNum + " (поэлементный контроль).";
+					if(input[19]=='E') output[0]+="Аварийное завершение.";
+					console.log("nmp=", nmp);
+					output[5]="";
+					output[5]+="Измеренная емкость батареи     "+ ((input[4].charCodeAt(0) + (input[5].charCodeAt(0)*256))/10) +"А*ч\n";
+					output[5]+="Начальное напряжение батареи   "+ ((input[11].charCodeAt(0) + (input[15].charCodeAt(0)*256))/10) +"В\n";
+					output[5]+="Конечное напряжение батареи    "+ ((input[6].charCodeAt(0) + (input[7].charCodeAt(0)*256))/10) +"В\n";
+
+					for(var i_=0; i_<bv; i_++){
+						output[5]+="Конечное напряжение элемента №"+(nmp==2 ? "1." : "")+(i_+1)+"     " + ((input[36+(i_*2)].charCodeAt(0) + (input[37+(i_*2)].charCodeAt(0)*256))/10) +"В "+ (nmp==2 ? ("             Конечное напряжение элемента №2."+(i_+1)+"     " + (input[46+(i_*2)].charCodeAt(0) + (input[47+(i_*2)].charCodeAt(0)*256))/10) + "В": "")+ "\n";
+					}
+				}
+			}			
+			/*output1 += 	'<button id="but_save" style="width:100px margin: 0 10px" onclick="button_save_press">Сохранить в файл</button>';*/
+			return output;
+		}
+
+		function button_save_press() {
+            const data = "";
+            
+            /*deepOfLog = 5;*/
+
+            log_text_to_file = "\r\n";
+
+            /*for(var i_ =0; i_< deepOfLog; i_++)
+            {
+            	log_text_to_file+= i_.toString();
+            	log_text_to_file+= "\r\n";
+            }*/
+
+				{
+				var j,k;
+				for (var j=0; j<deepOfLog; j++)
+					{
+					k=Number(j)+1;
+					if(log_data[j][0]=="DELETE_IT")
+						{
+						offs++;
+						}	
+					else {
+						log_text_to_file+= ((k)-offs).toString();
+						log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";
+						log_text_to_file+= log_data[j][1];
+						log_text_to_file+= "  ";
+						/*log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";*/
+						log_text_to_file+= log_data[j][2];
+						log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";
+						log_text_to_file+= log_data[j][3];
+						log_text_to_file+= "  ";
+						/*log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";*/
+						log_text_to_file+= log_data[j][4];
+						log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";
+						log_text_to_file+= log_data[j][0];
+						log_text_to_file+= "\r\n";
+						log_text_to_file+= "\t";
+						log_text_to_file+= log_data[j][5];
+						log_text_to_file+= "\r\n";
+						}
+					}
+				}            
+
+            const blob = new Blob([log_text_to_file], { type: 'text/plain' });
+            
+            const url = window.URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'log.txt'; 
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+	 	function success ( inputData ) {
+	 		deepOfLog=inputData.logDeep;
+			numOfLogItem=inputData.itemNumber;
+			/*document.getElementById("dev_name").innerHTML=palDecoder(inputData.model);
+			document.getElementById("dev_serial").innerHTML="S№"+palDecoder(inputData.serial);
+			document.getElementById("dev_place").innerHTML=palDecoder(inputData.place);*/
+
+			console.log("success works ", "autorised=", inputData.autorised, "deepOfLog=", deepOfLog, "numOfLogItem=", numOfLogItem);
+			console.log("pFIP   ", passwordFormIsPainted);
+
+			if((inputData.autorised=="OFF")||(inputData.autorised=="DENIED")){
+				console.log("in pFIP   ");
+				if(passwordFormIsPainted==0){
+					var div = document.createElement('div');
+					div.className = "alert alert-success";
+					div.id="window1";
+					div.innerHTML = '<span id = "span_pasw">Введите пароль</span><input type="password" class="large" name="PassWord" id="passWord"  autocomplete="off" maxlength="25" value=""><button id="pswBut" onclick="pswrdEntry(passWord.value)">Ввести</button>';
+					main.appendChild(div);
+					passwordFormIsPainted=1;
+				}
+			$("#inmain").css("display", "none");
+			}
+			console.log("pFDIP   ", passwordFormDeniedIsPainted);
+			if(inputData.autorised=="DENIED"){
+				console.log("in pFDIP   ");
+				if(passwordFormDeniedIsPainted==0){
+					var span = document.createElement('div');
+					span.innerHTML = '<span>Пароль неверный повторите попытку!</span>';
+					span.id="span_denied";
+					var div = document.getElementsByClassName("alert");
+					window1.appendChild(span);
+					passwordFormDeniedIsPainted=1;
+  					setTimeout(function() {
+    				span.parentNode.removeChild(span);
+    				passwordFormDeniedIsPainted=0;
+  					}, 3000);					
+				}
+			setTimeout(dataUpdate,100);	
+			}
+			if(inputData.autorised=="ON") {
+				passwordFormDeniedIsPainted=0;
+				passwordFormIsPainted=0;	
+
+				$("#inmain").css("display", "block");
+
+				var div = document.getElementsByClassName("alert");
+				if(div[0]) div[0].parentNode.removeChild(div[0]);
+				passwordFormIsPainted=0;
+
+				dataOfRec=inputData.logItem;
+				dataOfRec=palStr2HexDecoder(dataOfRec);
+
+				alarmArray=palAlarmDecoder(dataOfRec);
+
+				log_data[numOfLogItem] = alarmArray;
+
+				if(deepOfLog!="0") {
+					$("#item1_head").text("ЖУРНАЛ СОБЫТИЙ");
+					/*for(var i=0; i<deepOfLog; i++) {
+						log_data[numOfLogItem] = inputData.logItem.split("><");
+					}*/
+					if(numOfLogItem>deepOfLog-1){
+						numOfLogItem=0;
+						offs=0;
+					}
+					setTimeout(dataUpdate,100);
+				}
+				else {
+					$("#item1_head").text("ЖУРНАЛ СОБЫТИЙ ПУСТ");
+				}
+
+
+				if (deepOfLog!="0") {
+					if (logTblIsPainted==0) {
+						var myTable = '' ;
+						myTable += '<table id="logTable"  cellspacing=0 cellpadding=2 border=1>' ;
+						myTable += '<col width="5" valign="middle" align="left">' ;
+						myTable += '<col width="10%" valign="middle" align="left">' ;
+	   					myTable += '<col width="10%" valign="middle" text-align="right" class = "abc">' ;
+	   					myTable += '<col width="75%" valign="middle" align="justify">' ;
+	 
+						myTable +=  "<thead>" ;
+						myTable +=   "<tr>";
+						myTable +=    "<th>"     + " № " + 	"</th>";
+						myTable +=    "<th>"     + "Начало" +     "</th>";
+						myTable +=    "<th>"     + "Окончание" +     "</th>";
+						myTable +=    "<th>"     + "Событие" +     "</th>";
+						myTable +=   "</tr>" ;
+						myTable +=  "</thead>" ;
+						myTable +=  "<tbody>" ;
+
+						for (var i = 0; i < deepOfLog; i++) {
+						    myTable +=    '<tr id = "log_row'+i+'">';
+						    myTable += '<td height="50" class="centerAligned" id = "log_item_num_'+i+'"></td><td class="rightAligned" id = "log_item_beg_time'+i+'" >';
+						    myTable += '<div class="centerAligned" id = "log_item_beg_time_'+i+'" ></div><div class="centerAligned" id = "log_item_beg_data_'+i+'" ></div>';
+						    myTable += "</td>";
+						    myTable += '<td class="rightAligned" id = "log_item_end_time'+i+'" >';
+						    myTable += '<div class="centerAligned" id = "log_item_end_time_'+i+'" >';
+						    myTable += "</div>";
+						    myTable += '<div class="centerAligned" id = "log_item_end_data_'+i+'" >';
+						    myTable += "</div>";					    
+						    myTable += "</td>";
+						    myTable += '<td><div style="padding-left:10px" data-html="true" class="rightAligned  tooltip-inner" id = "log_item_string'+i+'" ></div></td>';
+						}
+						myTable +=  "</tbody>" ;
+						myTable += "</table>" ;
+
+						$("#item1").append(myTable) ;
+						logTblIsPainted=1;
+						logTblIsFilled=0;
+						offs=0;
+					} 
+					if (logTblIsPainted==1) {
+						var j,k;
+						j=numOfLogItem;
+						k=Number(j)+1;
+						/*_2_for(i=0;i<deepOfLog;i++) {*/
+							if(log_data[j][0]=="DELETE_IT"){
+								var elem=$("#log_item_beg_time_"+j).parent();
+								elem.remove();
+								$("#log_row"+j).remove();
+								offs++;
+							}	
+							else {
+								$("#log_item_num_"+j).text((k)-offs);
+								$("#log_item_beg_time_"+j).text(log_data[j][1]);
+								$("#log_item_beg_data_"+j).text(log_data[j][2]);
+								$("#log_item_end_time_"+j).text(log_data[j][3]);
+								$("#log_item_end_data_"+j).text(log_data[j][4]);
+								$("#log_item_string"+j).text(log_data[j][0]+log_data[j][5]);
+								/*$("#log_item_string"+j).prop('title',log_data[j][5]);*/
+
+							}
+						/*_2_}*/
+					}
+				}
+			}
+	    }
+		
+		dataUpdate();
+		console.log("12356");
+	</script>	
+</head>
+<body>
+<div id="wrap">
+	<div id="dev_header">
+		<!--<div id="dev_name"> </div>-->
+		<!--<div id="dev_place"> </div>-->
+		<!--<div id="dev_serial"> </div>-->
+	</div>
+
+	<div id="main">
+		<div id="inmain">
+			<button id="but_save" style="width:100px margin: 0 10px" onclick="button_save_press()">Сохранить в файл log.txt</button>'
+			<p><h2 id="item1_head" align = "middle"></h2></p>
+			<div id= "item1"></div>
+			<p><h2 id="item2_head" align = "middle"></h2></p>
+			<div id= "item2"></div>	
+		</div>
+	</div>	
+	<div id="sidebar">
+		<ul>
+			<li><a href="index.htm">Главная</a></li>
+			<li><a href="set.html">Установки</a></li>
+			<li><a href="log.html">Журнал событий</a></li>
+			<!--<li><a href="bww.html">Блок внешних вводов</a></li>-->
+		</ul>
+	</div>
+</div>
+<div id="footer">
+</div>
+</body></html>

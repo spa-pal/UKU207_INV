@@ -1,0 +1,772 @@
+<!DOCTYPE html >
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Установки</title>
+	<link href="uku.css" rel="stylesheet">
+	<script src="jquery-1.7.min.js"></script>
+	<script src="dict.js"></script>
+	<script src="pal_decoder.js"></script>
+	<script>
+		var passwordFormIsPainted=0;
+		var passwordFormDeniedIsPainted=0;
+		var batTblIsPainted=0;
+		var srcTblIsPainted=0;
+		var invTblIsPainted=0;
+		var bypasTblIsPainted=0;
+		var numOfBat=0;
+		var numOfSrc=0;
+		var numOfInv=0;
+		var numOfBypas=0;	
+		var src_data= new Array(16);
+		var isPainted=0;
+	  
+	  	$( function() {
+			console.log("Страница загружена");
+	  	} );
+
+		function isCheck(name) {
+			var a="name='radio_input_2'";
+		     output=$('input[name="' + name + '"]:checked').val();
+		     return output;
+		}
+
+		function pswrdEntry(input) {
+			$.post("but.cgx",{ parol: input },function(){console.log("Пришел ответ на пароль")});
+			console.log("Отправлен пароль");
+		}
+		function dataUpdate(){
+			var data = {};
+			$.getJSON( "bww.cgx", data, success );
+		}
+		function button_enter_press(input) {
+			var mainSelector=set_dict[input][4];
+			var parametrSet="";
+			var inp;
+			var inpSelector;
+			var mult=set_dict[input][3];
+
+			if(mainSelector=="INTINPUT"){
+				inpSelector="#text_input_"+input;
+				inp=$(inpSelector).val();
+				parametrSet=inp;
+				if(mult=="INT/10")parametrSet=inp*10;
+				else if(mult=="INT/100")parametrSet=inp*100;
+				else if(mult=="INT/1000")parametrSet=inp*1000;
+			}
+			else if(mainSelector=="STRINGINPUT"){
+				inpSelector="#text_input_"+input;
+				inp=$(inpSelector).val();
+				parametrSet=pal_cyr_coder(inp);
+			}
+			else if(mainSelector=="RADIOINPUT"){
+				inpSelector="radio_input_" + input;
+				inp=isCheck(inpSelector);
+				parametrSet=inp;
+			}
+
+			
+			/*var xxx=pal_cyr_coder(input2);*/
+			$.post("but.cgx",{ param: set_dict[input][7], value: parametrSet},function(){console.log("Пришел ответ на пароль")});
+			console.log("Отправлен параметр");
+			
+		}
+
+		function controlGenerator(num) {
+			var output="";
+			if(set_dict[num][4]=="INCDEC") {
+				/*output = 	'<input value="-' + num + '" type="button" onclick="buttonPressing()" class = "btn">';
+				output += 	'<input value="+' + num + '" type="button" onclick="alert(\'Клик+!\')" class = "btn">';*/
+				output = 	'<button id="but' + num +'mi" style="width:50px"  value="-' + num + '" type="button" onclick="buttonPressing(this.id)" class = "btn"> - </button>';
+				output += 	'<button id="but' + num +'pl" style="width:50px"  value="+' + num + '" type="button" onclick="buttonPressing(this.id,this.value)" class = "btn"> + </button>';
+			}
+			else if(set_dict[num][4]=="INTINPUT") {
+				var mmult =1;
+				if(set_dict[num][3]=="INT/10")mmult =10;
+				output +=	'<input id="text_input_' + num + '" type="text" size="42" class="digitInput">';
+				output += 	'<button id="but_enter_' + num + '" style="width:40px margin: 0 10px" onclick="button_enter_press(' + num + ')">Ввести</button>';/*,' + mmult + '*/
+			}
+			else if(set_dict[num][4]=="STRINGINPUT") {
+				output +=	'<input id="text_input_' + num + '" type="text" size="42" class="textInput">';
+				output += 	'<button id="but_enter_' + num + '" style="width:50px margin: 0 10px" onclick="button_enter_press(' + num + ')">Ввести</button>';
+			}
+			else if(set_dict[num][4]=="RADIOINPUT") {
+				numOfButtons = set_dict[num][6].length;
+				for(var i=0; i<numOfButtons;i++){
+					output +=	'<span><input name="radio_input_' + num + '" type="radio" value="' + i +'"> ' + set_dict[num][6][i]+'</span>';
+				}
+				output += 	'<button id="but_enter_' + num + '" style="width:50px margin: 0 10px" onclick="button_enter_press(' + num + ')">Ввести</button>';
+			}
+			else if(set_dict[num][4]=="EXECBUTTON") {
+				output += 	'<button id="but_enter_' + num + '" style="width:50px margin: 0 10px" onclick="button_enter_press(' + num + ')">Выполнить</button>';
+			}
+			else if(set_dict[num][4]=="NOCONTROL") {
+				output += 	'';
+			}
+			return output;
+		}
+
+	 	function success ( inputData ) {
+			document.getElementById("dev_name").innerHTML=palDecoder(inputData.model);
+			document.getElementById("dev_serial").innerHTML="S№"+palDecoder(inputData.serial);
+			document.getElementById("dev_place").innerHTML=palDecoder(inputData.place);
+			console.log("pFIP   ", passwordFormIsPainted);
+
+			if((inputData.autorised=="OFF")||(inputData.autorised=="DENIED")){
+				console.log("in pFIP   ");
+				if(passwordFormIsPainted==0){
+					var div = document.createElement('div');
+					div.className = "alert alert-success";
+					div.id="window1";
+					div.innerHTML = '<span id = "span_pasw">Введите пароль</span><input type="password" class="large" name="PassWord" id="passWord"  autocomplete="off" maxlength="25" value=""><button id="pswBut" onclick="pswrdEntry(passWord.value)">Ввести</button>';
+					main.appendChild(div);
+					passwordFormIsPainted=1;
+				}	
+				$("#result").css("display", "none");
+			}
+			console.log("pFDIP   ", passwordFormDeniedIsPainted);
+			if(inputData.autorised=="DENIED"){
+				console.log("in pFDIP   ");
+				if(passwordFormDeniedIsPainted==0){
+					var span = document.createElement('div');
+					span.innerHTML = '<span>Пароль неверный повторите попытку!</span>';
+					span.id="span_denied";
+					var div = document.getElementsByClassName("alert");
+					window1.appendChild(span);
+					passwordFormDeniedIsPainted=1;
+  					setTimeout(function() {
+    				span.parentNode.removeChild(span);
+    				passwordFormDeniedIsPainted=0;
+  					}, 3000);					
+				}
+			}
+			if(inputData.autorised=="ON") {
+				passwordFormDeniedIsPainted=0;
+				passwordFormIsPainted=0;	
+
+				$("#result").css("display", "block");
+
+				var div = document.getElementsByClassName("alert");
+				if(div[0]) div[0].parentNode.removeChild(div[0]);
+
+ 			
+			var div = document.getElementsByClassName("alert");
+			if(div[0]) div[0].parentNode.removeChild(div[0]);
+			var kolenmv = inputData.numenmv;
+			if(kolenmv>0){
+				var numOfBWWSk = inputData.innumber ;/*set_dict.length-1;*/
+				var set = new Array(520);
+				set[0] = inputData.bdw1sk1Tm;
+				set[1] = inputData.bdw1sk2Tm;
+				set[2] = inputData.bdw1sk3Tm;
+				set[3] = inputData.bdw1sk4Tm;
+				set[4] = inputData.bdw1sk5Tm;
+				set[5] = inputData.bdw1sk6Tm;
+				set[6] = inputData.bdw1sk7Tm;
+				set[7] = inputData.bdw1sk8Tm;
+				set[8] = inputData.bdw1sk9Tm;
+				set[9] = inputData.bdw1sk10Tm;
+				set[10] = inputData.bdw1sk11Tm;
+				set[11] = inputData.bdw1sk12Tm;
+				set[12] = inputData.bdw1sk13Tm;
+				set[13] = inputData.bdw1sk14Tm;
+				set[14] = inputData.bdw1sk15Tm;
+				set[15] = inputData.bdw1sk16Tm;
+				set[16] = inputData.bdw1sk17Tm;
+				set[17] = inputData.bdw1sk18Tm;
+				set[18] = inputData.bdw1sk19Tm;
+				set[19] = inputData.bdw1sk20Tm;
+				set[20] = inputData.bdw1sk21Tm;
+				set[21] = inputData.bdw1sk22Tm;
+				set[22] = inputData.bdw1sk23Tm;
+				set[23] = inputData.bdw1sk24Tm;
+				set[24] = inputData.bdw1sk25Tm;
+				set[25] = inputData.bdw1sk26Tm;
+				set[26] = inputData.bdw1sk27Tm;
+				set[27] = inputData.bdw1sk28Tm;
+				set[28] = inputData.bdw1sk29Tm;
+				set[29] = inputData.bdw1sk30Tm;
+				set[30] = inputData.bdw1sk31Tm;
+				set[31] = inputData.bdw1sk32Tm;
+				set[32] = inputData.bdw1sk33Tm;
+				set[33] = inputData.bdw1sk34Tm;
+				set[34] = inputData.bdw1sk35Tm;
+				set[35] = inputData.bdw1sk36Tm;
+				set[36] = inputData.bdw1sk37Tm;
+				set[37] = inputData.bdw1sk38Tm;
+				set[38] = inputData.bdw1sk39Tm;
+				set[39] = inputData.bdw1sk40Tm;
+				set[40] = inputData.bdw1sk41Tm;
+				set[41] = inputData.bdw1sk42Tm;
+				set[42] = inputData.bdw1sk43Tm;
+				set[43] = inputData.bdw1sk44Tm;
+				set[44] = inputData.bdw1sk45Tm;
+				set[45] = inputData.bdw1sk46Tm;
+				set[46] = inputData.bdw1sk47Tm;
+				set[47] = inputData.bdw1sk48Tm;
+				set[48] = inputData.bdw1sk49Tm;
+				set[49] = inputData.bdw1sk50Tm;
+				set[50] = inputData.bdw1sk51Tm;
+				set[51] = inputData.bdw1sk52Tm;
+				set[52] = inputData.bdw1sk53Tm;
+				set[53] = inputData.bdw1sk54Tm;
+				set[54] = inputData.bdw1sk55Tm;
+				set[55] = inputData.bdw1sk56Tm;
+				set[56] = inputData.bdw1sk57Tm;
+				set[57] = inputData.bdw1sk58Tm;
+				set[58] = inputData.bdw1sk59Tm;
+				set[59] = inputData.bdw1sk60Tm;
+				set[60] = inputData.bdw1sk61Tm;
+				set[61] = inputData.bdw1sk62Tm;
+				set[62] = inputData.bdw1sk63Tm;
+				set[63] = inputData.bdw1sk64Tm;
+				set[64] = inputData.bdw2sk1Tm;
+				set[65] = inputData.bdw2sk2Tm;
+				set[66] = inputData.bdw2sk3Tm;
+				set[67] = inputData.bdw2sk4Tm;
+				set[68] = inputData.bdw2sk5Tm;
+				set[69] = inputData.bdw2sk6Tm;
+				set[70] = inputData.bdw2sk7Tm;
+				set[71] = inputData.bdw2sk8Tm;
+				set[72] = inputData.bdw2sk9Tm;
+				set[73] = inputData.bdw2sk10Tm;
+				set[74] = inputData.bdw2sk11Tm;
+				set[75] = inputData.bdw2sk12Tm;
+				set[76] = inputData.bdw2sk13Tm;
+				set[77] = inputData.bdw2sk14Tm;
+				set[78] = inputData.bdw2sk15Tm;
+				set[79] = inputData.bdw2sk16Tm;
+				set[80] = inputData.bdw2sk17Tm;
+				set[81] = inputData.bdw2sk18Tm;
+				set[82] = inputData.bdw2sk19Tm;
+				set[83] = inputData.bdw2sk20Tm;
+				set[84] = inputData.bdw2sk21Tm;
+				set[85] = inputData.bdw2sk22Tm;
+				set[86] = inputData.bdw2sk23Tm;
+				set[87] = inputData.bdw2sk24Tm;
+				set[88] = inputData.bdw2sk25Tm;
+				set[89] = inputData.bdw2sk26Tm;
+				set[90] = inputData.bdw2sk27Tm;
+				set[91] = inputData.bdw2sk28Tm;
+				set[92] = inputData.bdw2sk29Tm;
+				set[93] = inputData.bdw2sk30Tm;
+				set[94] = inputData.bdw2sk31Tm;
+				set[95] = inputData.bdw2sk32Tm;
+				set[96] = inputData.bdw2sk33Tm;
+				set[97] = inputData.bdw2sk34Tm;
+				set[98] = inputData.bdw2sk35Tm;
+				set[99] = inputData.bdw2sk36Tm;
+				set[100] = inputData.bdw2sk37Tm;
+				set[101] = inputData.bdw2sk38Tm;
+				set[102] = inputData.bdw2sk39Tm;
+				set[103] = inputData.bdw2sk40Tm;
+				set[104] = inputData.bdw2sk41Tm;
+				set[105] = inputData.bdw2sk42Tm;
+				set[106] = inputData.bdw2sk43Tm;
+				set[107] = inputData.bdw2sk44Tm;
+				set[108] = inputData.bdw2sk45Tm;
+				set[109] = inputData.bdw2sk46Tm;
+				set[110] = inputData.bdw2sk47Tm;
+				set[111] = inputData.bdw2sk48Tm;
+				set[112] = inputData.bdw2sk49Tm;
+				set[113] = inputData.bdw2sk50Tm;
+				set[114] = inputData.bdw2sk51Tm;
+				set[115] = inputData.bdw2sk52Tm;
+				set[116] = inputData.bdw2sk53Tm;
+				set[117] = inputData.bdw2sk54Tm;
+				set[118] = inputData.bdw2sk55Tm;
+				set[119] = inputData.bdw2sk56Tm;
+				set[120] = inputData.bdw2sk57Tm;
+				set[121] = inputData.bdw2sk58Tm;
+				set[122] = inputData.bdw2sk59Tm;
+				set[123] = inputData.bdw2sk60Tm;
+				set[124] = inputData.bdw2sk61Tm;
+				set[125] = inputData.bdw2sk62Tm;
+				set[126] = inputData.bdw2sk63Tm;
+				set[127] = inputData.bdw2sk64Tm;
+				set[128] = inputData.bdw3sk1Tm;
+				set[129] = inputData.bdw3sk2Tm;
+				set[130] = inputData.bdw3sk3Tm;
+				set[131] = inputData.bdw3sk4Tm;
+				set[132] = inputData.bdw3sk5Tm;
+				set[133] = inputData.bdw3sk6Tm;
+				set[134] = inputData.bdw3sk7Tm;
+				set[135] = inputData.bdw3sk8Tm;
+				set[136] = inputData.bdw3sk9Tm;
+				set[137] = inputData.bdw3sk10Tm;
+				set[138] = inputData.bdw3sk11Tm;
+				set[139] = inputData.bdw3sk12Tm;
+				set[140] = inputData.bdw3sk13Tm;
+				set[141] = inputData.bdw3sk14Tm;
+				set[142] = inputData.bdw3sk15Tm;
+				set[143] = inputData.bdw3sk16Tm;
+				set[144] = inputData.bdw3sk17Tm;
+				set[145] = inputData.bdw3sk18Tm;
+				set[146] = inputData.bdw3sk19Tm;
+				set[147] = inputData.bdw3sk20Tm;
+				set[148] = inputData.bdw3sk21Tm;
+				set[149] = inputData.bdw3sk22Tm;
+				set[150] = inputData.bdw3sk23Tm;
+				set[151] = inputData.bdw3sk24Tm;
+				set[152] = inputData.bdw3sk25Tm;
+				set[153] = inputData.bdw3sk26Tm;
+				set[154] = inputData.bdw3sk27Tm;
+				set[155] = inputData.bdw3sk28Tm;
+				set[156] = inputData.bdw3sk29Tm;
+				set[157] = inputData.bdw3sk30Tm;
+				set[158] = inputData.bdw3sk31Tm;
+				set[159] = inputData.bdw3sk32Tm;
+				set[160] = inputData.bdw3sk33Tm;
+				set[161] = inputData.bdw3sk34Tm;
+				set[162] = inputData.bdw3sk35Tm;
+				set[163] = inputData.bdw3sk36Tm;
+				set[164] = inputData.bdw3sk37Tm;
+				set[165] = inputData.bdw3sk38Tm;
+				set[166] = inputData.bdw3sk39Tm;
+				set[167] = inputData.bdw3sk40Tm;
+				set[168] = inputData.bdw3sk41Tm;
+				set[169] = inputData.bdw3sk42Tm;
+				set[170] = inputData.bdw3sk43Tm;
+				set[171] = inputData.bdw3sk44Tm;
+				set[172] = inputData.bdw3sk45Tm;
+				set[173] = inputData.bdw3sk46Tm;
+				set[174] = inputData.bdw3sk47Tm;
+				set[175] = inputData.bdw3sk48Tm;
+				set[176] = inputData.bdw3sk49Tm;
+				set[177] = inputData.bdw3sk50Tm;
+				set[178] = inputData.bdw3sk51Tm;
+				set[179] = inputData.bdw3sk52Tm;
+				set[180] = inputData.bdw3sk53Tm;
+				set[181] = inputData.bdw3sk54Tm;
+				set[182] = inputData.bdw3sk55Tm;
+				set[183] = inputData.bdw3sk56Tm;
+				set[184] = inputData.bdw3sk57Tm;
+				set[185] = inputData.bdw3sk58Tm;
+				set[186] = inputData.bdw3sk59Tm;
+				set[187] = inputData.bdw3sk60Tm;
+				set[188] = inputData.bdw3sk61Tm;
+				set[189] = inputData.bdw3sk62Tm;
+				set[190] = inputData.bdw3sk63Tm;
+				set[191] = inputData.bdw3sk64Tm;
+				set[192] = inputData.bdw4sk1Tm;
+				set[193] = inputData.bdw4sk2Tm;
+				set[194] = inputData.bdw4sk3Tm;
+				set[195] = inputData.bdw4sk4Tm;
+				set[196] = inputData.bdw4sk5Tm;
+				set[197] = inputData.bdw4sk6Tm;
+				set[198] = inputData.bdw4sk7Tm;
+				set[199] = inputData.bdw4sk8Tm;
+				set[200] = inputData.bdw4sk9Tm;
+				set[201] = inputData.bdw4sk10Tm;
+				set[202] = inputData.bdw4sk11Tm;
+				set[203] = inputData.bdw4sk12Tm;
+				set[204] = inputData.bdw4sk13Tm;
+				set[205] = inputData.bdw4sk14Tm;
+				set[206] = inputData.bdw4sk15Tm;
+				set[207] = inputData.bdw4sk16Tm;
+				set[208] = inputData.bdw4sk17Tm;
+				set[209] = inputData.bdw4sk18Tm;
+				set[210] = inputData.bdw4sk19Tm;
+				set[211] = inputData.bdw4sk20Tm;
+				set[212] = inputData.bdw4sk21Tm;
+				set[213] = inputData.bdw4sk22Tm;
+				set[214] = inputData.bdw4sk23Tm;
+				set[215] = inputData.bdw4sk24Tm;
+				set[216] = inputData.bdw4sk25Tm;
+				set[217] = inputData.bdw4sk26Tm;
+				set[218] = inputData.bdw4sk27Tm;
+				set[219] = inputData.bdw4sk28Tm;
+				set[220] = inputData.bdw4sk29Tm;
+				set[221] = inputData.bdw4sk30Tm;
+				set[222] = inputData.bdw4sk31Tm;
+				set[223] = inputData.bdw4sk32Tm;
+				set[224] = inputData.bdw4sk33Tm;
+				set[225] = inputData.bdw4sk34Tm;
+				set[226] = inputData.bdw4sk35Tm;
+				set[227] = inputData.bdw4sk36Tm;
+				set[228] = inputData.bdw4sk37Tm;
+				set[229] = inputData.bdw4sk38Tm;
+				set[230] = inputData.bdw4sk39Tm;
+				set[231] = inputData.bdw4sk40Tm;
+				set[232] = inputData.bdw4sk41Tm;
+				set[233] = inputData.bdw4sk42Tm;
+				set[234] = inputData.bdw4sk43Tm;
+				set[235] = inputData.bdw4sk44Tm;
+				set[236] = inputData.bdw4sk45Tm;
+				set[237] = inputData.bdw4sk46Tm;
+				set[238] = inputData.bdw4sk47Tm;
+				set[239] = inputData.bdw4sk48Tm;
+				set[240] = inputData.bdw4sk49Tm;
+				set[241] = inputData.bdw4sk50Tm;
+				set[242] = inputData.bdw4sk51Tm;
+				set[243] = inputData.bdw4sk52Tm;
+				set[244] = inputData.bdw4sk53Tm;
+				set[245] = inputData.bdw4sk54Tm;
+				set[246] = inputData.bdw4sk55Tm;
+				set[247] = inputData.bdw4sk56Tm;
+				set[248] = inputData.bdw4sk57Tm;
+				set[249] = inputData.bdw4sk58Tm;
+				set[250] = inputData.bdw4sk59Tm;
+				set[251] = inputData.bdw4sk60Tm;
+				set[252] = inputData.bdw4sk61Tm;
+				set[253] = inputData.bdw4sk62Tm;
+				set[254] = inputData.bdw4sk63Tm;
+				set[255] = inputData.bdw4sk64Tm;
+				set[256] = inputData.bdw5sk1Tm;
+				set[257] = inputData.bdw5sk2Tm;
+				set[258] = inputData.bdw5sk3Tm;
+				set[259] = inputData.bdw5sk4Tm;
+				set[260] = inputData.bdw5sk5Tm;
+				set[261] = inputData.bdw5sk6Tm;
+				set[262] = inputData.bdw5sk7Tm;
+				set[263] = inputData.bdw5sk8Tm;
+				set[264] = inputData.bdw5sk9Tm;
+				set[265] = inputData.bdw5sk10Tm;
+				set[266] = inputData.bdw5sk11Tm;
+				set[267] = inputData.bdw5sk12Tm;
+				set[268] = inputData.bdw5sk13Tm;
+				set[269] = inputData.bdw5sk14Tm;
+				set[270] = inputData.bdw5sk15Tm;
+				set[271] = inputData.bdw5sk16Tm;
+				set[272] = inputData.bdw5sk17Tm;
+				set[273] = inputData.bdw5sk18Tm;
+				set[274] = inputData.bdw5sk19Tm;
+				set[275] = inputData.bdw5sk20Tm;
+				set[276] = inputData.bdw5sk21Tm;
+				set[277] = inputData.bdw5sk22Tm;
+				set[278] = inputData.bdw5sk23Tm;
+				set[279] = inputData.bdw5sk24Tm;
+				set[280] = inputData.bdw5sk25Tm;
+				set[281] = inputData.bdw5sk26Tm;
+				set[282] = inputData.bdw5sk27Tm;
+				set[283] = inputData.bdw5sk28Tm;
+				set[284] = inputData.bdw5sk29Tm;
+				set[285] = inputData.bdw5sk30Tm;
+				set[286] = inputData.bdw5sk31Tm;
+				set[287] = inputData.bdw5sk32Tm;
+				set[288] = inputData.bdw5sk33Tm;
+				set[289] = inputData.bdw5sk34Tm;
+				set[290] = inputData.bdw5sk35Tm;
+				set[291] = inputData.bdw5sk36Tm;
+				set[292] = inputData.bdw5sk37Tm;
+				set[293] = inputData.bdw5sk38Tm;
+				set[294] = inputData.bdw5sk39Tm;
+				set[295] = inputData.bdw5sk40Tm;
+				set[296] = inputData.bdw5sk41Tm;
+				set[297] = inputData.bdw5sk42Tm;
+				set[298] = inputData.bdw5sk43Tm;
+				set[299] = inputData.bdw5sk44Tm;
+				set[300] = inputData.bdw5sk45Tm;
+				set[301] = inputData.bdw5sk46Tm;
+				set[302] = inputData.bdw5sk47Tm;
+				set[303] = inputData.bdw5sk48Tm;
+				set[304] = inputData.bdw5sk49Tm;
+				set[305] = inputData.bdw5sk50Tm;
+				set[306] = inputData.bdw5sk51Tm;
+				set[307] = inputData.bdw5sk52Tm;
+				set[308] = inputData.bdw5sk53Tm;
+				set[309] = inputData.bdw5sk54Tm;
+				set[310] = inputData.bdw5sk55Tm;
+				set[311] = inputData.bdw5sk56Tm;
+				set[312] = inputData.bdw5sk57Tm;
+				set[313] = inputData.bdw5sk58Tm;
+				set[314] = inputData.bdw5sk59Tm;
+				set[315] = inputData.bdw5sk60Tm;
+				set[316] = inputData.bdw5sk61Tm;
+				set[317] = inputData.bdw5sk62Tm;
+				set[318] = inputData.bdw5sk63Tm;
+				set[319] = inputData.bdw5sk64Tm;
+				set[320] = inputData.bdw6sk1Tm;
+				set[321] = inputData.bdw6sk2Tm;
+				set[322] = inputData.bdw6sk3Tm;
+				set[323] = inputData.bdw6sk4Tm;
+				set[324] = inputData.bdw6sk5Tm;
+				set[325] = inputData.bdw6sk6Tm;
+				set[326] = inputData.bdw6sk7Tm;
+				set[327] = inputData.bdw6sk8Tm;
+				set[328] = inputData.bdw6sk9Tm;
+				set[329] = inputData.bdw6sk10Tm;
+				set[330] = inputData.bdw6sk11Tm;
+				set[331] = inputData.bdw6sk12Tm;
+				set[332] = inputData.bdw6sk13Tm;
+				set[333] = inputData.bdw6sk14Tm;
+				set[334] = inputData.bdw6sk15Tm;
+				set[335] = inputData.bdw6sk16Tm;
+				set[336] = inputData.bdw6sk17Tm;
+				set[337] = inputData.bdw6sk18Tm;
+				set[338] = inputData.bdw6sk19Tm;
+				set[339] = inputData.bdw6sk20Tm;
+				set[340] = inputData.bdw6sk21Tm;
+				set[341] = inputData.bdw6sk22Tm;
+				set[342] = inputData.bdw6sk23Tm;
+				set[343] = inputData.bdw6sk24Tm;
+				set[344] = inputData.bdw6sk25Tm;
+				set[345] = inputData.bdw6sk26Tm;
+				set[346] = inputData.bdw6sk27Tm;
+				set[347] = inputData.bdw6sk28Tm;
+				set[348] = inputData.bdw6sk29Tm;
+				set[349] = inputData.bdw6sk30Tm;
+				set[350] = inputData.bdw6sk31Tm;
+				set[351] = inputData.bdw6sk32Tm;
+				set[352] = inputData.bdw6sk33Tm;
+				set[353] = inputData.bdw6sk34Tm;
+				set[354] = inputData.bdw6sk35Tm;
+				set[355] = inputData.bdw6sk36Tm;
+				set[356] = inputData.bdw6sk37Tm;
+				set[357] = inputData.bdw6sk38Tm;
+				set[358] = inputData.bdw6sk39Tm;
+				set[359] = inputData.bdw6sk40Tm;
+				set[360] = inputData.bdw6sk41Tm;
+				set[361] = inputData.bdw6sk42Tm;
+				set[362] = inputData.bdw6sk43Tm;
+				set[363] = inputData.bdw6sk44Tm;
+				set[364] = inputData.bdw6sk45Tm;
+				set[365] = inputData.bdw6sk46Tm;
+				set[366] = inputData.bdw6sk47Tm;
+				set[367] = inputData.bdw6sk48Tm;
+				set[368] = inputData.bdw6sk49Tm;
+				set[369] = inputData.bdw6sk50Tm;
+				set[370] = inputData.bdw6sk51Tm;
+				set[371] = inputData.bdw6sk52Tm;
+				set[372] = inputData.bdw6sk53Tm;
+				set[373] = inputData.bdw6sk54Tm;
+				set[374] = inputData.bdw6sk55Tm;
+				set[375] = inputData.bdw6sk56Tm;
+				set[376] = inputData.bdw6sk57Tm;
+				set[377] = inputData.bdw6sk58Tm;
+				set[378] = inputData.bdw6sk59Tm;
+				set[379] = inputData.bdw6sk60Tm;
+				set[380] = inputData.bdw6sk61Tm;
+				set[381] = inputData.bdw6sk62Tm;
+				set[382] = inputData.bdw6sk63Tm;
+				set[383] = inputData.bdw6sk64Tm;
+				set[384] = inputData.bdw7sk1Tm;
+				set[385] = inputData.bdw7sk2Tm;
+				set[386] = inputData.bdw7sk3Tm;
+				set[387] = inputData.bdw7sk4Tm;
+				set[388] = inputData.bdw7sk5Tm;
+				set[389] = inputData.bdw7sk6Tm;
+				set[390] = inputData.bdw7sk7Tm;
+				set[391] = inputData.bdw7sk8Tm;
+				set[392] = inputData.bdw7sk9Tm;
+				set[393] = inputData.bdw7sk10Tm;
+				set[394] = inputData.bdw7sk11Tm;
+				set[395] = inputData.bdw7sk12Tm;
+				set[396] = inputData.bdw7sk13Tm;
+				set[397] = inputData.bdw7sk14Tm;
+				set[398] = inputData.bdw7sk15Tm;
+				set[399] = inputData.bdw7sk16Tm;
+				set[400] = inputData.bdw7sk17Tm;
+				set[401] = inputData.bdw7sk18Tm;
+				set[402] = inputData.bdw7sk19Tm;
+				set[403] = inputData.bdw7sk20Tm;
+				set[404] = inputData.bdw7sk21Tm;
+				set[405] = inputData.bdw7sk22Tm;
+				set[406] = inputData.bdw7sk23Tm;
+				set[407] = inputData.bdw7sk24Tm;
+				set[408] = inputData.bdw7sk25Tm;
+				set[409] = inputData.bdw7sk26Tm;
+				set[410] = inputData.bdw7sk27Tm;
+				set[411] = inputData.bdw7sk28Tm;
+				set[412] = inputData.bdw7sk29Tm;
+				set[413] = inputData.bdw7sk30Tm;
+				set[414] = inputData.bdw7sk31Tm;
+				set[415] = inputData.bdw7sk32Tm;
+				set[416] = inputData.bdw7sk33Tm;
+				set[417] = inputData.bdw7sk34Tm;
+				set[418] = inputData.bdw7sk35Tm;
+				set[419] = inputData.bdw7sk36Tm;
+				set[420] = inputData.bdw7sk37Tm;
+				set[421] = inputData.bdw7sk38Tm;
+				set[422] = inputData.bdw7sk39Tm;
+				set[423] = inputData.bdw7sk40Tm;
+				set[424] = inputData.bdw7sk41Tm;
+				set[425] = inputData.bdw7sk42Tm;
+				set[426] = inputData.bdw7sk43Tm;
+				set[427] = inputData.bdw7sk44Tm;
+				set[428] = inputData.bdw7sk45Tm;
+				set[429] = inputData.bdw7sk46Tm;
+				set[430] = inputData.bdw7sk47Tm;
+				set[431] = inputData.bdw7sk48Tm;
+				set[432] = inputData.bdw7sk49Tm;
+				set[433] = inputData.bdw7sk50Tm;
+				set[434] = inputData.bdw7sk51Tm;
+				set[435] = inputData.bdw7sk52Tm;
+				set[436] = inputData.bdw7sk53Tm;
+				set[437] = inputData.bdw7sk54Tm;
+				set[438] = inputData.bdw7sk55Tm;
+				set[439] = inputData.bdw7sk56Tm;
+				set[440] = inputData.bdw7sk57Tm;
+				set[441] = inputData.bdw7sk58Tm;
+				set[442] = inputData.bdw7sk59Tm;
+				set[443] = inputData.bdw7sk60Tm;
+				set[444] = inputData.bdw7sk61Tm;
+				set[445] = inputData.bdw7sk62Tm;
+				set[446] = inputData.bdw7sk63Tm;
+				set[447] = inputData.bdw7sk64Tm;
+				set[448] = inputData.bdw8sk1Tm;
+				set[449] = inputData.bdw8sk2Tm;
+				set[450] = inputData.bdw8sk3Tm;
+				set[451] = inputData.bdw8sk4Tm;
+				set[452] = inputData.bdw8sk5Tm;
+				set[453] = inputData.bdw8sk6Tm;
+				set[454] = inputData.bdw8sk7Tm;
+				set[455] = inputData.bdw8sk8Tm;
+				set[456] = inputData.bdw8sk9Tm;
+				set[457] = inputData.bdw8sk10Tm;
+				set[458] = inputData.bdw8sk11Tm;
+				set[459] = inputData.bdw8sk12Tm;
+				set[460] = inputData.bdw8sk13Tm;
+				set[461] = inputData.bdw8sk14Tm;
+				set[462] = inputData.bdw8sk15Tm;
+				set[463] = inputData.bdw8sk16Tm;
+				set[464] = inputData.bdw8sk17Tm;
+				set[465] = inputData.bdw8sk18Tm;
+				set[466] = inputData.bdw8sk19Tm;
+				set[467] = inputData.bdw8sk20Tm;
+				set[468] = inputData.bdw8sk21Tm;
+				set[469] = inputData.bdw8sk22Tm;
+				set[470] = inputData.bdw8sk23Tm;
+				set[471] = inputData.bdw8sk24Tm;
+				set[472] = inputData.bdw8sk25Tm;
+				set[473] = inputData.bdw8sk26Tm;
+				set[474] = inputData.bdw8sk27Tm;
+				set[475] = inputData.bdw8sk28Tm;
+				set[476] = inputData.bdw8sk29Tm;
+				set[477] = inputData.bdw8sk30Tm;
+				set[478] = inputData.bdw8sk31Tm;
+				set[479] = inputData.bdw8sk32Tm;
+				set[480] = inputData.bdw8sk33Tm;
+				set[481] = inputData.bdw8sk34Tm;
+				set[482] = inputData.bdw8sk35Tm;
+				set[483] = inputData.bdw8sk36Tm;
+				set[484] = inputData.bdw8sk37Tm;
+				set[485] = inputData.bdw8sk38Tm;
+				set[486] = inputData.bdw8sk39Tm;
+				set[487] = inputData.bdw8sk40Tm;
+				set[488] = inputData.bdw8sk41Tm;
+				set[489] = inputData.bdw8sk42Tm;
+				set[490] = inputData.bdw8sk43Tm;
+				set[491] = inputData.bdw8sk44Tm;
+				set[492] = inputData.bdw8sk45Tm;
+				set[493] = inputData.bdw8sk46Tm;
+				set[494] = inputData.bdw8sk47Tm;
+				set[495] = inputData.bdw8sk48Tm;
+				set[496] = inputData.bdw8sk49Tm;
+				set[497] = inputData.bdw8sk50Tm;
+				set[498] = inputData.bdw8sk51Tm;
+				set[499] = inputData.bdw8sk52Tm;
+				set[500] = inputData.bdw8sk53Tm;
+				set[501] = inputData.bdw8sk54Tm;
+				set[502] = inputData.bdw8sk55Tm;
+				set[503] = inputData.bdw8sk56Tm;
+				set[504] = inputData.bdw8sk57Tm;
+				set[505] = inputData.bdw8sk58Tm;
+				set[506] = inputData.bdw8sk59Tm;
+				set[507] = inputData.bdw8sk60Tm;
+				set[508] = inputData.bdw8sk61Tm;
+				set[509] = inputData.bdw8sk62Tm;
+				set[510] = inputData.bdw8sk63Tm;
+				set[511] = inputData.bdw8sk64Tm;
+
+				if(isPainted==0) {
+			  		$("#setTable").remove(); 
+					var myTable = '' ;
+					myTable += '<table id="BWWTable" width="100%" style="table-layout: fixed" cellspacing=0 cellpadding=2 border=1>' ;
+					myTable += '<col width="60" valign="middle" align="left">' ;
+			   		myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+					myTable += '<col /*width="150"*/ valign="middle" text-align="right" class = "abc" align="justify">' ;
+			   		/*myTable += '<col width="70%" valign="middle" align="justify">' ;*/
+					myTable +=  "<thead>" ;
+					myTable +=   "<tr>";
+					myTable +=    "<th>"     + "Вход" +       "</th>";
+					for (var j = 1; j <= kolenmv; j++) {
+						myTable +=    "<th>"     + "БДВ№" +j+  "</th>";
+					}
+					myTable +=   "</tr>" ;
+					myTable +=  "</thead>" ;
+					myTable +=  "<tbody>" ;
+					
+					for (var i = 0; i < numOfBWWSk; i++) {
+							var numOfParam= i+1;
+							var nameOfParam="DI"+numOfParam;
+								myTable += '<tr>';
+								myTable += '<td class="centerAligned">';
+								myTable += nameOfParam;
+								myTable += "</td>";
+		
+							var valueOfParam = new Array(8);
+							for (var j = 0; j < kolenmv; j++) {
+								var zx=i+(j*64);							
+								if(set[zx]==0)valueOfParam[j]="Пассивен";
+								else if(set[zx]==0xFF)valueOfParam[j]="Нет связи";  
+								else if(set[zx]==1)valueOfParam[j]="Активен";
+								else valueOfParam[j]="    ";						
+								
+								myTable += '<td class="centerAligned" id = "data'+zx+'">';
+								myTable += valueOfParam[j];
+								myTable += "</td>";								
+								
+							}	
+								myTable += "</tr>";
+						
+					}
+					myTable +=  "</tbody>" ;
+					myTable += "</table>" ;
+
+					isPainted=1;
+				}
+				else{
+					for (var i = 0; i < numOfBWWSk; i++) {
+						for (var j = 0; j < kolenmv; j++) {
+							var valueOfParam;
+							var zx=i+(j*64);
+							if(set[zx]==0)valueOfParam="Пассивен";
+							else if(set[zx]==0xFF)valueOfParam="Нет связи";  
+							else if(set[zx]==1)valueOfParam="Активен";
+							else valueOfParam="      ";
+							var idFild="#data"+zx;
+							$(idFild).text(valueOfParam);							
+						}
+					}
+				}
+				$("#result").append(myTable) ;
+			}				
+}
+
+	    }
+		
+		setInterval(dataUpdate,500);
+	</script>	
+</head>
+<body>
+<div id="wrap">
+	<div id="dev_header">
+		<div id="dev_name"> </div>
+		<div id="dev_place"> </div>
+		<div id="dev_serial"> </div>
+	</div>
+
+	<div id="main">
+		<div id= "result"></div>
+	</div>
+	<div id="sidebar">
+		<ul>
+			<li><a href="index.htm">Главная</a></li>
+			<li><a href="set.html">Установки</a></li>
+			<li><a href="log.html">Журнал событий</a></li>
+			<li><a href="bww.html">Блок внешних вводов</a></li>
+		</ul>
+	</div>
+
+</div>
+<div id="footer">
+
+</div>
+</body></html>
